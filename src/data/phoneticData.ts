@@ -10,7 +10,7 @@ export type GotchaCategory =
   | "iu" // miu, diu, niu, liu, jiu, qiu, xiu, you
   | "ui" // all -ui cells
   | "wen" // wen only
-  | "other"; // other only
+  | "w to wu"; // other only
 
 export interface GotchaCategoryInfo {
   id: GotchaCategory;
@@ -22,7 +22,7 @@ export interface GotchaCategoryInfo {
 export const gotchaCategories: GotchaCategoryInfo[] = [
   { id: "explicit-u", name: "Explicit ü (n/l)", color: "hsl(45, 93%, 47%)", bgClass: "bg-amber-200" },
   { id: "hidden-u", name: "Hidden ü (j/q/x)", color: "hsl(24, 94%, 50%)", bgClass: "bg-orange-200" },
-  { id: "y-as-u", name: "y- as ㄩ", color: "hsl(350, 89%, 60%)", bgClass: "bg-rose-200" },
+  { id: "y-as-u", name: "y- as ㄩ / ü", color: "hsl(350, 89%, 60%)", bgClass: "bg-rose-200" },
   { id: "iong", name: "-iong (ㄩㄥ)", color: "hsl(270, 67%, 60%)", bgClass: "bg-purple-200" },
   { id: "silent-yw", name: "Silent y/w", color: "hsl(142, 71%, 45%)", bgClass: "bg-green-200" },
   { id: "labial-o", name: "Labial + o", color: "hsl(174, 72%, 56%)", bgClass: "bg-teal-200" },
@@ -30,7 +30,7 @@ export const gotchaCategories: GotchaCategoryInfo[] = [
   { id: "iu", name: "-iu (ㄧㄡ)", color: "hsl(30, 41%, 50%)", bgClass: "bg-amber-300" },
   { id: "ui", name: "-ui (ㄨㄟ)", color: "hsl(16, 85%, 65%)", bgClass: "bg-orange-300" },
   { id: "wen", name: "wen (ㄨㄣ)", color: "hsl(82, 78%, 55%)", bgClass: "bg-lime-200" },
-  { id: "other", name: "other", color: "hsl(217, 91%, 60%)", bgClass: "bg-blue-200" },
+  { id: "w to wu", name: "w → wu", color: "hsl(217, 91%, 60%)", bgClass: "bg-blue-200" },
 ];
 
 // Cell data structure
@@ -134,11 +134,11 @@ export const chartData: ChartData = {
   "y?-ün": cell("yun", "ㄩㄣ", ["y-as-u"]),
 
   // w row
-  "w?-a": cell("wa", "ㄨㄚ", ["other"]),
-  "w?-ai": cell("wai", "ㄨㄞ", ["other"]),
-  "w?-an": cell("wan", "ㄨㄢ", ["other"]),
-  "w?-ang": cell("wang", "ㄨㄤ", ["other"]),
-  "w?-o": cell("wo", "ㄨㄛ", ["silent-yw"]),
+  "w?-a": cell("wa", "ㄨㄚ", ["w to wu"]),
+  "w?-ai": cell("wai", "ㄨㄞ", ["w to wu"]),
+  "w?-an": cell("wan", "ㄨㄢ", ["w to wu"]),
+  "w?-ang": cell("wang", "ㄨㄤ", ["w to wu"]),
+  "w?-o": cell("wo", "ㄨㄛ", ["w to wu"]),
   "w?-ei": cell("wei", "ㄨㄟ", ["ui"]),
   "w?-en": cell("wen", "ㄨㄣ", ["wen"]),
   "w?-eng": cell("weng", "ㄨㄥ"),
