@@ -81,6 +81,9 @@ export const finals = [
 
 // Initials (rows) with their zhuyin
 export const initials = [
+  { pinyin: "y?", zhuyin: "no/(i)" },
+  { pinyin: "w?", zhuyin: "no/(u)" },
+
   { pinyin: "b", zhuyin: "ㄅ" },
   { pinyin: "p", zhuyin: "ㄆ" },
   { pinyin: "m", zhuyin: "ㄇ" },
@@ -102,8 +105,6 @@ export const initials = [
   { pinyin: "z", zhuyin: "ㄗ" },
   { pinyin: "c", zhuyin: "ㄘ" },
   { pinyin: "s", zhuyin: "ㄙ" },
-  { pinyin: "y?", zhuyin: "no/(i)" },
-  { pinyin: "w?", zhuyin: "no/(u)" },
 ];
 
 // Build the chart data - map of "initial-finalPinyin" -> cell data
