@@ -9,8 +9,8 @@ export type GotchaCategory =
   | "buzzing-i" // zhi, chi, shi, ri, zi, ci, si
   | "iu" // miu, diu, niu, liu, jiu, qiu, xiu, you
   | "ui" // all -ui cells
-  | "wen" // wen only
-  | "w to wu"; // other only
+  | "special" //
+  | "w to wu"; // w to wu of zhuyin x only
 
 export interface GotchaCategoryInfo {
   id: GotchaCategory;
@@ -29,7 +29,7 @@ export const gotchaCategories: GotchaCategoryInfo[] = [
   { id: "buzzing-i", name: "Buzzing i", color: "hsl(330, 81%, 70%)", bgClass: "bg-pink-200" },
   { id: "iu", name: "-iu (ㄧㄡ)", color: "hsl(30, 41%, 50%)", bgClass: "bg-amber-300" },
   { id: "ui", name: "-ui (ㄨㄟ)", color: "hsl(16, 85%, 65%)", bgClass: "bg-orange-300" },
-  { id: "wen", name: "wen (ㄨㄣ)", color: "hsl(82, 78%, 55%)", bgClass: "bg-lime-200" },
+  { id: "special", name: "special", color: "hsl(82, 78%, 55%)", bgClass: "bg-lime-200" },
   { id: "w to wu", name: "w → wu", color: "hsl(217, 91%, 60%)", bgClass: "bg-blue-200" },
 ];
 
@@ -126,7 +126,7 @@ export const chartData: ChartData = {
   "y?-ang": cell("yang", "ㄧㄤ"),
   "y?-ong": cell("yong", "ㄩㄥ", ["iong"]),
   "y?-ou": cell("you", "ㄧㄡ", ["iu"]),
-  "y?-e": cell("ye", "ㄧㄝ", ["other"]),
+  "y?-e": cell("ye", "ㄧㄝ", ["special"]),
   "y?-i": cell("yi", "ㄧ", ["silent-yw"]),
   "y?-ü": cell("yu", "ㄩ", ["y-as-u"]),
   "y?-üe": cell("yue", "ㄩㄝ", ["y-as-u"]),
@@ -140,7 +140,7 @@ export const chartData: ChartData = {
   "w?-ang": cell("wang", "ㄨㄤ", ["w to wu"]),
   "w?-o": cell("wo", "ㄨㄛ", ["w to wu"]),
   "w?-ei": cell("wei", "ㄨㄟ", ["ui"]),
-  "w?-en": cell("wen", "ㄨㄣ", ["wen"]),
+  "w?-en": cell("wen", "ㄨㄣ", ["special"]),
   "w?-eng": cell("weng", "ㄨㄥ"),
   "w?-u": cell("wu", "ㄨ", ["silent-yw"]),
 
