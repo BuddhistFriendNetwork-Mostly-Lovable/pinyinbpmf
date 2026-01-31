@@ -118,6 +118,31 @@ const cell = (pinyin: string, zhuyin: string, gotchas?: GotchaCategory[]): Phone
 
 // Complete chart data
 export const chartData: ChartData = {
+  // y row
+  "y-a": cell("ya", "ㄧㄚ"),
+  "y-ao": cell("yao", "ㄧㄠ"),
+  "y-an": cell("yan", "ㄧㄢ"),
+  "y-ang": cell("yang", "ㄧㄤ"),
+  "y-ong": cell("yong", "ㄩㄥ", ["iong"]),
+  "y-ou": cell("you", "ㄧㄡ", ["iu"]),
+  "y-e": cell("ye", "ㄧㄝ", ["ye"]),
+  "y-i": cell("yi", "ㄧ", ["silent-yw"]),
+  "y-ü": cell("yu", "ㄩ", ["y-as-u"]),
+  "y-üe": cell("yue", "ㄩㄝ", ["y-as-u"]),
+  "y-üan": cell("yuan", "ㄩㄢ", ["y-as-u"]),
+  "y-ün": cell("yun", "ㄩㄣ", ["y-as-u"]),
+
+  // w row
+  "w?-a": cell("wa", "ㄨㄚ"),
+  "w?-ai": cell("wai", "ㄨㄞ"),
+  "w?-an": cell("wan", "ㄨㄢ"),
+  "w?-ang": cell("wang", "ㄨㄤ"),
+  "w?-o": cell("wo", "ㄨㄛ", ["silent-yw"]),
+  "w?-ei": cell("wei", "ㄨㄟ", ["ui"]),
+  "w?-en": cell("wen", "ㄨㄣ", ["wen"]),
+  "w?-eng": cell("weng", "ㄨㄥ"),
+  "w?-u": cell("wu", "ㄨ", ["silent-yw"]),
+
   // b row
   "b-a": cell("ba", "ㄅㄚ"),
   "b-ai": cell("bai", "ㄅㄞ"),
@@ -530,31 +555,6 @@ export const chartData: ChartData = {
   "s-ui": cell("sui", "ㄙㄨㄟ", ["ui"]),
   "s-uan": cell("suan", "ㄙㄨㄢ"),
   "s-un": cell("sun", "ㄙㄨㄣ"),
-
-  // y row
-  "y?-a": cell("ya", "ㄧㄚ"),
-  "y?-ao": cell("yao", "ㄧㄠ"),
-  "y?-an": cell("yan", "ㄧㄢ"),
-  "y?-ang": cell("yang", "ㄧㄤ"),
-  "y?-ong": cell("yong", "ㄩㄥ", ["iong"]),
-  "y?-ou": cell("you", "ㄧㄡ", ["iu"]),
-  "y?-e": cell("ye", "ㄧㄝ", ["ye"]),
-  "y?-i": cell("yi", "ㄧ", ["silent-yw"]),
-  "y?-ü": cell("yu", "ㄩ", ["y-as-u"]),
-  "y?-üe": cell("yue", "ㄩㄝ", ["y-as-u"]),
-  "y?-üan": cell("yuan", "ㄩㄢ", ["y-as-u"]),
-  "y?-ün": cell("yun", "ㄩㄣ", ["y-as-u"]),
-
-  // w row
-  "w?-a": cell("wa", "ㄨㄚ"),
-  "w?-ai": cell("wai", "ㄨㄞ"),
-  "w?-an": cell("wan", "ㄨㄢ"),
-  "w?-ang": cell("wang", "ㄨㄤ"),
-  "w?-o": cell("wo", "ㄨㄛ", ["silent-yw"]),
-  "w?-ei": cell("wei", "ㄨㄟ", ["ui"]),
-  "w?-en": cell("wen", "ㄨㄣ", ["wen"]),
-  "w?-eng": cell("weng", "ㄨㄥ"),
-  "w?-u": cell("wu", "ㄨ", ["silent-yw"]),
 };
 
 // Get cell by initial and final
