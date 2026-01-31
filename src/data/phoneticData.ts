@@ -145,6 +145,7 @@ export const chartData: ChartData = {
   "y?-ün": cell("yun", "ㄩㄣ", ["y-as-u"]),
 
   "y?-in": cell("yin", "ㄧㄣ", ["y to e silent"]), // missing from initial list
+  "y?-ing": cell("ying", "ㄧㄥ", ["y to e silent"]), // missing from initial list
 
   // w row
   "w?-a": cell("(wa)", "ㄨㄚ → ~ua", ["w to wu"]),
