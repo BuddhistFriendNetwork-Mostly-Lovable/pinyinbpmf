@@ -141,8 +141,8 @@ export const chartData: ChartData = {
   "w?-o": cell("wo", "ㄨㄛ", ["w to wu"]),
   "w?-ei": cell("wei", "ㄨㄟ", ["ui"]),
   "w?-en": cell("wen*", "ㄨㄣ → un", ["special"]),
-  "w?-eng": cell("weng", "ㄨㄥ"),
-  "w?-u": cell("wu", "ㄨ", ["silent-yw"]),
+  "w?-eng": cell("weng", "ㄨㄥ", ["w to wu"]),
+  "w?-u": cell("wu", "ㄨ", ["w to wu"]),
   "w?-un": cell("wen*", "ㄨㄣ", ["special"]),
 
   // b row
