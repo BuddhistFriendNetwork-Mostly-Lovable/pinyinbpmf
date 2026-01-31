@@ -140,6 +140,8 @@ export const chartData: ChartData = {
   "y?-üan": cell("yuan", "ㄩㄢ", ["y-as-u"]),
   "y?-ün": cell("yun", "ㄩㄣ", ["y-as-u"]),
 
+  "y?-in": cell("yin", "ㄧㄣ", ["y to e silent"]), // missing from initial list
+
   // w row
   "w?-a": cell("(wa)", "ㄨㄚ → ~ua", ["w to wu"]),
   "w?-ua": cell("wa", "ㄨㄚ", ["w to wu"]), // dup
