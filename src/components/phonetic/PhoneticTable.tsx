@@ -91,7 +91,11 @@ export const PhoneticTable = ({
                     groupColors[final.group]
                   )}
                 >
-                  <div className="font-bold">{final.pinyin}</div>
+                  <div className="font-bold">
+                    {final.pinyin.startsWith('ü') 
+                      ? `${final.pinyin} / ${final.pinyin.replace('ü', 'u')}`
+                      : final.pinyin}
+                  </div>
                   <div className="text-muted-foreground">{final.zhuyin}</div>
                 </TableHead>
               ))}
