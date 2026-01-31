@@ -83,6 +83,7 @@ export const finals = [
 export const initials = [
   { pinyin: "y?", zhuyin: "no/(+i)" },
   { pinyin: "w?", zhuyin: "no/(+u)" },
+  { pinyin: "*er*", zhuyin: "special" },
 
   { pinyin: "b", zhuyin: "ㄅ" },
   { pinyin: "p", zhuyin: "ㄆ" },
@@ -119,6 +120,9 @@ const cell = (pinyin: string, zhuyin: string, gotchas?: GotchaCategory[]): Phone
 
 // Complete chart data
 export const chartData: ChartData = {
+  // er singleton
+  "*er*-er": cell("er", "ㄦ", ["special"]),
+
   // y row
   "y?-a": cell("(ya)", "ㄧㄚ → ~ia ", ["y to e silent"]),
   "y?-ia": cell("ya", "ㄧㄚ", ["y to e silent"]), //dup
@@ -141,7 +145,6 @@ export const chartData: ChartData = {
   "y?-ün": cell("yun", "ㄩㄣ", ["y-as-u"]),
 
   "y?-in": cell("yin", "ㄧㄣ", ["y to e silent"]), // missing from initial list
-  "y?-ing": cell("ying", "ㄧㄥ", ["y to e silent"]), // missing from initial list
 
   // w row
   "w?-a": cell("(wa)", "ㄨㄚ → ~ua", ["w to wu"]),
