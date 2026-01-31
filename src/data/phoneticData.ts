@@ -47,7 +47,7 @@ export const finals = [
   { pinyin: "ao", zhuyin: "ㄠ", group: "a" },
   { pinyin: "an", zhuyin: "ㄢ", group: "a" },
   { pinyin: "ang", zhuyin: "ㄤ", group: "a" },
-  { pinyin: "e", zhuyin: "ㄜ", group: "o" },
+  { pinyin: "e", zhuyin: "ㄜ/ㄝ", group: "o" },
   { pinyin: "ei", zhuyin: "ㄟ", group: "o" },
   { pinyin: "en", zhuyin: "ㄣ", group: "o" },
   { pinyin: "eng", zhuyin: "ㄥ", group: "o" },
