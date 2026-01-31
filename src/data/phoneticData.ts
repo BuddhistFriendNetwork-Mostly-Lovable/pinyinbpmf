@@ -133,7 +133,7 @@ export const chartData: ChartData = {
   "y?-ou": cell("(you)", "ㄧㄡ → ~iu", ["iu"]),
   "y?-iu": cell("you", "ㄧㄡ", ["iu"]), // dup
   "y?-e": cell("ye**", "ㄧㄝ", ["special"]),
-  "y?-i": cell("yi", "ㄧ", ["y to e silent"]),
+  "y?-i": cell("yi", "ㄧ", ["special"]),
   "y?-ü": cell("yu", "ㄩ", ["y-as-u"]),
   "y?-üe": cell("yue", "ㄩㄝ", ["y-as-u"]),
   "y?-üan": cell("yuan", "ㄩㄢ", ["y-as-u"]),
