@@ -1,0 +1,113 @@
+import { ChevronDown, ChevronUp, Settings } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { gotchaCategories, type GotchaCategory } from '@/data/phoneticData';
+import { cn } from '@/lib/utils';
+
+export type DisplayMode = 'zhuyin' | 'pinyin' | 'both';
+
+interface SettingsPanelProps {
+  displayMode: DisplayMode;
+  onDisplayModeChange: (mode: DisplayMode) => void;
+  highlightGotchas: boolean;
+  onHighlightGotchasChange: (enabled: boolean) => void;
+  activeGotchaCategories: Set<GotchaCategory>;
+  onGotchaCategoryToggle: (category: GotchaCategory) => void;
+  onOpenGotchaInfo: () => void;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export const SettingsPanel = ({
+  displayMode,
+  onDisplayModeChange,
+  highlightGotchas,
+  onHighlightGotchasChange,
+  activeGotchaCategories,
+  onGotchaCategoryToggle,
+  onOpenGotchaInfo,
+  isOpen,
+  onOpenChange,
+}: SettingsPanelProps) => {
+  return (
+    <Collapsible open={isOpen} onOpenChange={onOpenChange} className="mb-4">
+      <CollapsibleTrigger asChild>
+        <Button variant="outline" className="w-full justify-between">
+          <span className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Settings
+          </span>
+          {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        </Button>
+      </CollapsibleTrigger>
+      <CollapsibleContent className="mt-3 space-y-4 rounded-lg border bg-card p-4">
+        {/* Display Mode */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Display Mode</Label>
+          <div className="flex flex-wrap gap-2">
+            {(['zhuyin', 'pinyin', 'both'] as DisplayMode[]).map((mode) => (
+              <Button
+                key={mode}
+                variant={displayMode === mode ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => onDisplayModeChange(mode)}
+                className="capitalize"
+              >
+                {mode === 'both' ? 'Both' : mode === 'zhuyin' ? 'Zhuyin Only' : 'Pinyin Only'}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Highlight Gotchas Toggle */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <Switch
+              id="highlight-gotchas"
+              checked={highlightGotchas}
+              onCheckedChange={onHighlightGotchasChange}
+            />
+            <Label htmlFor="highlight-gotchas" className="text-sm font-medium cursor-pointer">
+              Highlight Gotchas
+            </Label>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 rounded-full p-0 text-muted-foreground hover:text-foreground"
+              onClick={onOpenGotchaInfo}
+            >
+              ?
+            </Button>
+          </div>
+
+          {/* Gotcha Category Checkboxes */}
+          {highlightGotchas && (
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+              {gotchaCategories.map((category) => (
+                <div key={category.id} className="flex items-center gap-2">
+                  <Checkbox
+                    id={category.id}
+                    checked={activeGotchaCategories.has(category.id)}
+                    onCheckedChange={() => onGotchaCategoryToggle(category.id)}
+                  />
+                  <Label
+                    htmlFor={category.id}
+                    className={cn(
+                      'cursor-pointer text-xs px-2 py-0.5 rounded',
+                      activeGotchaCategories.has(category.id) && category.bgClass
+                    )}
+                  >
+                    {category.name}
+                  </Label>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+};
