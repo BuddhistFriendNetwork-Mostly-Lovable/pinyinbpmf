@@ -4,13 +4,13 @@ export type GotchaCategory =
   | "hidden-u" // j/q/x + u
   | "y-as-u" // yu, yue, yuan, yun
   | "iong" // jiong, qiong, xiong, yong
-  | "ye" // ye only
   | "silent-yw" // yi, wu, wo
   | "labial-o" // bo, po, mo, fo
   | "buzzing-i" // zhi, chi, shi, ri, zi, ci, si
   | "iu" // miu, diu, niu, liu, jiu, qiu, xiu, you
   | "ui" // all -ui cells
   | "wen"; // wen only
+  | "other" // other only
 
 export interface GotchaCategoryInfo {
   id: GotchaCategory;
@@ -24,13 +24,13 @@ export const gotchaCategories: GotchaCategoryInfo[] = [
   { id: "hidden-u", name: "Hidden ü (j/q/x)", color: "hsl(24, 94%, 50%)", bgClass: "bg-orange-200" },
   { id: "y-as-u", name: "y- as ㄩ", color: "hsl(350, 89%, 60%)", bgClass: "bg-rose-200" },
   { id: "iong", name: "-iong (ㄩㄥ)", color: "hsl(270, 67%, 60%)", bgClass: "bg-purple-200" },
-  { id: "ye", name: "ye = ㄧㄝ", color: "hsl(217, 91%, 60%)", bgClass: "bg-blue-200" },
   { id: "silent-yw", name: "Silent y/w", color: "hsl(142, 71%, 45%)", bgClass: "bg-green-200" },
   { id: "labial-o", name: "Labial + o", color: "hsl(174, 72%, 56%)", bgClass: "bg-teal-200" },
   { id: "buzzing-i", name: "Buzzing i", color: "hsl(330, 81%, 70%)", bgClass: "bg-pink-200" },
   { id: "iu", name: "-iu (ㄧㄡ)", color: "hsl(30, 41%, 50%)", bgClass: "bg-amber-300" },
   { id: "ui", name: "-ui (ㄨㄟ)", color: "hsl(16, 85%, 65%)", bgClass: "bg-orange-300" },
   { id: "wen", name: "wen (ㄨㄣ)", color: "hsl(82, 78%, 55%)", bgClass: "bg-lime-200" },
+  { id: "other", name: "other", color: "hsl(217, 91%, 60%)", bgClass: "bg-blue-200" },
 ];
 
 // Cell data structure
@@ -126,7 +126,7 @@ export const chartData: ChartData = {
   "y?-ang": cell("yang", "ㄧㄤ"),
   "y?-ong": cell("yong", "ㄩㄥ", ["iong"]),
   "y?-ou": cell("you", "ㄧㄡ", ["iu"]),
-  "y?-e": cell("ye", "ㄧㄝ", ["ye"]),
+  "y?-e": cell("ye", "ㄧㄝ", ["other"]),
   "y?-i": cell("yi", "ㄧ", ["silent-yw"]),
   "y?-ü": cell("yu", "ㄩ", ["y-as-u"]),
   "y?-üe": cell("yue", "ㄩㄝ", ["y-as-u"]),
@@ -134,7 +134,7 @@ export const chartData: ChartData = {
   "y?-ün": cell("yun", "ㄩㄣ", ["y-as-u"]),
 
   // w row
-  "w?-a": cell("wa", "ㄨㄚ"),
+  "w?-a": cell("wa", "ㄨㄚ", ["other"]),
   "w?-ai": cell("wai", "ㄨㄞ"),
   "w?-an": cell("wan", "ㄨㄢ"),
   "w?-ang": cell("wang", "ㄨㄤ"),
