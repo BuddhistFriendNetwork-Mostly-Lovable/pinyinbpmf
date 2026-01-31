@@ -9,8 +9,8 @@ export type GotchaCategory =
   | "buzzing-i" // zhi, chi, shi, ri, zi, ci, si
   | "iu" // miu, diu, niu, liu, jiu, qiu, xiu, you
   | "ui" // all -ui cells
-  | "wen"; // wen only
-  | "other" // other only
+  | "wen" // wen only
+  | "other"; // other only
 
 export interface GotchaCategoryInfo {
   id: GotchaCategory;
