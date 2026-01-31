@@ -4,7 +4,7 @@ export type GotchaCategory =
   | "hidden-u" // j/q/x + u
   | "y-as-u" // yu, yue, yuan, yun
   | "iong" // jiong, qiong, xiong, yong
-  | "silent-yw" // yi, wu, wo
+  | "y to e silent" // yi
   | "labial-o" // bo, po, mo, fo
   | "buzzing-i" // zhi, chi, shi, ri, zi, ci, si
   | "iu" // miu, diu, niu, liu, jiu, qiu, xiu, you
@@ -24,7 +24,7 @@ export const gotchaCategories: GotchaCategoryInfo[] = [
   { id: "hidden-u", name: "Hidden ü (j/q/x)", color: "hsl(24, 94%, 50%)", bgClass: "bg-orange-200" },
   { id: "y-as-u", name: "y- as ㄩ / ü", color: "hsl(350, 89%, 60%)", bgClass: "bg-rose-200" },
   { id: "iong", name: "-iong (ㄩㄥ)", color: "hsl(270, 67%, 60%)", bgClass: "bg-purple-200" },
-  { id: "silent-yw", name: "Tricky y/w", color: "hsl(142, 71%, 45%)", bgClass: "bg-green-200" },
+  { id: "y to e silent", name: "Tricky y; e or silent", color: "hsl(142, 71%, 45%)", bgClass: "bg-green-200" },
   { id: "labial-o", name: "Labial + o", color: "hsl(174, 72%, 56%)", bgClass: "bg-teal-200" },
   { id: "buzzing-i", name: "Buzzing i", color: "hsl(330, 81%, 70%)", bgClass: "bg-pink-200" },
   { id: "iu", name: "-iu (ㄧㄡ)", color: "hsl(30, 41%, 50%)", bgClass: "bg-amber-300" },
@@ -81,8 +81,8 @@ export const finals = [
 
 // Initials (rows) with their zhuyin
 export const initials = [
-  { pinyin: "y?", zhuyin: "no/(i)" },
-  { pinyin: "w?", zhuyin: "no/(u)" },
+  { pinyin: "y?", zhuyin: "no/(+i)" },
+  { pinyin: "w?", zhuyin: "no/(+u)" },
 
   { pinyin: "b", zhuyin: "ㄅ" },
   { pinyin: "p", zhuyin: "ㄆ" },
@@ -120,31 +120,42 @@ const cell = (pinyin: string, zhuyin: string, gotchas?: GotchaCategory[]): Phone
 // Complete chart data
 export const chartData: ChartData = {
   // y row
-  "y?-a": cell("ya", "ㄧㄚ", ["silent-yw"]),
-  "y?-ao": cell("yao", "ㄧㄠ", ["silent-yw"]),
-  "y?-an": cell("yan", "ㄧㄢ", ["silent-yw"]),
-  "y?-ang": cell("yang", "ㄧㄤ", ["silent-yw"]),
-  "y?-ong": cell("yong", "ㄩㄥ", ["iong"]),
-  "y?-ou": cell("you", "ㄧㄡ", ["iu"]),
+  "y?-a": cell("ya", "ㄧㄚ → ~ia ", ["y to e silent"]),
+  "y?-ia": cell("ya", "ㄧㄚ", ["y to e silent"]), //dup
+  "y?-ao": cell("yao", "ㄧㄠ → ~iao", ["y to e silent"]),
+  "y?-iao": cell("yao", "ㄧㄠ", ["y to e silent"]), //dup
+  "y?-an": cell("yan", "ㄧㄢ → ~ian", ["y to e silent"]),
+  "y?-ian": cell("yan", "ㄧㄢ", ["y to e silent"]), //dup
+  "y?-ang": cell("yang", "ㄧㄤ → iang", ["y to e silent"]),
+  "y?-iang": cell("yang", "ㄧㄤ", ["y to e silent"]), //dup
+  "y?-ong": cell("yong", "ㄩㄥ → ~iong", ["iong"]),
+  "y?-iong": cell("yong", "ㄩㄥ", ["iong"]), // dup
+  "y?-ou": cell("you", "ㄧㄡ → ~iu", ["iu"]),
+  "y?-iu": cell("you", "ㄧㄡ", ["iu"]), // dup
   "y?-e": cell("ye", "ㄧㄝ", ["special"]),
-  "y?-i": cell("yi", "ㄧ", ["silent-yw"]),
+  "y?-i": cell("yi", "ㄧ", ["y to e silent"]),
   "y?-ü": cell("yu", "ㄩ", ["y-as-u"]),
   "y?-üe": cell("yue", "ㄩㄝ", ["y-as-u"]),
   "y?-üan": cell("yuan", "ㄩㄢ", ["y-as-u"]),
   "y?-ün": cell("yun", "ㄩㄣ", ["y-as-u"]),
 
   // w row
-  "w?-a": cell("wa", "ㄨㄚ", ["w to wu"]),
-  "w?-ai": cell("wai", "ㄨㄞ", ["w to wu"]),
-  "w?-an": cell("wan", "ㄨㄢ", ["w to wu"]),
-  "w?-ang": cell("wang", "ㄨㄤ", ["w to wu"]),
-  "w?-o": cell("wo", "ㄨㄛ", ["w to wu"]),
-  "w?-ei": cell("wei*", "ㄨㄟ → ui", ["ui"]),
-  "w?-ui": cell("wei*", "ㄨㄟ", ["ui"]),
-  "w?-en": cell("wen*", "ㄨㄣ → un", ["special"]),
+  "w?-a": cell("wa", "ㄨㄚ → ~ua", ["w to wu"]),
+  "w?-ua": cell("wa", "ㄨㄚ", ["w to wu"]), // dup
+  "w?-ai": cell("wai", "ㄨㄞ → ~uai", ["w to wu"]),
+  "w?-uai": cell("wai", "ㄨㄞ", ["w to wu"]), // dup
+  "w?-an": cell("wan", "ㄨㄢ → ~uan", ["w to wu"]),
+  "w?-uan": cell("wan", "ㄨㄢ", ["w to wu"]), // dup
+  "w?-ang": cell("wang", "ㄨㄤ → ~uang", ["w to wu"]),
+  "w?-uang": cell("wang", "ㄨㄤ", ["w to wu"]), // dup
+  "w?-o": cell("wo", "ㄨㄛ → ~uo", ["w to wu"]),
+  "w?-uo": cell("wo", "ㄨㄛ", ["w to wu"]), // dup
+  "w?-ei": cell("wei*", "ㄨㄟ → ~ui", ["ui"]),
+  "w?-ui": cell("wei*", "ㄨㄟ", ["ui"]), // dup
+  "w?-en": cell("wen*", "ㄨㄣ → ~un", ["special"]),
+  "w?-un": cell("wen*", "ㄨㄣ", ["special"]), // dup
   "w?-eng": cell("weng", "ㄨㄥ", ["w to wu"]),
   "w?-u": cell("wu", "ㄨ", ["w to wu"]),
-  "w?-un": cell("wen*", "ㄨㄣ", ["special"]),
 
   // b row
   "b-a": cell("ba", "ㄅㄚ"),
