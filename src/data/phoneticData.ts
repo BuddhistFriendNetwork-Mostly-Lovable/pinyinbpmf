@@ -140,7 +140,7 @@ export const chartData: ChartData = {
   "w?-ang": cell("wang", "ㄨㄤ", ["w to wu"]),
   "w?-o": cell("wo", "ㄨㄛ", ["w to wu"]),
   "w?-ei": cell("wei", "ㄨㄟ", ["ui"]),
-  "w?-en": cell("wen*", "ㄨㄣ -> un", ["special"]),
+  "w?-en": cell("wen*", "ㄨㄣ → un", ["special"]),
   "w?-eng": cell("weng", "ㄨㄥ"),
   "w?-u": cell("wu", "ㄨ", ["silent-yw"]),
   "w?-un": cell("wen*", "ㄨㄣ", ["special"]),
