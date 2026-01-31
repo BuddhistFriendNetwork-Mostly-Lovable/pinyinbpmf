@@ -162,7 +162,7 @@ export const chartData: ChartData = {
   "w?-ui": cell("wei*", "ㄨㄟ", ["ui"]), // dup
   "w?-en": cell("(wen*)", "ㄨㄣ → ~un", ["special"]),
   "w?-un": cell("wen*", "ㄨㄣ", ["special"]), // dup
-  "w?-eng": cell("weng", "ㄨㄥ", ["w to wu"]),
+  "w?-eng": cell("weng**", "ㄨㄥ", ["w to wu"]),
   "w?-u": cell("wu", "ㄨ", ["w to wu"]),
 
   // b row
