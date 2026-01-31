@@ -24,7 +24,7 @@ export const gotchaCategories: GotchaCategoryInfo[] = [
   { id: "hidden-u", name: "Hidden ü (j/q/x)", color: "hsl(24, 94%, 50%)", bgClass: "bg-orange-200" },
   { id: "y-as-u", name: "y- as ㄩ / ü", color: "hsl(350, 89%, 60%)", bgClass: "bg-rose-200" },
   { id: "iong", name: "-iong (ㄩㄥ)", color: "hsl(270, 67%, 60%)", bgClass: "bg-purple-200" },
-  { id: "silent-yw", name: "Silent y/w", color: "hsl(142, 71%, 45%)", bgClass: "bg-green-200" },
+  { id: "silent-yw", name: "Tricky y/w", color: "hsl(142, 71%, 45%)", bgClass: "bg-green-200" },
   { id: "labial-o", name: "Labial + o", color: "hsl(174, 72%, 56%)", bgClass: "bg-teal-200" },
   { id: "buzzing-i", name: "Buzzing i", color: "hsl(330, 81%, 70%)", bgClass: "bg-pink-200" },
   { id: "iu", name: "-iu (ㄧㄡ)", color: "hsl(30, 41%, 50%)", bgClass: "bg-amber-300" },
@@ -120,10 +120,10 @@ const cell = (pinyin: string, zhuyin: string, gotchas?: GotchaCategory[]): Phone
 // Complete chart data
 export const chartData: ChartData = {
   // y row
-  "y?-a": cell("ya", "ㄧㄚ"),
-  "y?-ao": cell("yao", "ㄧㄠ"),
-  "y?-an": cell("yan", "ㄧㄢ"),
-  "y?-ang": cell("yang", "ㄧㄤ"),
+  "y?-a": cell("ya", "ㄧㄚ", ["silent-yw"]),
+  "y?-ao": cell("yao", "ㄧㄠ", ["silent-yw"]),
+  "y?-an": cell("yan", "ㄧㄢ", ["silent-yw"]),
+  "y?-ang": cell("yang", "ㄧㄤ", ["silent-yw"]),
   "y?-ong": cell("yong", "ㄩㄥ", ["iong"]),
   "y?-ou": cell("you", "ㄧㄡ", ["iu"]),
   "y?-e": cell("ye", "ㄧㄝ", ["special"]),
