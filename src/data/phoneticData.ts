@@ -134,7 +134,7 @@ export const chartData: ChartData = {
   "y?-ün": cell("yun", "ㄩㄣ", ["y-as-u"]),
 
   // w row
-  "w?-a": cell("wa", "ㄨㄚ"),
+  "w?-ua": cell("wa", "ㄨㄚ"),
   "w?-ai": cell("wai", "ㄨㄞ"),
   "w?-an": cell("wan", "ㄨㄢ"),
   "w?-ang": cell("wang", "ㄨㄤ"),
