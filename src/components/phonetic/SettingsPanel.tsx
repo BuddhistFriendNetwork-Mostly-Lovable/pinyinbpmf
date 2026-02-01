@@ -1,14 +1,14 @@
-import { ChevronDown, ChevronUp, Settings } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { gotchaCategories, type GotchaCategory } from '@/data/phoneticData';
-import { cn } from '@/lib/utils';
-import type { AudioMode } from '@/hooks/useTTS';
+import { ChevronDown, ChevronUp, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { gotchaCategories, type GotchaCategory } from "@/data/phoneticData";
+import { cn } from "@/lib/utils";
+import type { AudioMode } from "@/hooks/useTTS";
 
-export type DisplayMode = 'zhuyin' | 'pinyin' | 'both';
+export type DisplayMode = "zhuyin" | "pinyin" | "both";
 
 interface SettingsPanelProps {
   displayMode: DisplayMode;
@@ -59,15 +59,15 @@ export const SettingsPanel = ({
         <div className="space-y-2">
           <Label className="text-sm font-medium">Display Mode</Label>
           <div className="flex flex-wrap gap-2">
-            {(['zhuyin', 'pinyin', 'both'] as DisplayMode[]).map((mode) => (
+            {(["zhuyin", "pinyin", "both"] as DisplayMode[]).map((mode) => (
               <Button
                 key={mode}
-                variant={displayMode === mode ? 'default' : 'outline'}
+                variant={displayMode === mode ? "default" : "outline"}
                 size="sm"
                 onClick={() => onDisplayModeChange(mode)}
                 className="capitalize"
               >
-                {mode === 'both' ? 'Both' : mode === 'zhuyin' ? 'Zhuyin Only' : 'Pinyin Only'}
+                {mode === "both" ? "Both" : mode === "zhuyin" ? "Zhuyin Only" : "Pinyin Only"}
               </Button>
             ))}
           </div>
@@ -76,11 +76,7 @@ export const SettingsPanel = ({
         {/* Highlight Gotchas Toggle */}
         <div className="space-y-3">
           <div className="flex items-center gap-3">
-            <Switch
-              id="highlight-gotchas"
-              checked={highlightGotchas}
-              onCheckedChange={onHighlightGotchasChange}
-            />
+            <Switch id="highlight-gotchas" checked={highlightGotchas} onCheckedChange={onHighlightGotchasChange} />
             <Label htmlFor="highlight-gotchas" className="text-sm font-medium cursor-pointer">
               Highlight Gotchas
             </Label>
@@ -107,8 +103,8 @@ export const SettingsPanel = ({
                   <Label
                     htmlFor={category.id}
                     className={cn(
-                      'cursor-pointer text-xs px-2 py-0.5 rounded',
-                      activeGotchaCategories.has(category.id) && category.bgClass
+                      "cursor-pointer text-xs px-2 py-0.5 rounded",
+                      activeGotchaCategories.has(category.id) && category.bgClass,
                     )}
                   >
                     {category.name}
@@ -124,11 +120,11 @@ export const SettingsPanel = ({
           <Label className="text-sm font-medium">Audio</Label>
           <div className="flex flex-wrap gap-2">
             <Button
-              variant={audioMode === 'zhuyin-comment' ? 'default' : 'outline'}
+              variant={audioMode === "zhuyin-comment" ? "default" : "outline"}
               size="sm"
-              onClick={() => onAudioModeChange('zhuyin-comment')}
+              onClick={() => onAudioModeChange("zhuyin-comment")}
             >
-              Zhuyin + Comment{' '}
+              Zhuyin + Comment{" "}
               <span
                 className="ml-1 text-xs underline cursor-pointer opacity-70 hover:opacity-100"
                 onClick={(e) => {
@@ -140,11 +136,11 @@ export const SettingsPanel = ({
               </span>
             </Button>
             <Button
-              variant={audioMode === 'zhuyin-separate' ? 'default' : 'outline'}
+              variant={audioMode === "zhuyin-separate" ? "default" : "outline"}
               size="sm"
-              onClick={() => onAudioModeChange('zhuyin-separate')}
+              onClick={() => onAudioModeChange("zhuyin-separate")}
             >
-              Zhuyin Separate{' '}
+              Zhuyin Separate{" "}
               <span
                 className="ml-1 text-xs underline cursor-pointer opacity-70 hover:opacity-100"
                 onClick={(e) => {
@@ -156,12 +152,22 @@ export const SettingsPanel = ({
               </span>
             </Button>
             <Button
-              variant={audioMode === 'none' ? 'default' : 'outline'}
+              variant={audioMode === "none" ? "default" : "outline"}
               size="sm"
-              onClick={() => onAudioModeChange('none')}
+              onClick={() => onAudioModeChange("none")}
             >
               None
             </Button>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <p>
+              Planned features 2026:
+              <ul>
+                <li>Speak and show the most common word with each pinyin/zhuyin.</li>
+                <li>Allow specifying tone</li>
+                <li>Use mp3s of audio rather than TTS</li>
+              </ul>
+            </p>
           </div>
         </div>
 
@@ -177,6 +183,26 @@ export const SettingsPanel = ({
             <Label htmlFor="mdbg-popup" className="cursor-pointer text-sm">
               Search for pinyin/zhuyin on MDBG dictionary
             </Label>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <p>
+              Planned features 2026:
+              <ul>
+                <li>Show the top 5 most common words with each pinyin/zhuyin.</li>
+                <li>Show word examples for each tone (clickable to MDBG)</li>
+              </ul>
+            </p>
+          </div>
+        </div>
+
+        {/* Game Section */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Game</Label>
+          <div className="flex flex-wrap gap-2">
+            <p>
+              Planned/wishlist features 2026: Make a game where a word is spoken and you have to search for the right
+              pinyin/zhuyin cell.
+            </p>
           </div>
         </div>
       </CollapsibleContent>
