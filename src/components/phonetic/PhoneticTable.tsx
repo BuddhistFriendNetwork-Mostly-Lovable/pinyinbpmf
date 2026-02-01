@@ -8,14 +8,17 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { finals, initials, getCell, gotchaCategories, type GotchaCategory } from '@/data/phoneticData';
-import { useTTS } from '@/hooks/useTTS';
+import { useTTS, type AudioMode } from '@/hooks/useTTS';
 import type { DisplayMode } from './SettingsPanel';
+import { CellPopup } from './CellPopup';
 import { cn } from '@/lib/utils';
 
 interface PhoneticTableProps {
   displayMode: DisplayMode;
   highlightGotchas: boolean;
   activeGotchaCategories: Set<GotchaCategory>;
+  audioMode: AudioMode;
+  showMDBGPopup: boolean;
 }
 
 const groupColors: Record<string, string> = {
@@ -30,19 +33,27 @@ export const PhoneticTable = ({
   displayMode,
   highlightGotchas,
   activeGotchaCategories,
+  audioMode,
+  showMDBGPopup,
 }: PhoneticTableProps) => {
   const { speak, isSupported, error } = useTTS();
   const [clickedCell, setClickedCell] = useState<string | null>(null);
+  const [popupCell, setPopupCell] = useState<string | null>(null);
 
   const handleCellClick = useCallback((pinyin: string, zhuyin: string) => {
-    // Always use zhuyin for pronunciation (first tone)
-    speak(zhuyin);
+    // Use zhuyin for pronunciation with current audio mode
+    speak(zhuyin, audioMode);
     
     // Visual feedback
     const key = `${pinyin}-${zhuyin}`;
     setClickedCell(key);
     setTimeout(() => setClickedCell(null), 200);
-  }, [speak]);
+
+    // Show popup if enabled
+    if (showMDBGPopup) {
+      setPopupCell(key);
+    }
+  }, [speak, audioMode, showMDBGPopup]);
 
   const getCellHighlightClass = (gotchas?: GotchaCategory[]): string => {
     if (!highlightGotchas || !gotchas || gotchas.length === 0) {
@@ -60,6 +71,64 @@ export const PhoneticTable = ({
     }
 
     return '';
+  };
+
+  const renderCell = (cell: { pinyin: string; zhuyin: string; gotchas?: GotchaCategory[] } | null, finalPinyin: string) => {
+    if (!cell) {
+      return (
+        <TableCell
+          key={finalPinyin}
+          className="bg-muted/30"
+        />
+      );
+    }
+
+    const cellKey = `${cell.pinyin}-${cell.zhuyin}`;
+    const isClicked = clickedCell === cellKey;
+    const highlightClass = getCellHighlightClass(cell.gotchas);
+    const isPopupOpen = popupCell === cellKey;
+
+    const cellContent = (
+      <div
+        className={cn(
+          'text-center cursor-pointer transition-all duration-150 hover:bg-accent/50 p-2',
+          highlightClass,
+          isClicked && 'scale-95 bg-accent'
+        )}
+        onClick={() => handleCellClick(cell.pinyin, cell.zhuyin)}
+      >
+        {(displayMode === 'pinyin' || displayMode === 'both') && (
+          <div className="font-bold text-sm">{cell.pinyin}</div>
+        )}
+        {(displayMode === 'zhuyin' || displayMode === 'both') && (
+          <div className="text-xs text-pink-600 dark:text-pink-400 font-medium">
+            {cell.zhuyin}
+          </div>
+        )}
+      </div>
+    );
+
+    if (showMDBGPopup) {
+      return (
+        <TableCell key={finalPinyin} className="p-0">
+          <CellPopup
+            zhuyin={cell.zhuyin}
+            open={isPopupOpen}
+            onOpenChange={(open) => {
+              if (!open) setPopupCell(null);
+            }}
+          >
+            {cellContent}
+          </CellPopup>
+        </TableCell>
+      );
+    }
+
+    return (
+      <TableCell key={finalPinyin} className="p-0">
+        {cellContent}
+      </TableCell>
+    );
   };
 
   return (
@@ -110,39 +179,7 @@ export const PhoneticTable = ({
                 </TableCell>
                 {finals.map((final) => {
                   const cell = getCell(initial.pinyin, final.pinyin);
-                  const cellKey = `${cell?.pinyin}-${cell?.zhuyin}`;
-                  const isClicked = clickedCell === cellKey;
-                  const highlightClass = getCellHighlightClass(cell?.gotchas);
-
-                  if (!cell) {
-                    return (
-                      <TableCell
-                        key={final.pinyin}
-                        className="bg-muted/30"
-                      />
-                    );
-                  }
-
-                  return (
-                    <TableCell
-                      key={final.pinyin}
-                      className={cn(
-                        'text-center cursor-pointer transition-all duration-150 hover:bg-accent/50',
-                        highlightClass,
-                        isClicked && 'scale-95 bg-accent'
-                      )}
-                      onClick={() => handleCellClick(cell.pinyin, cell.zhuyin)}
-                    >
-                      {(displayMode === 'pinyin' || displayMode === 'both') && (
-                        <div className="font-bold text-sm">{cell.pinyin}</div>
-                      )}
-                      {(displayMode === 'zhuyin' || displayMode === 'both') && (
-                        <div className="text-xs text-pink-600 dark:text-pink-400 font-medium">
-                          {cell.zhuyin}
-                        </div>
-                      )}
-                    </TableCell>
-                  );
+                  return renderCell(cell, final.pinyin);
                 })}
               </TableRow>
             ))}

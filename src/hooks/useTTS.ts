@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
+import { formatZhuyinForSeparateTTS } from '@/lib/zhuyinUtils';
+
+export type AudioMode = 'zhuyin-comment' | 'zhuyin-separate' | 'none';
 
 interface UseTTSReturn {
-  speak: (text: string) => void;
+  speak: (text: string, mode?: AudioMode) => void;
   isSupported: boolean;
   isLoading: boolean;
   error: string | null;
@@ -79,7 +82,11 @@ export const useTTS = (): UseTTSReturn => {
     };
   }, []);
 
-  const speak = useCallback((text: string) => {
+  const speak = useCallback((text: string, mode: AudioMode = 'zhuyin-comment') => {
+    if (mode === 'none') {
+      return;
+    }
+
     if (!isSupported || !voice) {
       console.warn('TTS not available:', error);
       return;
@@ -88,10 +95,19 @@ export const useTTS = (): UseTTSReturn => {
     // Cancel any ongoing speech
     speechSynthesis.cancel();
 
-    const utterance = new SpeechSynthesisUtterance(text);
+    // Determine text and rate based on mode
+    let processedText = text;
+    let rate = 0.8;
+
+    if (mode === 'zhuyin-separate') {
+      processedText = formatZhuyinForSeparateTTS(text);
+      rate = 0.64; // 80% of 0.8
+    }
+
+    const utterance = new SpeechSynthesisUtterance(processedText);
     utterance.voice = voice;
     utterance.lang = voice.lang;
-    utterance.rate = 0.8; // Slightly slower for learning
+    utterance.rate = rate;
     utterance.pitch = 1;
 
     speechSynthesis.speak(utterance);

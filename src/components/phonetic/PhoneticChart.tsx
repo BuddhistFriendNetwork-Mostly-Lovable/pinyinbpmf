@@ -2,7 +2,9 @@ import { useState } from "react";
 import { SettingsPanel, type DisplayMode } from "./SettingsPanel";
 import { PhoneticTable } from "./PhoneticTable";
 import { GotchaInfoDialog } from "./GotchaInfoDialog";
+import { TTSInfoDialog } from "./TTSInfoDialog";
 import { gotchaCategories, type GotchaCategory } from "@/data/phoneticData";
+import type { AudioMode } from "@/hooks/useTTS";
 
 export const PhoneticChart = () => {
   const [settingsOpen, setSettingsOpen] = useState(true);
@@ -12,6 +14,9 @@ export const PhoneticChart = () => {
     new Set(gotchaCategories.map((c) => c.id)),
   );
   const [gotchaInfoOpen, setGotchaInfoOpen] = useState(false);
+  const [audioMode, setAudioMode] = useState<AudioMode>('zhuyin-comment');
+  const [showMDBGPopup, setShowMDBGPopup] = useState(true);
+  const [ttsInfoOpen, setTTSInfoOpen] = useState(false);
 
   const handleGotchaCategoryToggle = (category: GotchaCategory) => {
     setActiveGotchaCategories((prev) => {
@@ -40,6 +45,11 @@ export const PhoneticChart = () => {
         activeGotchaCategories={activeGotchaCategories}
         onGotchaCategoryToggle={handleGotchaCategoryToggle}
         onOpenGotchaInfo={() => setGotchaInfoOpen(true)}
+        audioMode={audioMode}
+        onAudioModeChange={setAudioMode}
+        onOpenTTSInfo={() => setTTSInfoOpen(true)}
+        showMDBGPopup={showMDBGPopup}
+        onShowMDBGPopupChange={setShowMDBGPopup}
         isOpen={settingsOpen}
         onOpenChange={setSettingsOpen}
       />
@@ -48,9 +58,12 @@ export const PhoneticChart = () => {
         displayMode={displayMode}
         highlightGotchas={highlightGotchas}
         activeGotchaCategories={activeGotchaCategories}
+        audioMode={audioMode}
+        showMDBGPopup={showMDBGPopup}
       />
 
       <GotchaInfoDialog open={gotchaInfoOpen} onOpenChange={setGotchaInfoOpen} />
+      <TTSInfoDialog open={ttsInfoOpen} onOpenChange={setTTSInfoOpen} />
     </div>
   );
 };
