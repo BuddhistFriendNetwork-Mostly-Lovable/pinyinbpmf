@@ -83,7 +83,7 @@ export const finals = [
 export const initials = [
   { pinyin: "y?", zhuyin: "no/(+i)" },
   { pinyin: "w?", zhuyin: "no/(+u)" },
-  { pinyin: "∅", zhuyin: none/special" },
+  { pinyin: "∅", zhuyin: "none/special" },
 
   { pinyin: "b", zhuyin: "ㄅ" },
   { pinyin: "p", zhuyin: "ㄆ" },
