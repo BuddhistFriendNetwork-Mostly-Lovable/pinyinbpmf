@@ -122,7 +122,7 @@ const cell = (pinyin: string, zhuyin: string, gotchas?: GotchaCategory[]): Phone
 export const chartData: ChartData = {
   // er singleton, no initial consonant
   "∅-er": cell("er", "ㄦ", ["special"]),
-  "∅-o": cell("o", "ㄛ"),
+  "∅-o": cell("o", "ㄛ", ["labial-o"]),
   "∅-e": cell("e", "ㄜ"),
   "∅-ai": cell("ai", "ㄞ"),
   "∅-ao": cell("ao", "ㄠ"),
