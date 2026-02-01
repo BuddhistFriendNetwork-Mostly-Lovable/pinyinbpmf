@@ -83,7 +83,7 @@ export const finals = [
 export const initials = [
   { pinyin: "y?", zhuyin: "no/(+i)" },
   { pinyin: "w?", zhuyin: "no/(+u)" },
-  { pinyin: "*er*", zhuyin: "special" },
+  { pinyin: "∅", zhuyin: none/special" },
 
   { pinyin: "b", zhuyin: "ㄅ" },
   { pinyin: "p", zhuyin: "ㄆ" },
@@ -120,8 +120,19 @@ const cell = (pinyin: string, zhuyin: string, gotchas?: GotchaCategory[]): Phone
 
 // Complete chart data
 export const chartData: ChartData = {
-  // er singleton
-  "*er*-er": cell("er", "ㄦ", ["special"]),
+  // er singleton, no initial consonant
+  "∅-er": cell("er", "ㄦ", ["special"]),
+  "∅-o": cell("o", "ㄛ"),
+  "∅-e": cell("e", "ㄜ"),
+  "∅-ai": cell("ai", "ㄞ"),
+  "∅-ao": cell("ao", "ㄠ"),
+  "∅-ou": cell("ou", "ㄡ"),
+  "∅-an": cell("an", "ㄢ"),
+  "∅-en": cell("en", "ㄣ"),
+  "∅-ang": cell("ang", "ㄤ"),
+  "∅-eng": cell("eng", "ㄥ"),
+
+  
 
   // y row
   "y?-a": cell("(ya)", "ㄧㄚ → ~ia ", ["y to e silent"]),
@@ -162,7 +173,7 @@ export const chartData: ChartData = {
   "w?-ui": cell("wei*", "ㄨㄟ", ["ui"]), // dup
   "w?-en": cell("(wen*)", "ㄨㄣ → ~un", ["special"]),
   "w?-un": cell("wen*", "ㄨㄣ", ["special"]), // dup
-  "w?-eng": cell("weng**", "ㄨㄥ", ["w to wu"]),
+  "w?-eng": cell("weng", "ㄨㄥ", ["w to wu"]),
   "w?-u": cell("wu", "ㄨ", ["w to wu"]),
 
   // b row
