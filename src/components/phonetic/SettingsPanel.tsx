@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { gotchaCategories, type GotchaCategory } from '@/data/phoneticData';
 import { cn } from '@/lib/utils';
+import type { AudioMode } from '@/hooks/useTTS';
 
 export type DisplayMode = 'zhuyin' | 'pinyin' | 'both';
 
@@ -17,6 +18,11 @@ interface SettingsPanelProps {
   activeGotchaCategories: Set<GotchaCategory>;
   onGotchaCategoryToggle: (category: GotchaCategory) => void;
   onOpenGotchaInfo: () => void;
+  audioMode: AudioMode;
+  onAudioModeChange: (mode: AudioMode) => void;
+  onOpenTTSInfo: () => void;
+  showMDBGPopup: boolean;
+  onShowMDBGPopupChange: (enabled: boolean) => void;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -29,6 +35,11 @@ export const SettingsPanel = ({
   activeGotchaCategories,
   onGotchaCategoryToggle,
   onOpenGotchaInfo,
+  audioMode,
+  onAudioModeChange,
+  onOpenTTSInfo,
+  showMDBGPopup,
+  onShowMDBGPopupChange,
   isOpen,
   onOpenChange,
 }: SettingsPanelProps) => {
@@ -106,6 +117,67 @@ export const SettingsPanel = ({
               ))}
             </div>
           )}
+        </div>
+
+        {/* Audio Section */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Audio</Label>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant={audioMode === 'zhuyin-comment' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onAudioModeChange('zhuyin-comment')}
+            >
+              Zhuyin + Comment{' '}
+              <span
+                className="ml-1 text-xs underline cursor-pointer opacity-70 hover:opacity-100"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenTTSInfo();
+                }}
+              >
+                (uses TTS ?)
+              </span>
+            </Button>
+            <Button
+              variant={audioMode === 'zhuyin-separate' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onAudioModeChange('zhuyin-separate')}
+            >
+              Zhuyin Separate{' '}
+              <span
+                className="ml-1 text-xs underline cursor-pointer opacity-70 hover:opacity-100"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenTTSInfo();
+                }}
+              >
+                (uses TTS ?)
+              </span>
+            </Button>
+            <Button
+              variant={audioMode === 'none' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onAudioModeChange('none')}
+            >
+              None
+            </Button>
+          </div>
+        </div>
+
+        {/* Popup Section */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Popup</Label>
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="mdbg-popup"
+              checked={showMDBGPopup}
+              onCheckedChange={(checked) => onShowMDBGPopupChange(checked === true)}
+            />
+            <Label htmlFor="mdbg-popup" className="cursor-pointer text-sm">
+              Search for pinyin/zhuyin on MDBG dictionary
+            </Label>
+          </div>
         </div>
       </CollapsibleContent>
     </Collapsible>
