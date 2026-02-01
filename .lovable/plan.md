@@ -1,5 +1,3 @@
-
-
 ## Add Audio and Popup Settings Sections
 
 This plan adds two new settings sections to control audio behavior and enable an MDBG dictionary popup feature.
@@ -89,6 +87,7 @@ interface UseTTSReturn {
 ```
 
 Update `speak` function:
+
 - `zhuyin-comment`: Current behavior (rate 0.8)
 - `zhuyin-separate`: Use `formatZhuyinForSeparateTTS()`, rate 0.64 (80% of 0.8)
 - `none`: No speech
@@ -111,11 +110,13 @@ interface SettingsPanelProps {
 Add two new sections after existing ones:
 
 **Audio Section:**
-- Label: "Audio"  
+
+- Label: "Audio"
 - 3 toggle buttons: "Zhuyin + Comment (uses TTS ?)", "Zhuyin Separate (uses TTS ?)", "None"
 - The "TTS ?" text is clickable and opens TTSInfoDialog
 
 **Popup Section:**
+
 - Label: "Popup"
 - Checkbox: "Search for pinyin/zhuyin on MDBG dictionary" (default checked)
 
@@ -134,6 +135,7 @@ Pass to SettingsPanel and PhoneticTable.
 #### 4. `src/components/phonetic/PhoneticTable.tsx`
 
 Update to handle:
+
 - Pass `audioMode` to `speak()` function
 - After cell click, if `showMDBGPopup` is true, show CellPopup component
 - Use Popover component for the popup positioned near the clicked cell
@@ -143,21 +145,24 @@ Update to handle:
 ### Technical Details
 
 **Zhuyin Character Range:**
+
 - Unicode range U+3105 to U+3129 covers all Bopomofo (Zhuyin) characters
 - Regex `/[\u3105-\u3129]/g` matches only these characters
 
 **Audio Mode Behavior:**
 
-| Mode | Text Sent to TTS | Rate |
-|------|------------------|------|
-| zhuyin-comment | Raw zhuyin string (e.g., "ㄅㄧㄝ") | 0.8 |
-| zhuyin-separate | Separated (e.g., "ㄅ。ㄧ。ㄝ。") | 0.64 |
-| none | No speech | N/A |
+| Mode            | Text Sent to TTS                   | Rate |
+| --------------- | ---------------------------------- | ---- |
+| zhuyin-comment  | Raw zhuyin string (e.g., "ㄅㄧㄝ") | 0.8  |
+| zhuyin-separate | Separated (e.g., "ㄅ。ㄧ。ㄝ。")   | 0.64 |
+| none            | No speech                          | N/A  |
 
 **MDBG URL Format:**
+
 ```
 https://www.mdbg.net/chinese/dictionary?page=worddict&wdqb=p%3A{zhuyin}*
 ```
+
 - `p%3A` = URL-encoded `p:` (pronunciation search)
 - `*` = wildcard for all tones
 
@@ -165,13 +170,12 @@ https://www.mdbg.net/chinese/dictionary?page=worddict&wdqb=p%3A{zhuyin}*
 
 ### Files Summary
 
-| File | Action |
-|------|--------|
-| `src/lib/zhuyinUtils.ts` | Create |
+| File                                        | Action |
+| ------------------------------------------- | ------ |
+| `src/lib/zhuyinUtils.ts`                    | Create |
 | `src/components/phonetic/TTSInfoDialog.tsx` | Create |
-| `src/components/phonetic/CellPopup.tsx` | Create |
-| `src/hooks/useTTS.ts` | Modify |
+| `src/components/phonetic/CellPopup.tsx`     | Create |
+| `src/hooks/useTTS.ts`                       | Modify |
 | `src/components/phonetic/SettingsPanel.tsx` | Modify |
 | `src/components/phonetic/PhoneticChart.tsx` | Modify |
 | `src/components/phonetic/PhoneticTable.tsx` | Modify |
-
