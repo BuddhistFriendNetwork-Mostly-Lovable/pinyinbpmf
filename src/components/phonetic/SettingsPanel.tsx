@@ -115,96 +115,107 @@ export const SettingsPanel = ({
           )}
         </div>
 
-        {/* Audio Section */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Audio</Label>
-          <div className="flex flex-wrap gap-2">
-            <Button
-              variant={audioMode === "zhuyin-comment" ? "default" : "outline"}
-              size="sm"
-              onClick={() => onAudioModeChange("zhuyin-comment")}
-            >
-              Zhuyin + Comment{" "}
-              <span
-                className="ml-1 text-xs underline cursor-pointer opacity-70 hover:opacity-100"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onOpenTTSInfo();
-                }}
-              >
-                (uses TTS ?)
-              </span>
+        {/* Other Settings Collapsible */}
+        <Collapsible defaultOpen={false} className="space-y-2">
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" size="sm" className="w-full justify-between p-0 h-auto font-medium text-sm">
+              <span>Other Settings</span>
+              <ChevronDown className="h-4 w-4 transition-transform duration-200 [&[data-state=open]>svg]:rotate-180" />
             </Button>
-            <Button
-              variant={audioMode === "zhuyin-separate" ? "default" : "outline"}
-              size="sm"
-              onClick={() => onAudioModeChange("zhuyin-separate")}
-            >
-              Zhuyin Separate{" "}
-              <span
-                className="ml-1 text-xs underline cursor-pointer opacity-70 hover:opacity-100"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onOpenTTSInfo();
-                }}
-              >
-                (uses TTS ?)
-              </span>
-            </Button>
-            <Button
-              variant={audioMode === "none" ? "default" : "outline"}
-              size="sm"
-              onClick={() => onAudioModeChange("none")}
-            >
-              None
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <p>
-              Planned features 2026:
-              <ul>
-                <li>Speak and show the most common word with each pinyin/zhuyin.</li>
-                <li>Allow specifying tone</li>
-                <li>Use mp3s of audio rather than TTS</li>
-              </ul>
-            </p>
-          </div>
-        </div>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-4 pt-2">
+            {/* Audio Section */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Audio</Label>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant={audioMode === "zhuyin-comment" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onAudioModeChange("zhuyin-comment")}
+                >
+                  Zhuyin + Comment{" "}
+                  <span
+                    className="ml-1 text-xs underline cursor-pointer opacity-70 hover:opacity-100"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenTTSInfo();
+                    }}
+                  >
+                    (uses TTS ?)
+                  </span>
+                </Button>
+                <Button
+                  variant={audioMode === "zhuyin-separate" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onAudioModeChange("zhuyin-separate")}
+                >
+                  Zhuyin Separate{" "}
+                  <span
+                    className="ml-1 text-xs underline cursor-pointer opacity-70 hover:opacity-100"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenTTSInfo();
+                    }}
+                  >
+                    (uses TTS ?)
+                  </span>
+                </Button>
+                <Button
+                  variant={audioMode === "none" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onAudioModeChange("none")}
+                >
+                  None
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <p>
+                  Planned features 2026:
+                  <ul>
+                    <li>Speak and show the most common word with each pinyin/zhuyin.</li>
+                    <li>Allow specifying tone</li>
+                    <li>Use mp3s of audio rather than TTS</li>
+                  </ul>
+                </p>
+              </div>
+            </div>
 
-        {/* Popup Section */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Popup</Label>
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="mdbg-popup"
-              checked={showMDBGPopup}
-              onCheckedChange={(checked) => onShowMDBGPopupChange(checked === true)}
-            />
-            <Label htmlFor="mdbg-popup" className="cursor-pointer text-sm">
-              Search for pinyin/zhuyin on MDBG dictionary
-            </Label>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <p>
-              Planned features 2026:
-              <ul>
-                <li>Show the top 5 most common words with each pinyin/zhuyin.</li>
-                <li>Show word examples for each tone (clickable to MDBG)</li>
-              </ul>
-            </p>
-          </div>
-        </div>
+            {/* Popup Section */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Popup</Label>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="mdbg-popup"
+                  checked={showMDBGPopup}
+                  onCheckedChange={(checked) => onShowMDBGPopupChange(checked === true)}
+                />
+                <Label htmlFor="mdbg-popup" className="cursor-pointer text-sm">
+                  Search for pinyin/zhuyin on MDBG dictionary
+                </Label>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <p>
+                  Planned features 2026:
+                  <ul>
+                    <li>Show the top 5 most common words with each pinyin/zhuyin.</li>
+                    <li>Show word examples for each tone (clickable to MDBG)</li>
+                  </ul>
+                </p>
+              </div>
+            </div>
 
-        {/* Game Section */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Game</Label>
-          <div className="flex flex-wrap gap-2">
-            <p>
-              Planned/wishlist features 2026: Make a game where a word is spoken and you have to search for the right
-              pinyin/zhuyin cell.
-            </p>
-          </div>
-        </div>
+            {/* Game Section */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Game</Label>
+              <div className="flex flex-wrap gap-2">
+                <p>
+                  Planned/wishlist features 2026: Make a game where a word is spoken and you have to search for the right
+                  pinyin/zhuyin cell.
+                </p>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
       </CollapsibleContent>
     </Collapsible>
   );
