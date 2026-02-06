@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { finals, initials, getCell, gotchaCategories, type GotchaCategory } from "@/data/phoneticData";
-import { getRhymeWords } from "@/data/englishRhymeData";
+import { RhymeWordsPopup } from "./RhymeWordsPopup";
 import { useTTS, type AudioMode } from "@/hooks/useTTS";
 import type { DisplayMode } from "./SettingsPanel";
 import { CellPopup } from "./CellPopup";
@@ -156,19 +156,14 @@ export const PhoneticTable = ({
                     </Button>
                   </div>
                 </TableHead>
-                {finals.map((final) => {
-                  const rhymes = getRhymeWords(final.pinyin);
-                  return (
-                    <TableHead
-                      key={`rhyme-${final.pinyin}`}
-                      className="text-center text-xs font-normal min-w-[60px] bg-blue-900 text-yellow-300"
-                    >
-                      {rhymes.map((word, idx) => (
-                        <div key={idx}>{word}</div>
-                      ))}
-                    </TableHead>
-                  );
-                })}
+                {finals.map((final) => (
+                  <TableHead
+                    key={`rhyme-${final.pinyin}`}
+                    className="text-center text-xs font-normal min-w-[60px] bg-blue-900 text-yellow-300 p-0"
+                  >
+                    <RhymeWordsPopup finalPinyin={final.pinyin} />
+                  </TableHead>
+                ))}
               </TableRow>
             )}
 

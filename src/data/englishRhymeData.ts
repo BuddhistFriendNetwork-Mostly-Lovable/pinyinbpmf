@@ -54,3 +54,25 @@ export const englishRhymeWords: Record<string, string[]> = {
 export const getRhymeWords = (finalPinyin: string): string[] => {
   return englishRhymeWords[finalPinyin] || [];
 };
+
+/**
+ * Parse a rhyme word string into word and percentage
+ * e.g., "mama 100%" -> { word: "mama", percentage: "100%" }
+ */
+export const parseRhymeWord = (rhymeStr: string): { word: string; percentage: string } => {
+  const match = rhymeStr.match(/^(.+?)\s+(\d+%)$/);
+  if (match) {
+    return { word: match[1], percentage: match[2] };
+  }
+  return { word: rhymeStr, percentage: "" };
+};
+
+/**
+ * Get the top rhyme word (first in the list, highest similarity)
+ */
+export const getTopRhymeWord = (finalPinyin: string): string | null => {
+  const rhymes = getRhymeWords(finalPinyin);
+  if (rhymes.length === 0) return null;
+  const { word } = parseRhymeWord(rhymes[0]);
+  return word;
+};
