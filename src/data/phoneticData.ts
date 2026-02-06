@@ -132,8 +132,6 @@ export const chartData: ChartData = {
   "∅-ang": cell("ang", "ㄤ"),
   "∅-eng": cell("eng", "ㄥ"),
 
-  
-
   // y row
   "y?-a": cell("(ya)", "ㄧㄚ → ~ia ", ["y to e silent"]),
   "y?-ia": cell("ya", "ㄧㄚ", ["y to e silent"]), //dup
@@ -143,8 +141,8 @@ export const chartData: ChartData = {
   "y?-ian": cell("yan", "ㄧㄢ", ["y to e silent"]), //dup
   "y?-ang": cell("(yang)", "ㄧㄤ → iang", ["y to e silent"]),
   "y?-iang": cell("yang", "ㄧㄤ", ["y to e silent"]), //dup
-  "y?-ong": cell("(yong)", "ㄧㄨㄥ → ~iong", ["iong"]),
-  "y?-iong": cell("yong", "ㄧㄨㄥ", ["iong"]), // dup
+  "y?-ong": cell("(yong)", "ㄩㄥ → ~iong", ["iong"]),
+  "y?-iong": cell("yong", "ㄩㄥ", ["iong"]), // dup
   "y?-ou": cell("(you)", "ㄧㄡ → ~iu", ["iu"]),
   "y?-iu": cell("you", "ㄧㄡ", ["iu"]), // dup
   "y?-e": cell("(ye**)", "ㄧㄝ → ~ie", ["special"]),
