@@ -56,7 +56,7 @@ export const finals = [
   { pinyin: "ia", zhuyin: "ㄧㄚ", group: "i" },
   { pinyin: "iao", zhuyin: "ㄧㄠ", group: "i" },
   { pinyin: "ie", zhuyin: "ㄧㄝ", group: "i" },
-  { pinyin: "iu", zhuyin: "ㄧㄡ", group: "i" },
+  { pinyin: "iu", hint: "💡i(o)u", zhuyin: "ㄧㄡ", group: "i" },
   { pinyin: "ian", zhuyin: "ㄧㄢ", group: "i" },
   { pinyin: "in", zhuyin: "ㄧㄣ", group: "i" },
   { pinyin: "iang", zhuyin: "ㄧㄤ", group: "i" },
