@@ -202,6 +202,9 @@ export const PhoneticTable = ({
                       ? `${final.pinyin} / ${final.pinyin.replace("ü", "u")}`
                       : final.pinyin}
                   </div>
+                  {final.hint && (
+                    <div className="text-amber-600 dark:text-amber-400 text-[10px]">{final.hint}</div>
+                  )}
                   <div className="text-muted-foreground">{final.zhuyin}</div>
                 </TableHead>
               ))}
