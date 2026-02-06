@@ -201,9 +201,8 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
   ],
   un: [
     { w: "春", m: "spring (season)", p: "chūn" },
-    { w: "問,问", m: "to ask", p: "wèn" },
-    { w: "溫,温", m: "warm (temperature)", p: "wēn" },
     { w: "順,顺", m: "smooth/favorable", p: "shùn" },
+    { w: "蹲", m: "to squat", p: "dūn" },
     { w: "輪,轮", m: "wheel", p: "lún" },
     { w: "困", m: "sleepy", p: "kùn" },
     { w: "村", m: "village", p: "cūn" },
