@@ -35,7 +35,7 @@ export const ChineseWordsPopup = ({ finalPinyin }: ChineseWordsPopupProps) => {
       </PopoverTrigger>
       <PopoverContent className="w-auto min-w-[320px] p-0" align="center">
         <div className="p-2 border-b bg-muted/50">
-          <h4 className="font-semibold text-sm">Common words with -{finalPinyin}</h4>
+          <h4 className="font-semibold text-sm">Common words with /-{finalPinyin}/</h4>
         </div>
         <Table>
           <TableHeader>
@@ -65,7 +65,7 @@ interface ChineseWordRowProps {
 const ChineseWordRow = ({ entry, onSpeak }: ChineseWordRowProps) => {
   const url = getMDBGUrl(entry.w);
   const wordToCopy = entry.w.split(",")[0];
-  
+
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigator.clipboard.writeText(wordToCopy);
@@ -76,7 +76,7 @@ const ChineseWordRow = ({ entry, onSpeak }: ChineseWordRowProps) => {
     e.stopPropagation();
     window.open(url, "_blank", "noopener,noreferrer");
   };
-  
+
   return (
     <TableRow>
       <TableCell className="p-1">
@@ -101,13 +101,7 @@ const ChineseWordRow = ({ entry, onSpeak }: ChineseWordRowProps) => {
         >
           <ExternalLink className="h-3 w-3" />
         </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-6 w-6 p-0"
-          onClick={handleCopy}
-          title="Copy word"
-        >
+        <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={handleCopy} title="Copy word">
           <Copy className="h-3 w-3" />
         </Button>
       </TableCell>
