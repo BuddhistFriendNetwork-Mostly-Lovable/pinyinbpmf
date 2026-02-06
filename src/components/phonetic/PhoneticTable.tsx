@@ -188,8 +188,9 @@ export const PhoneticTable = ({
       </div>
 
       <p className="mt-2 text-center text-xs text-muted-foreground">
-        Click any cell to hear the pronunciation (first tone)
-      </p>
+        Click any cell to hear the pronunciation (first tone). Only works if you have Chinese TTS enabled (works on 50% of devices with no setup)
+<br>
+Beta Beta Beta. contact: buddhistfriendnetwork on <img url="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" alt="Gmail icon" width="30" height="20"</br>      </p>
     </div>
   );
 };
