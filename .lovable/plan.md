@@ -1,181 +1,101 @@
-## Add Audio and Popup Settings Sections
 
-This plan adds two new settings sections to control audio behavior and enable an MDBG dictionary popup feature.
+# Add "Show Chinese Words" Feature
 
----
+## Overview
+Add a new "Chinese Words" row above the "English Rhyme Words" row in the phonetic table, showing common Chinese words for each final. The feature will have a toggle in settings (above "Show English Rhyme Words") and display words separated by " / " with a dark red background and white text. Clicking or hovering will show a detailed popup table.
 
-### Overview
+## Files to Create
 
-1. Create a reusable **Zhuyin cleaning utility function** for extracting pure Zhuyin characters
-2. Add **Audio section** with 3 modes and a TTS info dialog
-3. Add **Popup section** with MDBG dictionary search feature
-4. Update TTS hook to support different speech modes
-5. Show popup after cell click when enabled
+### 1. `src/data/chineseWordsData.ts`
+New data file containing:
+- The `EndingCommonChineseWords` record with the structure provided by the user
+- Type definition: `interface ChineseWordEntry { w: string; m: string; p: string; }`
+- Helper function `getChineseWords(finalPinyin: string)` to retrieve words for a final
+- Helper function `getChineseWordsDisplay(finalPinyin: string)` to get just the words joined by " / "
 
----
+### 2. `src/components/phonetic/ChineseWordsPopup.tsx`
+New component similar to `RhymeWordsPopup.tsx`:
+- Uses Popover from radix-ui
+- Trigger displays words separated by " / " (80% bigger font for Chinese characters)
+- Popup content shows a table with columns:
+  - "Chinese Word" (clickable, links to MDBG)
+  - "Meaning"
+  - "Pinyin"
+- Each Chinese word links to: `https://www.mdbg.net/chinese/dictionary?page=worddict&email=&wdrst=0&wdqb={CHINESE_TEXT}`
+- Chinese text in popup also rendered at ~80% larger size
 
-### New Files
+## Files to Modify
 
-#### 1. `src/lib/zhuyinUtils.ts` - Reusable Zhuyin utilities
+### 3. `src/components/phonetic/PhoneticChart.tsx`
+- Add new state: `showChineseWords` (defaulting to `true`)
+- Pass the new state and setter to `SettingsPanel`
+- Pass the new state to `PhoneticTable`
 
-```typescript
-// Zhuyin character range: ㄅ-ㄩ (U+3105-U+3129)
-const ZHUYIN_REGEX = /[\u3105-\u3129]/g;
+### 4. `src/components/phonetic/SettingsPanel.tsx`
+- Add new props: `showChineseWords`, `onShowChineseWordsChange`
+- Add new Switch toggle for "Show Chinese Words" **above** the "Show English Rhyme Words" toggle
+- No info button needed (or can add one later)
 
-/**
- * Extracts clean Zhuyin characters from a string.
- * Takes up to the first 3 Zhuyin characters only.
- */
-export const cleanZhuyin = (zhuyin: string): string => {
-  const matches = zhuyin.match(ZHUYIN_REGEX);
-  if (!matches) return '';
-  return matches.slice(0, 3).join('');
-};
+### 5. `src/components/phonetic/PhoneticTable.tsx`
+- Add new prop: `showChineseWords`
+- Add new header row **above** the English Rhyme Words row (and above "Init" if English Rhyme is hidden)
+- Style: `bg-red-900` background, `text-white` text
+- Left header cell: "Chinese Words" label
+- Each final column renders `ChineseWordsPopup`
 
-/**
- * Formats Zhuyin for separated TTS pronunciation.
- * Separates each character with Chinese period to force distinct sounds.
- */
-export const formatZhuyinForSeparateTTS = (zhuyin: string): string => {
-  const clean = cleanZhuyin(zhuyin);
-  return clean.split('').join('。') + '。';
-};
-
-/**
- * Builds MDBG dictionary search URL for a Zhuyin string.
- */
-export const buildMDBGUrl = (zhuyin: string): string => {
-  const clean = cleanZhuyin(zhuyin);
-  return `https://www.mdbg.net/chinese/dictionary?page=worddict&wdqb=p%3A${encodeURIComponent(clean)}*`;
-};
+## Visual Layout (Table Header Order)
+```text
++------------------+--------+--------+--------+...
+| Chinese Words    | 爸爸/馬 | 愛/菜  | 貓/好  |  <- New row (dark red bg, white text)
++------------------+--------+--------+--------+...
+| English Rhyme    | mama   | why    | pouch  |  <- Existing row (dark blue bg)
++------------------+--------+--------+--------+...
+| Init             | a      | ai     | ao     |  <- Existing header
++------------------+--------+--------+--------+...
 ```
 
-#### 2. `src/components/phonetic/TTSInfoDialog.tsx` - TTS explanation dialog
+## Technical Details
 
+### Data Structure
 ```typescript
-// Dialog explaining what TTS is and linking to recommended resources
-// Content:
-// - What TTS means
-// - Browser/device variability warning
-// - LINE/Facebook webview warning
-// - Link to digmandarin.com pinyin chart
-```
-
-#### 3. `src/components/phonetic/CellPopup.tsx` - MDBG search popup
-
-```typescript
-// Small popup component shown after clicking a cell
-// Shows "Search MDBG" link that opens dictionary in new tab
-// Uses buildMDBGUrl with cleanZhuyin
-```
-
----
-
-### Modified Files
-
-#### 1. `src/hooks/useTTS.ts`
-
-Add audio mode support:
-
-```typescript
-export type AudioMode = 'zhuyin-comment' | 'zhuyin-separate' | 'none';
-
-interface UseTTSReturn {
-  speak: (text: string, mode?: AudioMode) => void;
-  // ... existing properties
+interface ChineseWordEntry {
+  w: string;  // Chinese word (may contain comma for trad,simp)
+  m: string;  // Meaning
+  p: string;  // Pinyin with tones
 }
+
+const chineseWords: Record<string, ChineseWordEntry[]> = { ... };
 ```
 
-Update `speak` function:
-
-- `zhuyin-comment`: Current behavior (rate 0.8)
-- `zhuyin-separate`: Use `formatZhuyinForSeparateTTS()`, rate 0.64 (80% of 0.8)
-- `none`: No speech
-
-#### 2. `src/components/phonetic/SettingsPanel.tsx`
-
-Add new props and UI sections:
-
+### MDBG URL Generation
+For the Chinese word link, use URL encoding:
 ```typescript
-interface SettingsPanelProps {
-  // ... existing props
-  audioMode: AudioMode;
-  onAudioModeChange: (mode: AudioMode) => void;
-  onOpenTTSInfo: () => void;
-  showMDBGPopup: boolean;
-  onShowMDBGPopupChange: (enabled: boolean) => void;
-}
+const url = `https://www.mdbg.net/chinese/dictionary?page=worddict&email=&wdrst=0&wdqb=${encodeURIComponent(word)}`;
 ```
 
-Add two new sections after existing ones:
+Note: For words with traditional/simplified variants (e.g., "愛,爱"), use only the first character group before the comma for the MDBG search.
 
-**Audio Section:**
+### Styling
+- Main row: `bg-red-900 text-white`
+- Chinese text size: `text-lg` or `text-xl` (approximately 80% larger than default)
+- Hover effect on cells: `hover:bg-red-800`
+- Popup table: standard styling with larger Chinese text
 
-- Label: "Audio"
-- 3 toggle buttons: "Zhuyin + Comment (uses TTS ?)", "Zhuyin Separate (uses TTS ?)", "None"
-- The "TTS ?" text is clickable and opens TTSInfoDialog
+### Popup Table Structure
+| Chinese Word | Meaning | Pinyin |
+|--------------|---------|--------|
+| 爸爸 (link)  | daddy   | bàba   |
+| 馬 (link)    | horse   | mǎ     |
+| ...          | ...     | ...    |
 
-**Popup Section:**
+## Implementation Order
+1. Create `src/data/chineseWordsData.ts` with all the data and helper functions
+2. Create `src/components/phonetic/ChineseWordsPopup.tsx` component
+3. Update `SettingsPanel.tsx` to add the new toggle
+4. Update `PhoneticChart.tsx` to add state management
+5. Update `PhoneticTable.tsx` to render the new row
 
-- Label: "Popup"
-- Checkbox: "Search for pinyin/zhuyin on MDBG dictionary" (default checked)
-
-#### 3. `src/components/phonetic/PhoneticChart.tsx`
-
-Add new state and pass to components:
-
-```typescript
-const [audioMode, setAudioMode] = useState<AudioMode>('zhuyin-comment');
-const [showMDBGPopup, setShowMDBGPopup] = useState(true);
-const [ttsInfoOpen, setTTSInfoOpen] = useState(false);
-```
-
-Pass to SettingsPanel and PhoneticTable.
-
-#### 4. `src/components/phonetic/PhoneticTable.tsx`
-
-Update to handle:
-
-- Pass `audioMode` to `speak()` function
-- After cell click, if `showMDBGPopup` is true, show CellPopup component
-- Use Popover component for the popup positioned near the clicked cell
-
----
-
-### Technical Details
-
-**Zhuyin Character Range:**
-
-- Unicode range U+3105 to U+3129 covers all Bopomofo (Zhuyin) characters
-- Regex `/[\u3105-\u3129]/g` matches only these characters
-
-**Audio Mode Behavior:**
-
-| Mode            | Text Sent to TTS                   | Rate |
-| --------------- | ---------------------------------- | ---- |
-| zhuyin-comment  | Raw zhuyin string (e.g., "ㄅㄧㄝ") | 0.8  |
-| zhuyin-separate | Separated (e.g., "ㄅ。ㄧ。ㄝ。")   | 0.64 |
-| none            | No speech                          | N/A  |
-
-**MDBG URL Format:**
-
-```
-https://www.mdbg.net/chinese/dictionary?page=worddict&wdqb=p%3A{zhuyin}*
-```
-
-- `p%3A` = URL-encoded `p:` (pronunciation search)
-- `*` = wildcard for all tones
-
----
-
-### Files Summary
-
-| File                                        | Action |
-| ------------------------------------------- | ------ |
-| `src/lib/zhuyinUtils.ts`                    | Create |
-| `src/components/phonetic/TTSInfoDialog.tsx` | Create |
-| `src/components/phonetic/CellPopup.tsx`     | Create |
-| `src/hooks/useTTS.ts`                       | Modify |
-| `src/components/phonetic/SettingsPanel.tsx` | Modify |
-| `src/components/phonetic/PhoneticChart.tsx` | Modify |
-| `src/components/phonetic/PhoneticTable.tsx` | Modify |
+## Edge Cases
+- Finals with no Chinese words data: render empty cell
+- Words with comma-separated variants (trad,simp): display both, but link only to first
+- Default state: `showChineseWords = true` (on by default as requested)
