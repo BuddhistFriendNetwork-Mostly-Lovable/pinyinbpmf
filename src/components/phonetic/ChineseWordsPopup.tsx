@@ -1,9 +1,10 @@
-import { Volume2 } from "lucide-react";
+import { Volume2, Copy, ExternalLink } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { getChineseWords, getChineseWordsDisplay, getMDBGUrl, type ChineseWordEntry } from "@/data/chineseWordsData";
 import { useTTS } from "@/hooks/useTTS";
+import { toast } from "@/hooks/use-toast";
 
 interface ChineseWordsPopupProps {
   finalPinyin: string;
@@ -63,6 +64,18 @@ interface ChineseWordRowProps {
 
 const ChineseWordRow = ({ entry, onSpeak }: ChineseWordRowProps) => {
   const url = getMDBGUrl(entry.w);
+  const wordToCopy = entry.w.split(",")[0];
+  
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(wordToCopy);
+    toast({ title: "Copied!", description: wordToCopy });
+  };
+
+  const handleOpenLink = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
   
   return (
     <TableRow>
@@ -78,14 +91,25 @@ const ChineseWordRow = ({ entry, onSpeak }: ChineseWordRowProps) => {
         </Button>
       </TableCell>
       <TableCell className="text-center">
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xl font-medium text-primary hover:underline"
+        <span className="text-xl font-medium">{entry.w}</span>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0 ml-1"
+          onClick={handleOpenLink}
+          title="Open in MDBG dictionary"
         >
-          {entry.w}
-        </a>
+          <ExternalLink className="h-3 w-3" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0"
+          onClick={handleCopy}
+          title="Copy word"
+        >
+          <Copy className="h-3 w-3" />
+        </Button>
       </TableCell>
       <TableCell className="text-sm">{entry.m}</TableCell>
       <TableCell className="text-sm text-muted-foreground">{entry.p}</TableCell>
