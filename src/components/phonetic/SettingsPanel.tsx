@@ -127,23 +127,15 @@ export const SettingsPanel = ({
 
         {/* Show Chinese Words Toggle */}
         <div className="flex items-center gap-3">
-          <Switch
-            id="show-chinese-words"
-            checked={showChineseWords}
-            onCheckedChange={onShowChineseWordsChange}
-          />
+          <Switch id="show-chinese-words" checked={showChineseWords} onCheckedChange={onShowChineseWordsChange} />
           <Label htmlFor="show-chinese-words" className="text-sm font-medium cursor-pointer">
-            Show Chinese Words
+            Show Example Chinese Words
           </Label>
         </div>
 
         {/* Show English Rhyme Words Toggle */}
         <div className="flex items-center gap-3">
-          <Switch
-            id="show-english-rhyme"
-            checked={showEnglishRhyme}
-            onCheckedChange={onShowEnglishRhymeChange}
-          />
+          <Switch id="show-english-rhyme" checked={showEnglishRhyme} onCheckedChange={onShowEnglishRhymeChange} />
           <Label htmlFor="show-english-rhyme" className="text-sm font-medium cursor-pointer">
             Show English Rhyme Words
           </Label>
@@ -251,8 +243,8 @@ export const SettingsPanel = ({
               <Label className="text-sm font-medium">Game</Label>
               <div className="flex flex-wrap gap-2">
                 <p>
-                  Planned/wishlist features 2026: Make a game where a word is spoken and you have to search for the right
-                  pinyin/zhuyin cell.
+                  Planned/wishlist features 2026: Make a game where a word is spoken and you have to search for the
+                  right pinyin/zhuyin cell.
                 </p>
               </div>
             </div>
