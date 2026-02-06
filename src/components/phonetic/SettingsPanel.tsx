@@ -23,6 +23,8 @@ interface SettingsPanelProps {
   onOpenTTSInfo: () => void;
   showMDBGPopup: boolean;
   onShowMDBGPopupChange: (enabled: boolean) => void;
+  showChineseWords: boolean;
+  onShowChineseWordsChange: (enabled: boolean) => void;
   showEnglishRhyme: boolean;
   onShowEnglishRhymeChange: (enabled: boolean) => void;
   onOpenEnglishRhymeInfo: () => void;
@@ -43,6 +45,8 @@ export const SettingsPanel = ({
   onOpenTTSInfo,
   showMDBGPopup,
   onShowMDBGPopupChange,
+  showChineseWords,
+  onShowChineseWordsChange,
   showEnglishRhyme,
   onShowEnglishRhymeChange,
   onOpenEnglishRhymeInfo,
@@ -119,6 +123,18 @@ export const SettingsPanel = ({
               ))}
             </div>
           )}
+        </div>
+
+        {/* Show Chinese Words Toggle */}
+        <div className="flex items-center gap-3">
+          <Switch
+            id="show-chinese-words"
+            checked={showChineseWords}
+            onCheckedChange={onShowChineseWordsChange}
+          />
+          <Label htmlFor="show-chinese-words" className="text-sm font-medium cursor-pointer">
+            Show Chinese Words
+          </Label>
         </div>
 
         {/* Show English Rhyme Words Toggle */}
