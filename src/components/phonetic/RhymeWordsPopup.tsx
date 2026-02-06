@@ -33,7 +33,7 @@ export const RhymeWordsPopup = ({ finalPinyin }: RhymeWordsPopupProps) => {
           {topRhyme.word}{indicator}
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="center">
+      <PopoverContent className="w-auto p-0" align="center" side="top" sideOffset={5}>
         <Table>
           <TableHeader>
             <TableRow>
