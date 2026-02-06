@@ -133,6 +133,7 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
     { w: "冰", m: "ice", p: "bīng" },
   ],
   iong: [
+    { w: "用", m: "to use", p: "yòng" },
     { w: "熊", m: "bear", p: "xióng" },
     { w: "窮,穷", m: "poor", p: "qióng" },
     { w: "兄", m: "elder brother", p: "xiōng" },
