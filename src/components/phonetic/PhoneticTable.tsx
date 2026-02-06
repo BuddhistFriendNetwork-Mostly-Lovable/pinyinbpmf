@@ -1,17 +1,10 @@
-import { useCallback, useState } from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { finals, initials, getCell, gotchaCategories, type GotchaCategory } from '@/data/phoneticData';
-import { useTTS, type AudioMode } from '@/hooks/useTTS';
-import type { DisplayMode } from './SettingsPanel';
-import { CellPopup } from './CellPopup';
-import { cn } from '@/lib/utils';
+import { useCallback, useState } from "react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { finals, initials, getCell, gotchaCategories, type GotchaCategory } from "@/data/phoneticData";
+import { useTTS, type AudioMode } from "@/hooks/useTTS";
+import type { DisplayMode } from "./SettingsPanel";
+import { CellPopup } from "./CellPopup";
+import { cn } from "@/lib/utils";
 
 interface PhoneticTableProps {
   displayMode: DisplayMode;
@@ -22,11 +15,11 @@ interface PhoneticTableProps {
 }
 
 const groupColors: Record<string, string> = {
-  a: 'bg-blue-50 dark:bg-blue-950/30',
-  o: 'bg-orange-50 dark:bg-orange-950/30',
-  i: 'bg-green-50 dark:bg-green-950/30',
-  u: 'bg-purple-50 dark:bg-purple-950/30',
-  v: 'bg-rose-50 dark:bg-rose-950/30',
+  a: "bg-blue-50 dark:bg-blue-950/30",
+  o: "bg-orange-50 dark:bg-orange-950/30",
+  i: "bg-green-50 dark:bg-green-950/30",
+  u: "bg-purple-50 dark:bg-purple-950/30",
+  v: "bg-rose-50 dark:bg-rose-950/30",
 };
 
 export const PhoneticTable = ({
@@ -40,47 +33,48 @@ export const PhoneticTable = ({
   const [clickedCell, setClickedCell] = useState<string | null>(null);
   const [popupCell, setPopupCell] = useState<string | null>(null);
 
-  const handleCellClick = useCallback((pinyin: string, zhuyin: string) => {
-    // Use zhuyin for pronunciation with current audio mode
-    speak(zhuyin, audioMode);
-    
-    // Visual feedback
-    const key = `${pinyin}-${zhuyin}`;
-    setClickedCell(key);
-    setTimeout(() => setClickedCell(null), 200);
+  const handleCellClick = useCallback(
+    (pinyin: string, zhuyin: string) => {
+      // Use zhuyin for pronunciation with current audio mode
+      speak(zhuyin, audioMode);
 
-    // Show popup if enabled
-    if (showMDBGPopup) {
-      setPopupCell(key);
-    }
-  }, [speak, audioMode, showMDBGPopup]);
+      // Visual feedback
+      const key = `${pinyin}-${zhuyin}`;
+      setClickedCell(key);
+      setTimeout(() => setClickedCell(null), 200);
+
+      // Show popup if enabled
+      if (showMDBGPopup) {
+        setPopupCell(key);
+      }
+    },
+    [speak, audioMode, showMDBGPopup],
+  );
 
   const getCellHighlightClass = (gotchas?: GotchaCategory[]): string => {
     if (!highlightGotchas || !gotchas || gotchas.length === 0) {
-      return '';
+      return "";
     }
 
     // Find the first active gotcha category that matches this cell
     for (const gotcha of gotchas) {
       if (activeGotchaCategories.has(gotcha)) {
-        const category = gotchaCategories.find(c => c.id === gotcha);
+        const category = gotchaCategories.find((c) => c.id === gotcha);
         if (category) {
           return category.bgClass;
         }
       }
     }
 
-    return '';
+    return "";
   };
 
-  const renderCell = (cell: { pinyin: string; zhuyin: string; gotchas?: GotchaCategory[] } | null, finalPinyin: string) => {
+  const renderCell = (
+    cell: { pinyin: string; zhuyin: string; gotchas?: GotchaCategory[] } | null,
+    finalPinyin: string,
+  ) => {
     if (!cell) {
-      return (
-        <TableCell
-          key={finalPinyin}
-          className="bg-muted/30"
-        />
-      );
+      return <TableCell key={finalPinyin} className="bg-muted/30" />;
     }
 
     const cellKey = `${cell.pinyin}-${cell.zhuyin}`;
@@ -91,19 +85,15 @@ export const PhoneticTable = ({
     const cellContent = (
       <div
         className={cn(
-          'text-center cursor-pointer transition-all duration-150 hover:bg-accent/50 p-2',
+          "text-center cursor-pointer transition-all duration-150 hover:bg-accent/50 p-2",
           highlightClass,
-          isClicked && 'scale-95 bg-accent'
+          isClicked && "scale-95 bg-accent",
         )}
         onClick={() => handleCellClick(cell.pinyin, cell.zhuyin)}
       >
-        {(displayMode === 'pinyin' || displayMode === 'both') && (
-          <div className="font-bold text-sm">{cell.pinyin}</div>
-        )}
-        {(displayMode === 'zhuyin' || displayMode === 'both') && (
-          <div className="text-xs text-pink-600 dark:text-pink-400 font-medium">
-            {cell.zhuyin}
-          </div>
+        {(displayMode === "pinyin" || displayMode === "both") && <div className="font-bold text-sm">{cell.pinyin}</div>}
+        {(displayMode === "zhuyin" || displayMode === "both") && (
+          <div className="text-xs text-pink-600 dark:text-pink-400 font-medium">{cell.zhuyin}</div>
         )}
       </div>
     );
@@ -134,11 +124,7 @@ export const PhoneticTable = ({
   return (
     <div className="relative">
       {/* TTS status indicator */}
-      {error && (
-        <div className="mb-2 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {error}
-        </div>
-      )}
+      {error && <div className="mb-2 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>}
       {!isSupported && (
         <div className="mb-2 rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground">
           Text-to-speech is not supported in this browser.
@@ -155,14 +141,11 @@ export const PhoneticTable = ({
               {finals.map((final) => (
                 <TableHead
                   key={final.pinyin}
-                  className={cn(
-                    'text-center text-xs font-normal min-w-[60px]',
-                    groupColors[final.group]
-                  )}
+                  className={cn("text-center text-xs font-normal min-w-[60px]", groupColors[final.group])}
                 >
                   <div className="font-bold">
-                    {final.pinyin.startsWith('ü') 
-                      ? `${final.pinyin} / ${final.pinyin.replace('ü', 'u')}`
+                    {final.pinyin.startsWith("ü")
+                      ? `${final.pinyin} / ${final.pinyin.replace("ü", "u")}`
                       : final.pinyin}
                   </div>
                   <div className="text-muted-foreground">{final.zhuyin}</div>
@@ -188,9 +171,17 @@ export const PhoneticTable = ({
       </div>
 
       <p className="mt-2 text-center text-xs text-muted-foreground">
-        Click any cell to hear the pronunciation (first tone). Only works if you have Chinese TTS enabled (works on 50% of devices with no setup)
+        Click any cell to hear the pronunciation (first tone). Only works if you have Chinese TTS enabled (works on 50%
+        of devices with no setup)
         <br />
-        Beta Beta Beta. contact: buddhistfriendnetwork on <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" alt="Gmail icon" width="30" height="20" className="inline" />
+        Beta Beta Beta. contact: buddhistfriendnetwork on{" "}
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg"
+          alt="Gmail icon"
+          width="15"
+          height="10"
+          className="inline"
+        />
       </p>
     </div>
   );
