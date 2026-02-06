@@ -58,7 +58,6 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
   en: [
     { w: "人", m: "person", p: "rén" },
     { w: "門,门", m: "door", p: "mén" },
-    { w: "問,问", m: "to ask", p: "wèn" },
     { w: "本", m: "book (measure word)", p: "běn" },
   ],
   eng: [
