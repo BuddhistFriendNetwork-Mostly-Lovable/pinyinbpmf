@@ -23,7 +23,7 @@ export const englishRhymeWords: Record<string, string[]> = {
   ian: ["yen (currency) 95%", "Ben 70%", "❌Ian (name) 0%"],
   in: ["mean 100%", "bean 90%", "❌pin 0%"],
   iang: ["young 85%", "Zion + G 85%"],
-  ing: ["ding (dong) 100%", "ping (pong) 100%"],
+  ing: ["*ding* dong 100%", "*ping* pong 100%"],
   iong: ["German 'Jung' 90%", "young (rounded lips) 60%"],
 
   // --- The O Group ---
