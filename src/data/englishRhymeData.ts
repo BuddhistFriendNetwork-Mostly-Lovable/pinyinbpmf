@@ -28,7 +28,7 @@ export const englishRhymeWords: Record<string, string[]> = {
 
   // --- The O Group ---
   "o": ["poor (-r) 80%", "paw 75%", "❌go 0%"],
-  "ong": ["cone+g 100%", "home+ng 100%", "❌ping pong (see /-ang/) 0%", "❌long (see /-ang/) 0%],
+  "ong": ["cone+g 100%", "home+ng 100%", "❌ping pong (see /-ang/) 0%", "❌long (see /-ang/) 0%"],
   "ou": ["oh 100%", "go 100%", "so 100%", "row 100%"],
 
   // --- The U Group ---
@@ -36,7 +36,7 @@ export const englishRhymeWords: Record<string, string[]> = {
   "ua": ["guava 100%", "raw 80%"],
   "uo": ["war (soft r) 80%", "❌duo 0%"],
   "ui": ["way 100%", "sway 100%"],
-  "uai": ["why 90%", "why (stretch the w as a "u") 100%", "*kawhi* leonard (blended) 100%"],
+  "uai": ["why 90%", "why (stretch the w as a 'u') 100%", "*kawhi* leonard (blended) 100%"],
   "uan": ["Juan 100%", "swan 95%", "wand (-d) 90%"],
   "un": ["one 80%", "dun dun dun (suspense) 90%", "❌uncle 0%", "See /en/"],
   "uang": ["Juan + g 100%", "wrong (with w sound) 70%", "Swan + g 95%"],
