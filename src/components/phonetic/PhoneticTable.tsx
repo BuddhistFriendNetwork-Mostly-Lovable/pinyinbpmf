@@ -1,6 +1,8 @@
 import { useCallback, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 import { finals, initials, getCell, gotchaCategories, type GotchaCategory } from "@/data/phoneticData";
+import { getRhymeWords } from "@/data/englishRhymeData";
 import { useTTS, type AudioMode } from "@/hooks/useTTS";
 import type { DisplayMode } from "./SettingsPanel";
 import { CellPopup } from "./CellPopup";
@@ -12,6 +14,8 @@ interface PhoneticTableProps {
   activeGotchaCategories: Set<GotchaCategory>;
   audioMode: AudioMode;
   showMDBGPopup: boolean;
+  showEnglishRhyme: boolean;
+  onOpenEnglishRhymeInfo: () => void;
 }
 
 const groupColors: Record<string, string> = {
@@ -28,6 +32,8 @@ export const PhoneticTable = ({
   activeGotchaCategories,
   audioMode,
   showMDBGPopup,
+  showEnglishRhyme,
+  onOpenEnglishRhymeInfo,
 }: PhoneticTableProps) => {
   const { speak, isSupported, error } = useTTS();
   const [clickedCell, setClickedCell] = useState<string | null>(null);
@@ -134,6 +140,39 @@ export const PhoneticTable = ({
       <div className="overflow-x-auto rounded-lg border shadow-sm">
         <Table className="min-w-[1200px]">
           <TableHeader>
+            {/* English Rhyme Words Row */}
+            {showEnglishRhyme && (
+              <TableRow className="bg-blue-900">
+                <TableHead className="sticky left-0 z-20 bg-blue-900 text-yellow-300 font-bold w-16">
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs leading-tight">English Rhyme Words</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-5 w-5 rounded-full p-0 text-yellow-300 hover:text-yellow-100 hover:bg-blue-800"
+                      onClick={onOpenEnglishRhymeInfo}
+                    >
+                      ?
+                    </Button>
+                  </div>
+                </TableHead>
+                {finals.map((final) => {
+                  const rhymes = getRhymeWords(final.pinyin);
+                  return (
+                    <TableHead
+                      key={`rhyme-${final.pinyin}`}
+                      className="text-center text-xs font-normal min-w-[60px] bg-blue-900 text-yellow-300"
+                    >
+                      {rhymes.map((word, idx) => (
+                        <div key={idx}>{word}</div>
+                      ))}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            )}
+
+            {/* Init Row */}
             <TableRow>
               <TableHead className="sticky left-0 z-20 bg-primary text-primary-foreground font-bold w-16">
                 Init
