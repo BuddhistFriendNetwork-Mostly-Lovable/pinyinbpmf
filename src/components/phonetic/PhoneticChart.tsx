@@ -18,6 +18,7 @@ export const PhoneticChart = () => {
   const [audioMode, setAudioMode] = useState<AudioMode>('zhuyin-comment');
   const [showMDBGPopup, setShowMDBGPopup] = useState(true);
   const [ttsInfoOpen, setTTSInfoOpen] = useState(false);
+  const [showChineseWords, setShowChineseWords] = useState(true);
   const [showEnglishRhyme, setShowEnglishRhyme] = useState(true);
   const [englishRhymeInfoOpen, setEnglishRhymeInfoOpen] = useState(false);
 
@@ -53,6 +54,8 @@ export const PhoneticChart = () => {
         onOpenTTSInfo={() => setTTSInfoOpen(true)}
         showMDBGPopup={showMDBGPopup}
         onShowMDBGPopupChange={setShowMDBGPopup}
+        showChineseWords={showChineseWords}
+        onShowChineseWordsChange={setShowChineseWords}
         showEnglishRhyme={showEnglishRhyme}
         onShowEnglishRhymeChange={setShowEnglishRhyme}
         onOpenEnglishRhymeInfo={() => setEnglishRhymeInfoOpen(true)}
@@ -66,6 +69,7 @@ export const PhoneticChart = () => {
         activeGotchaCategories={activeGotchaCategories}
         audioMode={audioMode}
         showMDBGPopup={showMDBGPopup}
+        showChineseWords={showChineseWords}
         showEnglishRhyme={showEnglishRhyme}
         onOpenEnglishRhymeInfo={() => setEnglishRhymeInfoOpen(true)}
       />

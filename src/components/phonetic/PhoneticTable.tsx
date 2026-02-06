@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { finals, initials, getCell, gotchaCategories, type GotchaCategory } from "@/data/phoneticData";
 import { RhymeWordsPopup } from "./RhymeWordsPopup";
+import { ChineseWordsPopup } from "./ChineseWordsPopup";
 import { useTTS, type AudioMode } from "@/hooks/useTTS";
 import type { DisplayMode } from "./SettingsPanel";
 import { CellPopup } from "./CellPopup";
@@ -14,6 +15,7 @@ interface PhoneticTableProps {
   activeGotchaCategories: Set<GotchaCategory>;
   audioMode: AudioMode;
   showMDBGPopup: boolean;
+  showChineseWords: boolean;
   showEnglishRhyme: boolean;
   onOpenEnglishRhymeInfo: () => void;
 }
@@ -32,6 +34,7 @@ export const PhoneticTable = ({
   activeGotchaCategories,
   audioMode,
   showMDBGPopup,
+  showChineseWords,
   showEnglishRhyme,
   onOpenEnglishRhymeInfo,
 }: PhoneticTableProps) => {
@@ -140,6 +143,23 @@ export const PhoneticTable = ({
       <div className="overflow-x-auto rounded-lg border shadow-sm">
         <Table className="min-w-[1200px]">
           <TableHeader>
+            {/* Chinese Words Row */}
+            {showChineseWords && (
+              <TableRow className="bg-red-900">
+                <TableHead className="sticky left-0 z-20 bg-red-900 text-white font-bold w-16">
+                  <span className="text-xs leading-tight">Chinese Words</span>
+                </TableHead>
+                {finals.map((final) => (
+                  <TableHead
+                    key={`chinese-${final.pinyin}`}
+                    className="text-center font-normal min-w-[60px] bg-red-900 text-white p-0"
+                  >
+                    <ChineseWordsPopup finalPinyin={final.pinyin} />
+                  </TableHead>
+                ))}
+              </TableRow>
+            )}
+
             {/* English Rhyme Words Row */}
             {showEnglishRhyme && (
               <TableRow className="bg-blue-900">
