@@ -23,6 +23,9 @@ interface SettingsPanelProps {
   onOpenTTSInfo: () => void;
   showMDBGPopup: boolean;
   onShowMDBGPopupChange: (enabled: boolean) => void;
+  showEnglishRhyme: boolean;
+  onShowEnglishRhymeChange: (enabled: boolean) => void;
+  onOpenEnglishRhymeInfo: () => void;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -40,6 +43,9 @@ export const SettingsPanel = ({
   onOpenTTSInfo,
   showMDBGPopup,
   onShowMDBGPopupChange,
+  showEnglishRhyme,
+  onShowEnglishRhymeChange,
+  onOpenEnglishRhymeInfo,
   isOpen,
   onOpenChange,
 }: SettingsPanelProps) => {
@@ -113,6 +119,26 @@ export const SettingsPanel = ({
               ))}
             </div>
           )}
+        </div>
+
+        {/* Show English Rhyme Words Toggle */}
+        <div className="flex items-center gap-3">
+          <Switch
+            id="show-english-rhyme"
+            checked={showEnglishRhyme}
+            onCheckedChange={onShowEnglishRhymeChange}
+          />
+          <Label htmlFor="show-english-rhyme" className="text-sm font-medium cursor-pointer">
+            Show English Rhyme Words
+          </Label>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 rounded-full p-0 text-muted-foreground hover:text-foreground"
+            onClick={onOpenEnglishRhymeInfo}
+          >
+            ?
+          </Button>
         </div>
 
         {/* Other Settings Collapsible */}
