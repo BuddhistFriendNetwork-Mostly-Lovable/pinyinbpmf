@@ -103,7 +103,6 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
   iu: [
     { w: "六", m: "six", p: "liù" },
     { w: "九", m: "nine", p: "jiǔ" },
-    { w: "有", m: "to have", p: "yǒu" },
     { w: "牛", m: "cow", p: "niú" },
     { w: "酒", m: "alcohol", p: "jiǔ" },
     { w: "球", m: "ball", p: "qiú" },
@@ -184,6 +183,7 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
   ],
   ui: [
     { w: "水", m: "water", p: "shuǐ" },
+    { w: "餵,喂", m: "to feed / hello (phone)", p: "wèi" },
     { w: "會,会", m: "can/meeting", p: "huì" },
     { w: "嘴", m: "mouth", p: "zuǐ" },
     { w: "貴,贵", m: "expensive", p: "guì" },
