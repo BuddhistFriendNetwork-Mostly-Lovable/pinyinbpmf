@@ -146,9 +146,10 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
   ],
   "ong": [
     { w: "紅,红", m: "red", p: "hóng" },
+    { w: "東,东", m: "East", p: "dōng" },
+    { w: "空", m: "empty", p: "kōng" },
     { w: "龍,龙", m: "dragon", p: "lóng" },
     { w: "蟲,虫", m: "insect/worm", p: "chóng" },
-    { w: "東,东", m: "East", p: "dōng" }
   ],
   "ou": [
     { w: "狗", m: "dog", p: "gǒu" },
@@ -198,10 +199,11 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
     { w: "換,换", m: "to change", p: "huàn" }
   ],
   "un": [
+    { w: "春", m: "spring (season)", p: "chūn" },
+    { w: "順,顺", m: "smooth/favorable", p: "shùn" },
+    { w: "輪,轮", m: "wheel", p: "lún" },
     { w: "困", m: "sleepy", p: "kùn" },
     { w: "村", m: "village", p: "cūn" },
-    { w: "春", m: "spring (season)", p: "chūn" },
-    { w: "順,顺", m: "smooth/favorable", p: "shùn" }
   ],
   "uang": [
     { w: "黃,黄", m: "yellow", p: "huáng" },
@@ -226,7 +228,7 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
   "üan": [
     { w: "圓,圆", m: "round", p: "yuán" },
     { w: "遠,远", m: "far", p: "yuǎn" },
-    { w: "全", m: "whole/all", p: "quán" },
+    { w: "全", m: "whole/all/'FamilyMart', p: "quán" },
     { w: "選,选", m: "to choose", p: "xuǎn" }
   ],
   "ün": [
