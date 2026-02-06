@@ -88,8 +88,33 @@ export const useTTS = (): UseTTSReturn => {
         return;
       }
 
-      if (!isSupported || !voice) {
-        console.warn("TTS not available:", error);
+      if (!isSupported) {
+        console.warn("TTS not supported in this browser");
+        return;
+      }
+
+      // Try to get voice lazily if not already set (handles race condition)
+      let currentVoice = voice;
+      if (!currentVoice) {
+        const voices = speechSynthesis.getVoices();
+        const mandarinPatterns = [/zh[-_]TW/i, /zh[-_]CN/i, /cmn/i, /zh(?![-_]HK)/i];
+        const avoidPatterns = [/zh[-_]HK/i, /yue/i, /cantonese/i];
+
+        for (const pattern of mandarinPatterns) {
+          const found = voices.find((v) => {
+            const matches = pattern.test(v.lang) || pattern.test(v.name);
+            const shouldAvoid = avoidPatterns.some((ap) => ap.test(v.lang) || ap.test(v.name));
+            return matches && !shouldAvoid;
+          });
+          if (found) {
+            currentVoice = found;
+            break;
+          }
+        }
+      }
+
+      if (!currentVoice) {
+        console.warn("TTS not available: No Mandarin voice found");
         return;
       }
 
@@ -102,18 +127,18 @@ export const useTTS = (): UseTTSReturn => {
 
       if (mode === "zhuyin-separate") {
         processedText = formatZhuyinForSeparateTTS(text);
-        rate = 0.8; // 80% of 0.8
+        rate = 0.8;
       }
 
       const utterance = new SpeechSynthesisUtterance(processedText);
-      utterance.voice = voice;
-      utterance.lang = voice.lang;
+      utterance.voice = currentVoice;
+      utterance.lang = currentVoice.lang;
       utterance.rate = rate;
       utterance.pitch = 1;
 
       speechSynthesis.speak(utterance);
     },
-    [isSupported, voice, error],
+    [isSupported, voice],
   );
 
   return {
