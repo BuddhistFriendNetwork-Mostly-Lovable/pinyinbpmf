@@ -183,7 +183,6 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
   ],
   ui: [
     { w: "水", m: "water", p: "shuǐ" },
-    { w: "餵,喂", m: "to feed / hello (phone)", p: "wèi" },
     { w: "會,会", m: "can/meeting", p: "huì" },
     { w: "嘴", m: "mouth", p: "zuǐ" },
     { w: "貴,贵", m: "expensive", p: "guì" },
@@ -202,6 +201,8 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
   ],
   un: [
     { w: "春", m: "spring (season)", p: "chūn" },
+    { w: "問,问", m: "to ask", p: "wèn" },
+    { w: "溫,温", m: "warm (temperature)", p: "wēn" },
     { w: "順,顺", m: "smooth/favorable", p: "shùn" },
     { w: "輪,轮", m: "wheel", p: "lún" },
     { w: "困", m: "sleepy", p: "kùn" },
