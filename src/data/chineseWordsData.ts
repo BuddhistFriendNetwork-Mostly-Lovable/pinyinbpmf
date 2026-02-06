@@ -228,7 +228,7 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
   "üan": [
     { w: "圓,圆", m: "round", p: "yuán" },
     { w: "遠,远", m: "far", p: "yuǎn" },
-    { w: "全", m: "whole/all/'FamilyMart', p: "quán" },
+    { w: "全", m: "whole/all", p: "quán" },
     { w: "選,选", m: "to choose", p: "xuǎn" }
   ],
   "ün": [
