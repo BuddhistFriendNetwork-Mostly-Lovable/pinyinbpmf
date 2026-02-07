@@ -445,7 +445,7 @@ const IKnowChineseTab = () => (
       because I couldn't find a good table that showed both.
     </p>
     <p className="text-muted-foreground">
-      Mine: <ExternalLink_ href="https://pinyinbopomofo.lovable.app/">pinyinbopomofo.lovable.app</ExternalLink_>
+      Mine: <ExternalLink_ href="https://pinyinbpmf.lovable.app/">pinyinbopomofo.lovable.app</ExternalLink_>
     </p>
 
     <Separator />
