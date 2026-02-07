@@ -1,7 +1,7 @@
 import { Volume2, Copy, ExternalLink, HelpCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -45,32 +45,47 @@ export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
 
           <div className="flex-1 overflow-hidden p-4 pt-2">
             <TabsContent value="beginner" className="h-full mt-0">
-              <ScrollArea className="h-full pr-4">
-                <TotalBeginnerTab />
+              <ScrollArea className="h-full" type="always">
+                <div className="pr-4 min-w-max sm:min-w-0">
+                  <TotalBeginnerTab />
+                </div>
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </TabsContent>
 
             <TabsContent value="sound" className="h-full mt-0">
-              <ScrollArea className="h-full pr-4">
-                <TroubleshootingSoundTab />
+              <ScrollArea className="h-full" type="always">
+                <div className="pr-4 min-w-max sm:min-w-0">
+                  <TroubleshootingSoundTab />
+                </div>
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </TabsContent>
 
             <TabsContent value="zhuyin" className="h-full mt-0">
-              <ScrollArea className="h-full pr-4">
-                <IKnowZhuyinTab />
+              <ScrollArea className="h-full" type="always">
+                <div className="pr-4 min-w-max sm:min-w-0">
+                  <IKnowZhuyinTab />
+                </div>
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </TabsContent>
 
             <TabsContent value="pinyin" className="h-full mt-0">
-              <ScrollArea className="h-full pr-4">
-                <IKnowPinyinTab />
+              <ScrollArea className="h-full" type="always">
+                <div className="pr-4 min-w-max sm:min-w-0">
+                  <IKnowPinyinTab />
+                </div>
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </TabsContent>
 
             <TabsContent value="chinese" className="h-full mt-0">
-              <ScrollArea className="h-full pr-4">
-                <IKnowChineseTab />
+              <ScrollArea className="h-full" type="always">
+                <div className="pr-4 min-w-max sm:min-w-0">
+                  <IKnowChineseTab />
+                </div>
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </TabsContent>
           </div>
