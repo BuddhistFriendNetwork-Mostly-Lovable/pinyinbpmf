@@ -45,8 +45,8 @@ export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
 
           <div className="flex-1 overflow-hidden p-4 pt-2">
             <TabsContent value="beginner" className="h-full mt-0">
-              <ScrollArea className="h-full" type="always">
-                <div className="pr-4 min-w-max sm:min-w-0">
+              <ScrollArea className="h-full" type="auto">
+                <div className="pr-4">
                   <TotalBeginnerTab />
                 </div>
                 <ScrollBar orientation="horizontal" />
@@ -54,8 +54,8 @@ export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
             </TabsContent>
 
             <TabsContent value="sound" className="h-full mt-0">
-              <ScrollArea className="h-full" type="always">
-                <div className="pr-4 min-w-max sm:min-w-0">
+              <ScrollArea className="h-full" type="auto">
+                <div className="pr-4">
                   <TroubleshootingSoundTab />
                 </div>
                 <ScrollBar orientation="horizontal" />
@@ -63,8 +63,8 @@ export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
             </TabsContent>
 
             <TabsContent value="zhuyin" className="h-full mt-0">
-              <ScrollArea className="h-full" type="always">
-                <div className="pr-4 min-w-max sm:min-w-0">
+              <ScrollArea className="h-full" type="auto">
+                <div className="pr-4">
                   <IKnowZhuyinTab />
                 </div>
                 <ScrollBar orientation="horizontal" />
@@ -72,8 +72,8 @@ export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
             </TabsContent>
 
             <TabsContent value="pinyin" className="h-full mt-0">
-              <ScrollArea className="h-full" type="always">
-                <div className="pr-4 min-w-max sm:min-w-0">
+              <ScrollArea className="h-full" type="auto">
+                <div className="pr-4">
                   <IKnowPinyinTab />
                 </div>
                 <ScrollBar orientation="horizontal" />
@@ -81,8 +81,8 @@ export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
             </TabsContent>
 
             <TabsContent value="chinese" className="h-full mt-0">
-              <ScrollArea className="h-full" type="always">
-                <div className="pr-4 min-w-max sm:min-w-0">
+              <ScrollArea className="h-full" type="auto">
+                <div className="pr-4">
                   <IKnowChineseTab />
                 </div>
                 <ScrollBar orientation="horizontal" />
