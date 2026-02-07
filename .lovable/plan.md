@@ -1,101 +1,88 @@
 
-# Add "Show Chinese Words" Feature
+# Implementation Plan: "I'm Confused! Help!" Modal
 
 ## Overview
-Add a new "Chinese Words" row above the "English Rhyme Words" row in the phonetic table, showing common Chinese words for each final. The feature will have a toggle in settings (above "Show English Rhyme Words") and display words separated by " / " with a dark red background and white text. Clicking or hovering will show a detailed popup table.
+Add a help button with a full-screen modal containing 5 tabbed sections with comprehensive educational content about learning Chinese phonetics.
 
-## Files to Create
+## Changes Required
 
-### 1. `src/data/chineseWordsData.ts`
-New data file containing:
-- The `EndingCommonChineseWords` record with the structure provided by the user
-- Type definition: `interface ChineseWordEntry { w: string; m: string; p: string; }`
-- Helper function `getChineseWords(finalPinyin: string)` to retrieve words for a final
-- Helper function `getChineseWordsDisplay(finalPinyin: string)` to get just the words joined by " / "
+### 1. Create New Component: `HelpDialog.tsx`
 
-### 2. `src/components/phonetic/ChineseWordsPopup.tsx`
-New component similar to `RhymeWordsPopup.tsx`:
-- Uses Popover from radix-ui
-- Trigger displays words separated by " / " (80% bigger font for Chinese characters)
-- Popup content shows a table with columns:
-  - "Chinese Word" (clickable, links to MDBG)
-  - "Meaning"
-  - "Pinyin"
-- Each Chinese word links to: `https://www.mdbg.net/chinese/dictionary?page=worddict&email=&wdrst=0&wdqb={CHINESE_TEXT}`
-- Chinese text in popup also rendered at ~80% larger size
+Create a new file `src/components/phonetic/HelpDialog.tsx` containing:
 
-## Files to Modify
+- A full-screen Dialog component using the existing `Dialog` UI component
+- Tabs component with 5 tabs:
+  1. "Total Beginner"
+  2. "Troubleshooting Sound"
+  3. "I know Zhuyin"
+  4. "I know Pinyin"
+  5. "I know Chinese"
+- Each tab will contain the provided educational content with proper formatting
+- Use ScrollArea for scrollable content within each tab
+- Include all external links as clickable links opening in new tabs
+- For the "I know Pinyin" tab, embed a Chinese Words table for "un" using the existing `getChineseWords` function and similar table styling from `ChineseWordsPopup`
 
-### 3. `src/components/phonetic/PhoneticChart.tsx`
-- Add new state: `showChineseWords` (defaulting to `true`)
-- Pass the new state and setter to `SettingsPanel`
-- Pass the new state to `PhoneticTable`
-
-### 4. `src/components/phonetic/SettingsPanel.tsx`
-- Add new props: `showChineseWords`, `onShowChineseWordsChange`
-- Add new Switch toggle for "Show Chinese Words" **above** the "Show English Rhyme Words" toggle
-- No info button needed (or can add one later)
-
-### 5. `src/components/phonetic/PhoneticTable.tsx`
-- Add new prop: `showChineseWords`
-- Add new header row **above** the English Rhyme Words row (and above "Init" if English Rhyme is hidden)
-- Style: `bg-red-900` background, `text-white` text
-- Left header cell: "Chinese Words" label
-- Each final column renders `ChineseWordsPopup`
-
-## Visual Layout (Table Header Order)
+**Component Structure:**
 ```text
-+------------------+--------+--------+--------+...
-| Chinese Words    | 爸爸/馬 | 愛/菜  | 貓/好  |  <- New row (dark red bg, white text)
-+------------------+--------+--------+--------+...
-| English Rhyme    | mama   | why    | pouch  |  <- Existing row (dark blue bg)
-+------------------+--------+--------+--------+...
-| Init             | a      | ai     | ao     |  <- Existing header
-+------------------+--------+--------+--------+...
++------------------------------------------+
+| Dialog (full-screen)                     |
+|   +--------------------------------------+
+|   | DialogHeader: "Help Guide"           |
+|   +--------------------------------------+
+|   | Tabs                                 |
+|   |   TabsList (5 tabs, scrollable on   |
+|   |             mobile)                  |
+|   |   TabsContent (ScrollArea)          |
+|   +--------------------------------------+
++------------------------------------------+
 ```
+
+### 2. Modify: `PhoneticChart.tsx`
+
+- Add state: `const [helpDialogOpen, setHelpDialogOpen] = useState(false);`
+- Add the help button after the subtitle text
+- Import and render the new `HelpDialog` component
+
+**UI Element:**
+- Button styled with a friendly appearance (e.g., outline variant)
+- Text: "I'm Confused! Help!"
+- Placed directly after the subtitle "Interactive learning tool for Mandarin Chinese phonetics"
+
+---
 
 ## Technical Details
 
-### Data Structure
-```typescript
-interface ChineseWordEntry {
-  w: string;  // Chinese word (may contain comma for trad,simp)
-  m: string;  // Meaning
-  p: string;  // Pinyin with tones
-}
+### Tab Content Formatting
 
-const chineseWords: Record<string, ChineseWordEntry[]> = { ... };
-```
+Each tab will use consistent styling:
+- `<h3>` for subheadings with `font-semibold text-base mb-2`
+- `<p>` for paragraphs with `text-muted-foreground mb-2`
+- `<ul>` with `list-disc list-inside space-y-1` for bullet lists
+- External links with `text-primary underline hover:text-primary/80`
+- Separators using the existing `Separator` component
 
-### MDBG URL Generation
-For the Chinese word link, use URL encoding:
-```typescript
-const url = `https://www.mdbg.net/chinese/dictionary?page=worddict&email=&wdrst=0&wdqb=${encodeURIComponent(word)}`;
-```
+### Embedded Chinese Words Table (for "I know Pinyin" tab)
 
-Note: For words with traditional/simplified variants (e.g., "愛,爱"), use only the first character group before the comma for the MDBG search.
+Reuse the table structure from `ChineseWordsPopup.tsx` to display the "un" final words inline within the content, demonstrating how words rhyme.
 
-### Styling
-- Main row: `bg-red-900 text-white`
-- Chinese text size: `text-lg` or `text-xl` (approximately 80% larger than default)
-- Hover effect on cells: `hover:bg-red-800`
-- Popup table: standard styling with larger Chinese text
+### Mobile Responsiveness
 
-### Popup Table Structure
-| Chinese Word | Meaning | Pinyin |
-|--------------|---------|--------|
-| 爸爸 (link)  | daddy   | bàba   |
-| 馬 (link)    | horse   | mǎ     |
-| ...          | ...     | ...    |
+- The TabsList will use `flex-wrap` or horizontal scroll to handle 5 tabs on smaller screens
+- Dialog will be truly full-screen using `className="max-w-full h-full max-h-full sm:max-w-4xl sm:h-[90vh]"`
 
-## Implementation Order
-1. Create `src/data/chineseWordsData.ts` with all the data and helper functions
-2. Create `src/components/phonetic/ChineseWordsPopup.tsx` component
-3. Update `SettingsPanel.tsx` to add the new toggle
-4. Update `PhoneticChart.tsx` to add state management
-5. Update `PhoneticTable.tsx` to render the new row
+### Files to Create/Modify
 
-## Edge Cases
-- Finals with no Chinese words data: render empty cell
-- Words with comma-separated variants (trad,simp): display both, but link only to first
-- Default state: `showChineseWords = true` (on by default as requested)
+| File | Action |
+|------|--------|
+| `src/components/phonetic/HelpDialog.tsx` | Create new file |
+| `src/components/phonetic/PhoneticChart.tsx` | Add button + state + import |
+
+---
+
+## Content Summary by Tab
+
+1. **Total Beginner**: Introduction to Chinese sounds (410 total), categories of difficulty, step-by-step instructions for using the chart, study game suggestion
+2. **Troubleshooting Sound**: TTS explanation, browser requirements, webview issues, link to companion app
+3. **I know Zhuyin**: Pinyin gotchas, recommended learning path avoiding W-/Y- initially
+4. **I know Pinyin**: Zhuyin benefits, recommended path with embedded "un" word table example, learning steps
+5. **I know Chinese**: Deeper explanation of sound systems, pinyin/zhuyin tables comparison, external resources, ear training methodology, English syllable analogy appendix
