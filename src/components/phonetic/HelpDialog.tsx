@@ -370,7 +370,8 @@ const IKnowPinyinTab = () => {
 
       <p className="text-muted-foreground">
         This website just focuses on the individual symbols with audio:{" "}
-        <ExternalLink_ href="https://www.boposounds.com/">boposounds.com</ExternalLink_>
+        <ExternalLink_ href="https://www.boposounds.com/">boposounds.com</ExternalLink_> The QUIZ on that website is
+        very good for learning Zhuyin.
       </p>
 
       <p className="text-muted-foreground">
