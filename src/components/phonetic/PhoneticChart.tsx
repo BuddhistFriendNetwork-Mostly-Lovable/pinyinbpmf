@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { HelpCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { SettingsPanel, type DisplayMode } from "./SettingsPanel";
 import { PhoneticTable } from "./PhoneticTable";
 import { GotchaInfoDialog } from "./GotchaInfoDialog";
 import { TTSInfoDialog } from "./TTSInfoDialog";
 import { EnglishRhymeInfoDialog } from "./EnglishRhymeInfoDialog";
+import { HelpDialog } from "./HelpDialog";
 import { gotchaCategories, type GotchaCategory } from "@/data/phoneticData";
 import type { AudioMode } from "@/hooks/useTTS";
 
@@ -21,6 +24,7 @@ export const PhoneticChart = () => {
   const [showChineseWords, setShowChineseWords] = useState(true);
   const [showEnglishRhyme, setShowEnglishRhyme] = useState(true);
   const [englishRhymeInfoOpen, setEnglishRhymeInfoOpen] = useState(false);
+  const [helpDialogOpen, setHelpDialogOpen] = useState(false);
 
   const handleGotchaCategoryToggle = (category: GotchaCategory) => {
     setActiveGotchaCategories((prev) => {
@@ -39,6 +43,15 @@ export const PhoneticChart = () => {
       <header className="mb-6 text-center">
         <h1 className="text-3xl font-bold tracking-tight">Pinyin ↔ Zhuyin Conversion Chart</h1>
         <p className="mt-2 text-muted-foreground">Interactive learning tool for Mandarin Chinese phonetics</p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="mt-3"
+          onClick={() => setHelpDialogOpen(true)}
+        >
+          <HelpCircle className="h-4 w-4 mr-2" />
+          I'm Confused! Help!
+        </Button>
       </header>
 
       <SettingsPanel
@@ -77,6 +90,7 @@ export const PhoneticChart = () => {
       <GotchaInfoDialog open={gotchaInfoOpen} onOpenChange={setGotchaInfoOpen} />
       <TTSInfoDialog open={ttsInfoOpen} onOpenChange={setTTSInfoOpen} />
       <EnglishRhymeInfoDialog open={englishRhymeInfoOpen} onOpenChange={setEnglishRhymeInfoOpen} />
+      <HelpDialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen} />
     </div>
   );
 };
