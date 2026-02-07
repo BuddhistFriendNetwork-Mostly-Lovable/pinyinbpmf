@@ -395,8 +395,8 @@ const IKnowChineseTab = () => (
     </p>
     <p className="text-muted-foreground">
       Why does this matter? Once you learn all 410 sounds, you know all of the sounds in Chinese! (NOTE: What about
-      tones? Chinese is a tonal language, so you also have to add the 4 tones, but the raw "sound" is the 4 tones; the
-      tones just change the pitch shape.)
+      tones? Chinese is a tonal language, so you also have to add the 4 tones. However, the raw "sound" is the same for
+      each of the 4 tones; the tones just change the pitch shape.)
     </p>
 
     <Separator />
