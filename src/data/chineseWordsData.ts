@@ -252,8 +252,8 @@ export function getChineseWordsDisplay(finalPinyin: string, count: number): stri
   const wordsRaw = getChineseWords(finalPinyin);
   if (wordsRaw.length === 0 || count < 1) return "";
 
-  const words = wordsRaw.map((x) => {
-    // If x is a single character or empty, return it as is.
+  const words = wordsRaw.map((x: string) => {
+    // If x is a single character string or empty, return it as is.
     // Otherwise, join characters with a non-breaking space.
     return x.length <= 1 ? x : x.split("").join("\u2060");
   });
