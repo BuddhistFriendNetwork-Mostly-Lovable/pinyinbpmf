@@ -231,7 +231,7 @@ export const PhoneticTable = ({
               </TableRow>
             )}
 
-            {/* Init Row */}
+            {/* Init Row  - Finals/Endings of the pinyin */}
             <TableRow className={isCompact ? "[&>th]:py-0.5" : ""}>
               <TableHead
                 className={cn(
@@ -248,23 +248,23 @@ export const PhoneticTable = ({
                   className={cn(
                     "text-center",
                     tableBold ? "font-normal" : "font-normal",
-                    !isCompact && "min-w-[40px]",
+                    !isCompact && "min-w-[60px]",
                     isCompact && "h-auto",
                     groupColors[final.group],
                   )}
                   style={{ maxWidth: isCompact ? `${dynamicMaxWidth}px` : undefined, fontSize: "0.85em" }}
                 >
-                  <div className={tableBold ? "font-bold" : "font-normal"}>
+                  <div className={cn("pb-0 pt-0.5 px-0.5", tableBold ? "font-bold" : "font-normal")}>
                     {final.pinyin.startsWith("ü")
                       ? `${final.pinyin} / ${final.pinyin.replace("ü", "u")}`
                       : final.pinyin}
                   </div>
                   {final.hint && (
-                    <div className="text-amber-600 dark:text-amber-400" style={{ fontSize: "0.7em" }}>
+                    <div className="text-amber-600 dark:text-amber-400 p-0.5" style={{ fontSize: "0.7em" }}>
                       {final.hint}
                     </div>
                   )}
-                  <div className="text-muted-foreground">{final.zhuyin}</div>
+                  <div className="text-muted-foreground pt-0 pb-0.5 px-0.5">{final.zhuyin}</div>
                 </TableHead>
               ))}
             </TableRow>
@@ -277,22 +277,22 @@ export const PhoneticTable = ({
                   className={cn(
                     "sticky left-0 z-10 bg-primary/90 text-primary-foreground text-center",
                     tableBold ? "font-bold" : "font-normal",
-                    isCompact && "py-0.5",
+                    isCompact && "p-0.5",
                   )}
                 >
                   {isCompact ? (
                     displayMode === "zhuyin" || displayMode === "both" ? (
-                      <div>
+                      <div className="p-0.5">
                         {initial.pinyin} : <span style={{ color: "grey" }}>{initial.zhuyin}</span>
                       </div>
                     ) : (
-                      <div>{initial.pinyin}</div>
+                      <div className="p-0.5">{initial.pinyin}</div>
                     )
                   ) : (
                     <>
-                      <div>{initial.pinyin}</div>
+                      <div className="p-0.5">{initial.pinyin}</div>
                       {(displayMode === "zhuyin" || displayMode === "both") && (
-                        <div className="opacity-80" style={{ fontSize: "0.85em" }}>
+                        <div className="opacity-80 pb-0.5 px-0" style={{ fontSize: "0.85em" }}>
                           {initial.zhuyin}
                         </div>
                       )}
