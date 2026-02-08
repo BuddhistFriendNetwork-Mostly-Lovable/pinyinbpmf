@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, Settings } from "lucide-react";
+import { ChevronDown, ChevronUp, Settings, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 import type { AudioMode } from "@/hooks/useTTS";
 
 export type DisplayMode = "zhuyin" | "pinyin" | "both";
+
+const TEXT_SIZE_STEPS = [50, 60, 70, 80, 90, 100, 110, 125, 150, 175, 200];
 
 interface SettingsPanelProps {
   displayMode: DisplayMode;
@@ -28,6 +30,10 @@ interface SettingsPanelProps {
   showEnglishRhyme: boolean;
   onShowEnglishRhymeChange: (enabled: boolean) => void;
   onOpenEnglishRhymeInfo: () => void;
+  tableTextSize: number;
+  onTableTextSizeChange: (size: number) => void;
+  tableBold: boolean;
+  onTableBoldChange: (bold: boolean) => void;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -50,9 +56,26 @@ export const SettingsPanel = ({
   showEnglishRhyme,
   onShowEnglishRhymeChange,
   onOpenEnglishRhymeInfo,
+  tableTextSize,
+  onTableTextSizeChange,
+  tableBold,
+  onTableBoldChange,
   isOpen,
   onOpenChange,
 }: SettingsPanelProps) => {
+  const handleDecrease = () => {
+    const currentIndex = TEXT_SIZE_STEPS.indexOf(tableTextSize);
+    if (currentIndex > 0) {
+      onTableTextSizeChange(TEXT_SIZE_STEPS[currentIndex - 1]);
+    }
+  };
+
+  const handleIncrease = () => {
+    const currentIndex = TEXT_SIZE_STEPS.indexOf(tableTextSize);
+    if (currentIndex < TEXT_SIZE_STEPS.length - 1) {
+      onTableTextSizeChange(TEXT_SIZE_STEPS[currentIndex + 1]);
+    }
+  };
   return (
     <Collapsible open={isOpen} onOpenChange={onOpenChange} className="mb-4">
       <CollapsibleTrigger asChild>
@@ -147,6 +170,48 @@ export const SettingsPanel = ({
           >
             ?
           </Button>
+        </div>
+
+        {/* Table Text Size and Bold Toggle */}
+        <div className="flex flex-wrap items-center gap-3">
+          <Label className="text-sm font-medium">Table Text Size:</Label>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 w-7 p-0"
+              onClick={handleDecrease}
+              disabled={tableTextSize === TEXT_SIZE_STEPS[0]}
+            >
+              <Minus className="h-3 w-3" />
+            </Button>
+            <span className="w-12 text-center text-sm font-medium">{tableTextSize}%</span>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 w-7 p-0"
+              onClick={handleIncrease}
+              disabled={tableTextSize === TEXT_SIZE_STEPS[TEXT_SIZE_STEPS.length - 1]}
+            >
+              <Plus className="h-3 w-3" />
+            </Button>
+          </div>
+          {tableTextSize !== 100 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-xs"
+              onClick={() => onTableTextSizeChange(100)}
+            >
+              Reset to 100%
+            </Button>
+          )}
+          <div className="flex items-center gap-2 ml-2">
+            <Switch id="table-bold" checked={tableBold} onCheckedChange={onTableBoldChange} />
+            <Label htmlFor="table-bold" className="text-sm font-medium cursor-pointer">
+              Bold
+            </Label>
+          </div>
         </div>
 
         {/* Other Settings Collapsible */}
