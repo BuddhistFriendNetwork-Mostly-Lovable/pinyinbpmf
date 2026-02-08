@@ -248,13 +248,13 @@ export function getChineseWords(finalPinyin: string): ChineseWordEntry[] {
   return chineseWords[finalPinyin] || [];
 }
 
-export function getChineseWordsDisplay(finalPinyin: string, count: number): string {
+export function getChineseWordsDisplay(finalPinyin: string, count: integer): string {
   const wordsRaw = getChineseWords(finalPinyin);
-  if (words.length === 0 || count < 1) return "";
+  if (wordsRaw.length === 0 || count < 1) return "";
 
   const words = wordsRaw.map((x) => {
     // If x is a single character or empty, return it as is.
-    // Otherwise, join characters with a non-breaking space. "glue"
+    // Otherwise, join characters with a non-breaking space.
     return x.length <= 1 ? x : x.split("").join("\u2060");
   });
 
@@ -265,7 +265,7 @@ export function getChineseWordsDisplay(finalPinyin: string, count: number): stri
       const word = entry.w.split(",")[0]; // if there is a comma, just the part before the comma
       return word;
     })
-    .join("\u2003"); // emSpace
+    .join("\u2009"); // Thinspace
 }
 
 export function getMDBGUrl(chineseText: string): string {
