@@ -280,16 +280,18 @@ export const PhoneticTable = ({
                     isCompact && "py-0.5",
                   )}
                 >
-                  {( isCompact ?
-                     <div>{initial.pinyin} : {initial.zhuyin}</div> 
-                     :
-                     <div>{initial.pinyin}</div>
-                    (displayMode === "zhuyin" || displayMode === "both") && (
-                    <div className="opacity-80" style={{ fontSize: "0.85em" }}>
-                      {initial.zhuyin}
-                    </div>
-                  )
-                   ) }
+                  {isCompact ? (
+                    <div>{initial.pinyin} : {initial.zhuyin}</div>
+                  ) : (
+                    <>
+                      <div>{initial.pinyin}</div>
+                      {(displayMode === "zhuyin" || displayMode === "both") && (
+                        <div className="opacity-80" style={{ fontSize: "0.85em" }}>
+                          {initial.zhuyin}
+                        </div>
+                      )}
+                    </>
+                  )}
                   
                 </TableCell>
                 {finals.map((final) => {
