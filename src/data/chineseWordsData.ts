@@ -248,17 +248,18 @@ export function getChineseWords(finalPinyin: string): ChineseWordEntry[] {
   return chineseWords[finalPinyin] || [];
 }
 
-export function getChineseWordsDisplay(finalPinyin: string): string {
+export function getChineseWordsDisplay(finalPinyin: string, count: integer): string {
   const words = getChineseWords(finalPinyin);
-  if (words.length === 0) return "";
+  if (words.length === 0 || count < 1) return "";
 
   // Extract just the word part, taking only the first variant if there's a comma
   return words
+    .slice(0, count)
     .map((entry) => {
       const word = entry.w.split(",")[0];
       return word;
     })
-    .join(" / ");
+    .join("\u2009"); // Thinspace
 }
 
 export function getMDBGUrl(chineseText: string): string {
