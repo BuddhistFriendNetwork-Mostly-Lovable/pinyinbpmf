@@ -9,6 +9,7 @@ import { getChineseWords, getMDBGUrl, type ChineseWordEntry } from "@/data/chine
 import { useTTS } from "@/hooks/useTTS";
 import { toast } from "@/hooks/use-toast";
 import pinyinChartExample from "@/assets/pinyin-chart-example.png";
+import helpChartPreview from "@/assets/help-chart-preview.png";
 
 interface HelpDialogProps {
   open: boolean;
@@ -20,10 +21,17 @@ export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-full h-full max-h-full sm:max-w-4xl sm:h-[90vh] flex flex-col p-0">
         <DialogHeader className="p-4 pb-0">
-          <DialogTitle className="flex items-center gap-2">
-            <HelpCircle className="h-5 w-5" />
-            Help Guide
-          </DialogTitle>
+          <div className="flex items-start justify-between gap-4">
+            <DialogTitle className="flex items-center gap-2">
+              <HelpCircle className="h-5 w-5" />
+              Help Guide
+            </DialogTitle>
+            <img 
+              src={helpChartPreview} 
+              alt="Preview of the Pinyin-Zhuyin chart"
+              className="w-[30%] sm:w-auto sm:h-[20vh] object-contain rounded border shadow-sm"
+            />
+          </div>
         </DialogHeader>
         <Tabs defaultValue="beginner" className="flex-1 flex flex-col overflow-hidden">
           <TabsList className="mx-4 flex-wrap h-auto gap-1 justify-start">
