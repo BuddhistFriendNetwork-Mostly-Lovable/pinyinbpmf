@@ -22,7 +22,18 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
           Pinyin audio for <span className="font-bold text-foreground text-base">{pinyin}</span> /{" "}
           <span className="font-bold text-pink-600 dark:text-pink-400 text-base">{zhuyin}</span> is not 100% perfect.
         </p>
-        <p className="text-sm text-muted-foreground mb-3">Audio varies by browser/phone.</p>
+        <p className="text-sm text-muted-foreground mb-3">
+          Audio varies by browser/phone.
+          <a
+            href="https://www.google.com/search?q=state+of+chinese+TTS+default+support+on+phones+and+browsers"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 hover:underline"
+            onClick={() => onOpenChange(false)}
+          >
+            <span className="font-italic">Why?</span>
+          </a>
+        </p>
         <p className="text-sm text-muted-foreground mb-3">Find real words using the dictionary links below.</p>
         <div className="flex flex-col gap-2">
           <a
