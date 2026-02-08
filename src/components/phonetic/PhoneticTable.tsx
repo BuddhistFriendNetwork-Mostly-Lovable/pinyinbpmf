@@ -121,6 +121,7 @@ export const PhoneticTable = ({
       return (
         <TableCell key={finalPinyin} className="p-0">
           <CellPopup
+            pinyin={cell.pinyin}
             zhuyin={cell.zhuyin}
             open={isPopupOpen}
             onOpenChange={(open) => {
