@@ -1,10 +1,6 @@
-import { ExternalLink } from 'lucide-react';
-import { buildMDBGUrl } from '@/lib/zhuyinUtils';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { ExternalLink } from "lucide-react";
+import { buildMDBGUrl } from "@/lib/zhuyinUtils";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface CellPopupProps {
   zhuyin: string;
@@ -18,10 +14,11 @@ export const CellPopup = ({ zhuyin, open, onOpenChange, children }: CellPopupPro
 
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild>
-        {children}
-      </PopoverTrigger>
+      <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent className="w-auto p-2" side="top" sideOffset={5}>
+        Pinyin audio not 100% perfect. <BR></BR>
+        Find real words using the MDBG dictionary link.
+        <br></br>
         <a
           href={mdbgUrl}
           target="_blank"
@@ -29,7 +26,7 @@ export const CellPopup = ({ zhuyin, open, onOpenChange, children }: CellPopupPro
           className="flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 hover:underline"
           onClick={() => onOpenChange(false)}
         >
-          Search <span className="font-semibold">MDBG</span>
+          Search for words on <span className="font-semibold">MDBG</span>
           <ExternalLink className="h-3 w-3" />
         </a>
       </PopoverContent>
