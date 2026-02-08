@@ -249,20 +249,20 @@ export function getChineseWords(finalPinyin: string): ChineseWordEntry[] {
 }
 
 export function getChineseWordsDisplay(finalPinyin: string, count: number): string {
-  const wordsRaw = getChineseWords(finalPinyin);
-  if (wordsRaw.length === 0 || count < 1) return "";
+  const chineseWordsRaw = getChineseWords(finalPinyin);
+  if (chineseWordsRaw.length === 0 || count < 1) return "";
 
-  const words = wordsRaw.map((x: string) => {
+  function glueChineseString(x:string) {
     // If x is a single character string or empty, return it as is.
     // Otherwise, join characters with a non-breaking space.
     return x.length <= 1 ? x : x.split("").join("\u2060");
-  });
+  });  // array of strings
 
   // Extract just the word part, taking only the first variant if there's a comma
   return words
     .slice(0, count) // just the first N words
     .map((entry) => {
-      const word = entry.w.split(",")[0]; // if there is a comma, just the part before the comma
+      const word = glueChineseString(entry.split(",")[0]); // if there is a comma, just the part before the comma
       return word;
     })
     .join("\u2003"); // EmSpace
