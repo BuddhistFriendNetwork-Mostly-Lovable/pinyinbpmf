@@ -25,6 +25,8 @@ export const PhoneticChart = () => {
   const [showEnglishRhyme, setShowEnglishRhyme] = useState(true);
   const [englishRhymeInfoOpen, setEnglishRhymeInfoOpen] = useState(false);
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
+  const [tableTextSize, setTableTextSize] = useState(100);
+  const [tableBold, setTableBold] = useState(true);
 
   const handleGotchaCategoryToggle = (category: GotchaCategory) => {
     setActiveGotchaCategories((prev) => {
@@ -72,6 +74,10 @@ export const PhoneticChart = () => {
         showEnglishRhyme={showEnglishRhyme}
         onShowEnglishRhymeChange={setShowEnglishRhyme}
         onOpenEnglishRhymeInfo={() => setEnglishRhymeInfoOpen(true)}
+        tableTextSize={tableTextSize}
+        onTableTextSizeChange={setTableTextSize}
+        tableBold={tableBold}
+        onTableBoldChange={setTableBold}
         isOpen={settingsOpen}
         onOpenChange={setSettingsOpen}
       />
@@ -85,6 +91,8 @@ export const PhoneticChart = () => {
         showChineseWords={showChineseWords}
         showEnglishRhyme={showEnglishRhyme}
         onOpenEnglishRhymeInfo={() => setEnglishRhymeInfoOpen(true)}
+        tableTextSize={tableTextSize}
+        tableBold={tableBold}
       />
 
       <GotchaInfoDialog open={gotchaInfoOpen} onOpenChange={setGotchaInfoOpen} />
