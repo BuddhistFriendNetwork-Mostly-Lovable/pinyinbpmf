@@ -21,8 +21,8 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
         <p className="text-sm text-muted-foreground mb-2">
           Pinyin audio for <span className="font-bold text-foreground text-base">{pinyin}</span> /{" "}
           <span className="font-bold text-pink-600 dark:text-pink-400 text-base">{zhuyin}</span> is not 100% perfect.
-          Varies by browser/phone.
         </p>
+        <p className="text-sm text-muted-foreground mb-3">Audio varies by browser/phone.</p>
         <p className="text-sm text-muted-foreground mb-3">Find real words using the dictionary links below.</p>
         <div className="flex flex-col gap-2">
           <a
