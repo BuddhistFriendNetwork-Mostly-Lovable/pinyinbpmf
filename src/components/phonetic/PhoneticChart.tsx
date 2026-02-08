@@ -18,7 +18,7 @@ export const PhoneticChart = () => {
   // Auto-hide settings after 5 seconds on initial load
   useEffect(() => {
     if (hasAutoHidden.current) return;
-    
+
     const timer = setTimeout(() => {
       setSettingsOpen(false);
       hasAutoHidden.current = true;
@@ -36,7 +36,7 @@ export const PhoneticChart = () => {
     new Set(gotchaCategories.map((c) => c.id)),
   );
   const [gotchaInfoOpen, setGotchaInfoOpen] = useState(false);
-  const [audioMode, setAudioMode] = useState<AudioMode>('zhuyin-comment');
+  const [audioMode, setAudioMode] = useState<AudioMode>("zhuyin-comment");
   const [showMDBGPopup, setShowMDBGPopup] = useState(true);
   const [ttsInfoOpen, setTTSInfoOpen] = useState(false);
   const [showChineseWords, setShowChineseWords] = useState(true);
@@ -59,16 +59,11 @@ export const PhoneticChart = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto px-1.5 py-2">
       <header className="mb-6 text-center">
         <h1 className="text-3xl font-bold tracking-tight">Pinyin ↔ Zhuyin Conversion Chart</h1>
         <p className="mt-2 text-muted-foreground">Interactive learning tool for Mandarin Chinese phonetics</p>
-        <Button
-          variant="outline"
-          size="sm"
-          className="mt-3"
-          onClick={() => setHelpDialogOpen(true)}
-        >
+        <Button variant="outline" size="sm" className="mt-3" onClick={() => setHelpDialogOpen(true)}>
           <HelpCircle className="h-4 w-4 mr-2" />
           I'm Confused! Help!
         </Button>
