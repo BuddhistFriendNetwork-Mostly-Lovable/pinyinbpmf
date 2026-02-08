@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { getChineseWords, getMDBGUrl, type ChineseWordEntry } from "@/data/chineseWordsData";
 import { useTTS } from "@/hooks/useTTS";
 import { toast } from "@/hooks/use-toast";
+import pinyinChartExample from "@/assets/pinyin-chart-example.png";
 
 interface HelpDialogProps {
   open: boolean;
@@ -436,6 +437,11 @@ const IKnowChineseTab = () => (
       <li>Along the top, you have all the "endings". Approx 40 in quantity.</li>
       <li>Every Chinese word is 1 initial sound and 1 ending sound.</li>
     </ul>
+    <img 
+      src={pinyinChartExample} 
+      alt="Pinyin chart showing the complete table of Chinese sounds with initials on the left and finals on top" 
+      className="w-full rounded-lg border my-4"
+    />
     <p className="text-muted-foreground">
       If the table is 30 × 40, there are 1200 combinations. But not every combination is valid, so that's why it gets
       reduced to 410 valid sounds.
