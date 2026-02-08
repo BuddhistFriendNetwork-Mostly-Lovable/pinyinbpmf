@@ -248,7 +248,7 @@ export function getChineseWords(finalPinyin: string): ChineseWordEntry[] {
   return chineseWords[finalPinyin] || [];
 }
 
-export function getChineseWordsDisplay(finalPinyin: string, count: integer): string {
+export function getChineseWordsDisplay(finalPinyin: string, count: number): string {
   const wordsRaw = getChineseWords(finalPinyin);
   if (wordsRaw.length === 0 || count < 1) return "";
 
@@ -265,7 +265,7 @@ export function getChineseWordsDisplay(finalPinyin: string, count: integer): str
       const word = entry.w.split(",")[0]; // if there is a comma, just the part before the comma
       return word;
     })
-    .join("\u2009"); // Thinspace
+    .join("\u2003"); // EmSpace
 }
 
 export function getMDBGUrl(chineseText: string): string {
