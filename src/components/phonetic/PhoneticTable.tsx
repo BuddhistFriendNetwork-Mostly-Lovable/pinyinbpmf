@@ -43,7 +43,7 @@ export const PhoneticTable = ({
   tableBold,
 }: PhoneticTableProps) => {
   const isCompact = tableTextSize <= 90;
-  const dynamicMaxWidth = Math.round(80 * tableTextSize / 100);
+  const dynamicMaxWidth = Math.round((80 * tableTextSize) / 100);
   const { speak, isSupported, error } = useTTS();
   const [clickedCell, setClickedCell] = useState<string | null>(null);
   const [popupCell, setPopupCell] = useState<string | null>(null);
@@ -112,7 +112,12 @@ export const PhoneticTable = ({
           <div className={tableBold ? "font-bold" : "font-normal"}>{cell.pinyin}</div>
         )}
         {(displayMode === "zhuyin" || displayMode === "both") && (
-          <div className={cn("text-pink-600 dark:text-pink-400", tableBold ? "font-medium" : "font-normal")} style={{ fontSize: '0.85em' }}>{cell.zhuyin}</div>
+          <div
+            className={cn("text-pink-600 dark:text-pink-400", tableBold ? "font-medium" : "font-normal")}
+            style={{ fontSize: "0.85em" }}
+          >
+            {cell.zhuyin}
+          </div>
         )}
       </div>
     );
@@ -157,8 +162,16 @@ export const PhoneticTable = ({
             {/* Chinese Words Row */}
             {showChineseWords && (
               <TableRow className={cn("bg-red-900", isCompact && "[&>th]:py-0.5")}>
-                <TableHead className={cn("sticky left-0 z-20 bg-red-900 text-white w-16", tableBold ? "font-bold" : "font-normal", isCompact && "h-auto")}>
-                  <span className="leading-tight" style={{ fontSize: '0.75em' }}>Chinese Words</span>
+                <TableHead
+                  className={cn(
+                    "sticky left-0 z-20 bg-red-900 text-white w-16",
+                    tableBold ? "font-bold" : "font-normal",
+                    isCompact && "h-auto",
+                  )}
+                >
+                  <span className="leading-tight" style={{ fontSize: "0.75em" }}>
+                    Chinese Words
+                  </span>
                 </TableHead>
                 {finals.map((final) => (
                   <TableHead
@@ -167,7 +180,7 @@ export const PhoneticTable = ({
                       "text-center bg-red-900 text-white p-0",
                       tableBold ? "font-normal" : "font-normal",
                       !isCompact && "min-w-[60px]",
-                      isCompact && "h-auto"
+                      isCompact && "h-auto",
                     )}
                     style={isCompact ? { maxWidth: `${dynamicMaxWidth}px` } : undefined}
                   >
@@ -180,9 +193,17 @@ export const PhoneticTable = ({
             {/* English Rhyme Words Row */}
             {showEnglishRhyme && (
               <TableRow className={cn("bg-blue-900", isCompact && "[&>th]:py-0.5")}>
-                <TableHead className={cn("sticky left-0 z-20 bg-blue-900 text-yellow-300 w-16", tableBold ? "font-bold" : "font-normal", isCompact && "h-auto")}>
+                <TableHead
+                  className={cn(
+                    "sticky left-0 z-20 bg-blue-900 text-yellow-300 w-16",
+                    tableBold ? "font-bold" : "font-normal",
+                    isCompact && "h-auto",
+                  )}
+                >
                   <div className="flex items-center gap-1">
-                    <span className="leading-tight" style={{ fontSize: '0.75em' }}>English Rhyme Words</span>
+                    <span className="leading-tight" style={{ fontSize: "0.75em" }}>
+                      English Rhyme Words
+                    </span>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -200,7 +221,7 @@ export const PhoneticTable = ({
                       "text-center bg-blue-900 text-yellow-300 p-0",
                       tableBold ? "font-normal" : "font-normal",
                       !isCompact && "min-w-[60px]",
-                      isCompact && "h-auto"
+                      isCompact && "h-auto",
                     )}
                     style={isCompact ? { maxWidth: `${dynamicMaxWidth}px` } : undefined}
                   >
@@ -212,7 +233,13 @@ export const PhoneticTable = ({
 
             {/* Init Row */}
             <TableRow className={isCompact ? "[&>th]:py-0.5" : ""}>
-              <TableHead className={cn("sticky left-0 z-20 bg-primary text-primary-foreground w-16", tableBold ? "font-bold" : "font-normal", isCompact && "h-auto")}>
+              <TableHead
+                className={cn(
+                  "sticky left-0 z-20 bg-primary text-primary-foreground w-16",
+                  tableBold ? "font-bold" : "font-normal",
+                  isCompact && "h-auto",
+                )}
+              >
                 Init
               </TableHead>
               {finals.map((final) => (
@@ -223,9 +250,9 @@ export const PhoneticTable = ({
                     tableBold ? "font-normal" : "font-normal",
                     !isCompact && "min-w-[60px]",
                     isCompact && "h-auto",
-                    groupColors[final.group]
+                    groupColors[final.group],
                   )}
-                  style={{ maxWidth: isCompact ? `${dynamicMaxWidth}px` : undefined, fontSize: '0.85em' }}
+                  style={{ maxWidth: isCompact ? `${dynamicMaxWidth}px` : undefined, fontSize: "0.85em" }}
                 >
                   <div className={tableBold ? "font-bold" : "font-normal"}>
                     {final.pinyin.startsWith("ü")
@@ -233,19 +260,32 @@ export const PhoneticTable = ({
                       : final.pinyin}
                   </div>
                   {final.hint && (
-                    <div className="text-amber-600 dark:text-amber-400" style={{ fontSize: '0.7em' }}>{final.hint}</div>
+                    <div className="text-amber-600 dark:text-amber-400" style={{ fontSize: "0.7em" }}>
+                      {final.hint}
+                    </div>
                   )}
                   <div className="text-muted-foreground">{final.zhuyin}</div>
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
+          // Main body
           <TableBody>
             {initials.map((initial) => (
               <TableRow key={initial.pinyin} className={isCompact ? "[&>td]:py-0.5" : ""}>
-                <TableCell className={cn("sticky left-0 z-10 bg-primary/90 text-primary-foreground text-center", tableBold ? "font-bold" : "font-normal", isCompact && "py-0.5")}>
+                <TableCell
+                  className={cn(
+                    "sticky left-0 z-10 bg-primary/90 text-primary-foreground text-center",
+                    tableBold ? "font-bold" : "font-normal",
+                    isCompact && "py-0.5",
+                  )}
+                >
                   <div>{initial.pinyin}</div>
-                  <div className="opacity-80" style={{ fontSize: '0.85em' }}>{initial.zhuyin}</div>
+                  {(displayMode === "zhuyin" || displayMode === "both") && (
+                    <div className="opacity-80" style={{ fontSize: "0.85em" }}>
+                      {initial.zhuyin}
+                    </div>
+                  )}
                 </TableCell>
                 {finals.map((final) => {
                   const cell = getCell(initial.pinyin, final.pinyin);
