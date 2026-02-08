@@ -248,7 +248,7 @@ export const PhoneticTable = ({
                   className={cn(
                     "text-center",
                     tableBold ? "font-normal" : "font-normal",
-                    !isCompact && "min-w-[60px]",
+                    !isCompact && "min-w-[40px]",
                     isCompact && "h-auto",
                     groupColors[final.group],
                   )}
@@ -281,8 +281,10 @@ export const PhoneticTable = ({
                   )}
                 >
                   {isCompact ? (
-                    (displayMode === "zhuyin" || displayMode === "both") ? (
-                      <div>{initial.pinyin} : <span style={{ color: 'grey' }}>{initial.zhuyin}</span></div>
+                    displayMode === "zhuyin" || displayMode === "both" ? (
+                      <div>
+                        {initial.pinyin} : <span style={{ color: "grey" }}>{initial.zhuyin}</span>
+                      </div>
                     ) : (
                       <div>{initial.pinyin}</div>
                     )
@@ -296,7 +298,6 @@ export const PhoneticTable = ({
                       )}
                     </>
                   )}
-                  
                 </TableCell>
                 {finals.map((final) => {
                   const cell = getCell(initial.pinyin, final.pinyin);
