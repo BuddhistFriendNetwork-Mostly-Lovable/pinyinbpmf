@@ -248,17 +248,22 @@ export function getChineseWords(finalPinyin: string): ChineseWordEntry[] {
   return chineseWords[finalPinyin] || [];
 }
 
-export function getChineseWordsDisplay(finalPinyin: string, count: number): string {
+export function getChineseWordsDisplay(finalPinyin: string, count: integer): string {
   const wordsRaw = getChineseWords(finalPinyin);
-  if (wordsRaw.length === 0 || count < 1) return "";
+  if (words.length === 0 || count < 1) return "";
+
+  const words = wordsRaw.map((x) => {
+    // If x is a single character or empty, return it as is.
+    // Otherwise, join characters with a non-breaking space.
+    return x.length <= 1 ? x : x.split("").join("\u2060");
+  });
 
   // Extract just the word part, taking only the first variant if there's a comma
-  return wordsRaw
-    .slice(0, count)
+  return words
+    .slice(0, count) // just the first N words
     .map((entry) => {
-      const word = entry.w.split(",")[0];
-      // Add non-breaking spaces between characters for multi-char words
-      return word.length <= 1 ? word : word.split("").join("\u00A0");
+      const word = entry.w.split(",")[0]; // if there is a comma, just the part before the comma
+      return word;
     })
     .join("\u2009"); // Thinspace
 }
