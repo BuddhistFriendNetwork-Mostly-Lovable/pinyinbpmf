@@ -42,7 +42,7 @@ export const englishRhymeWords: Record<string, string[]> = {
   uang: ["Juan + g 100%", "wrong (with w sound) 70%", "Swan + g 95%"],
 
   // --- The Ü (Umlaut) Group ---
-  ü: ["French 'brie' 50%", "see (with super puckered lips) 80%"],
+  ü: ["French 'brie' 50%", "French 'brie' with puckerd lips, 80%", "see (with super puckered lips) 80%"],
   üe: ["duet (soft t) 85%", "sweat (puckered lips, soft t) 70%", "you+eh 80%"],
   üan: ["U.N. (United Nations) 80%", "yen (puckered lips) 85%", "Ian 50%", "❌Juan 0%"],
   ün: ["jean (puckered lips) 80%", "Queen - Q 80%"],
