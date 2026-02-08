@@ -265,7 +265,7 @@ export function getChineseWordsDisplay(finalPinyin: string, count: number): stri
       const word = glueChineseString(entry.w.split(",")[0]); // if there is a comma, just the part before the comma
       return word;
     })
-    .join("\u2003"); // EmSpace
+    .join("\u2002"); // EnSpace
 }
 
 export function getMDBGUrl(chineseText: string): string {
