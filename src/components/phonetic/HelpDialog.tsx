@@ -431,19 +431,19 @@ const IKnowChineseTab = () => (
     <p className="text-muted-foreground">Both systems use a table, like the Pinyin↔Zhuyin table on my website.</p>
     <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-2">
       <li>
-        Along the side, you have all the initial sounds. Think of these as the consonant beginnings. Approx 30 in
+        Along the side, you have all the initial sounds. Think of these as the consonant beginnings. Approx 20 in
         quantity.
       </li>
-      <li>Along the top, you have all the "endings". Approx 40 in quantity.</li>
+      <li>Along the top, you have all the "endings". Approx 30 in quantity.</li>
       <li>Every Chinese word is 1 initial sound and 1 ending sound.</li>
     </ul>
-    <img 
-      src={pinyinChartExample} 
-      alt="Pinyin chart showing the complete table of Chinese sounds with initials on the left and finals on top" 
+    <img
+      src={pinyinChartExample}
+      alt="Pinyin chart showing the complete table of Chinese sounds with initials on the left and finals on top"
       className="w-full rounded-lg border my-4"
     />
     <p className="text-muted-foreground">
-      If the table is 30 × 40, there are 1200 combinations. But not every combination is valid, so that's why it gets
+      If the table is 20 × 30, there are 600 combinations. But not every combination is valid, so that's why it gets
       reduced to 410 valid sounds.
     </p>
     <p className="text-muted-foreground">
