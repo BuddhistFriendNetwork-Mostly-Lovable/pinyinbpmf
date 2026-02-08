@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SettingsPanel, type DisplayMode } from "./SettingsPanel";
@@ -9,9 +9,27 @@ import { EnglishRhymeInfoDialog } from "./EnglishRhymeInfoDialog";
 import { HelpDialog } from "./HelpDialog";
 import { gotchaCategories, type GotchaCategory } from "@/data/phoneticData";
 import type { AudioMode } from "@/hooks/useTTS";
+import { toast } from "@/hooks/use-toast";
 
 export const PhoneticChart = () => {
   const [settingsOpen, setSettingsOpen] = useState(true);
+  const hasAutoHidden = useRef(false);
+
+  // Auto-hide settings after 5 seconds on initial load
+  useEffect(() => {
+    if (hasAutoHidden.current) return;
+    
+    const timer = setTimeout(() => {
+      setSettingsOpen(false);
+      hasAutoHidden.current = true;
+      toast({
+        description: "Settings Hidden. Click Settings to Show.",
+        duration: 3000,
+      });
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
   const [displayMode, setDisplayMode] = useState<DisplayMode>("both");
   const [highlightGotchas, setHighlightGotchas] = useState(true);
   const [activeGotchaCategories, setActiveGotchaCategories] = useState<Set<GotchaCategory>>(
