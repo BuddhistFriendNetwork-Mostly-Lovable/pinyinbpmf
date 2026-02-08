@@ -269,7 +269,7 @@ export const PhoneticTable = ({
               ))}
             </TableRow>
           </TableHeader>
-          // Main body
+          {/* // Main body */}
           <TableBody>
             {initials.map((initial) => (
               <TableRow key={initial.pinyin} className={isCompact ? "[&>td]:py-0.5" : ""}>
