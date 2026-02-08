@@ -281,12 +281,10 @@ export const PhoneticTable = ({
                   )}
                 >
                   {isCompact ? (
-                    ( (displayMode === "zhuyin" || displayMode === "both") ? (
-                      <div>{initial.pinyin} : <span style={{ color: 'grey' }}>{initial.zhuyin}<span></div>
-                    )
-                      : (
-                        <div>{initial.pinyin}</div>
-                      )
+                    (displayMode === "zhuyin" || displayMode === "both") ? (
+                      <div>{initial.pinyin} : <span style={{ color: 'grey' }}>{initial.zhuyin}</span></div>
+                    ) : (
+                      <div>{initial.pinyin}</div>
                     )
                   ) : (
                     <>
