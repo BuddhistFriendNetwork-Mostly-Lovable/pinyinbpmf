@@ -178,6 +178,7 @@ export const PhoneticTable = ({
                     key={`chinese-${final.pinyin}`}
                     className={cn(
                       "text-center bg-red-900 text-white p-0",
+                      "border-l border-r border-red-400/30", // Added: 1px left/right borders with 30% opacity
                       tableBold ? "font-normal" : "font-normal",
                       !isCompact && "min-w-[60px]",
                       isCompact && "h-auto",
