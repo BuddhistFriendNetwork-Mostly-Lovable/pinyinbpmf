@@ -1,147 +1,215 @@
 
-
-# Implementation Plan: Table Text Size and Bold Settings (Updated)
+# Implementation Plan: Pinyin Stubs to Words Data Source and Enhanced Cell Popup
 
 ## Overview
-Add a "Table Text Size" control with +/- buttons and percentage display, plus a "Bold" toggle. These settings affect all table text including the Chinese Words row, English Rhyme Words row, and the main phonetic cells. When text size is 90% or less, the table becomes more compact with dynamic max-width constraints to maintain word wrap.
+Create a new data source from the uploaded file containing common Chinese characters grouped by pinyin stub. Then, replace the current cell popup content with an expandable table showing common words for each pinyin, with additional details visible when expanded.
+
+## Data Structure Analysis
+
+The uploaded file contains JSON data with this structure:
+- `pinyinStub`: The base pinyin without tone (e.g., "zhi", "chi", "shi")
+- `characters`: Array of word entries with:
+  - `h`: HSK level (-1 means not in HSK)
+  - `ct`: Chinese Traditional character
+  - `fp`: Full pinyin with tone marks
+  - `e`: English meaning
+  - `t`: Tone number (1-4, 5 for neutral)
+  - `cs`: Chinese Simplified character
+
+---
 
 ## Changes Required
 
-### 1. Update `PhoneticChart.tsx`
+### 1. Create New Data Source: `src/data/pinyinStubsToWordsData.ts`
 
-Add two new state variables:
-- `tableTextSize: number` - defaults to 100
-- `tableBold: boolean` - defaults to true
+**Clean up the uploaded JSON:**
+- Remove the "ZZZZ First 10" header line
+- Parse the JSON array structure
 
-Pass these values and their setters to both `SettingsPanel` and `PhoneticTable`.
-
-### 2. Update `SettingsPanel.tsx`
-
-**Add new props:**
+**Define TypeScript interfaces:**
 ```typescript
-tableTextSize: number;
-onTableTextSizeChange: (size: number) => void;
-tableBold: boolean;
-onTableBoldChange: (bold: boolean) => void;
+interface PinyinWordEntry {
+  hskLevel: number;        // h field, -1 = not in HSK
+  traditional: string;     // ct field
+  fullPinyin: string;      // fp field  
+  meaning: string;         // e field
+  tone: number;            // t field (1-5)
+  simplified: string;      // cs field
+}
+
+interface PinyinStubData {
+  pinyinStub: string;
+  characters: PinyinWordEntry[];
+}
 ```
 
-**Add new UI row** (single row with all controls):
-```text
-+-------------------------------------------------------------------------+
-| Table Text Size:  [-]  100%  [+]   [Reset to 100%]   Bold [Toggle]      |
-+-------------------------------------------------------------------------+
-```
-
-**Implementation details:**
-- Use `Minus` and `Plus` icons from lucide-react for the buttons
-- Text size values: `[50, 60, 70, 80, 90, 100, 110, 125, 150, 175, 200]`
-- Clicking `-` moves to the previous step in the array (if not at minimum)
-- Clicking `+` moves to the next step in the array (if not at maximum)
-- Display current percentage between the buttons
-- "Reset to 100%" button appears inline, styled as a small ghost button (hidden when already at 100%)
-- Bold toggle uses `Switch` component, inline on the same row
-
-### 3. Update `PhoneticTable.tsx`
-
-**Add new props:**
+**Export lookup function:**
 ```typescript
-tableTextSize: number;
-tableBold: boolean;
+export function getWordsForPinyin(pinyin: string): PinyinWordEntry[]
+```
+- Clean the pinyin input using `cleanPinyin()` to strip parentheses/asterisks
+- Look up in the data map
+- Return empty array if not found
+
+### 2. Add MDBG URL Builder for Chinese Words: `src/lib/zhuyinUtils.ts`
+
+**Add new function:**
+```typescript
+export const buildMDBGUrlForWord = (chineseWord: string): string => {
+  // Uses query format: *{word}*
+  return `https://www.mdbg.net/chinese/dictionary?page=worddict&wdqb=*${encodeURIComponent(chineseWord)}*`;
+};
 ```
 
-**Apply text size scaling:**
-- Wrap the entire table in a container with dynamic `font-size` style
-- Use inline style: `style={{ fontSize: \`${tableTextSize}%\` }}`
-- This cascades to all child elements including:
-  - Main table cells (pinyin/zhuyin text)
-  - Chinese Words row trigger text (currently `text-lg` in `ChineseWordsPopup`)
-  - English Rhyme Words row trigger text (in `RhymeWordsPopup`)
-  - Header row text (Init, finals)
+### 3. Update Cell Popup Component: `src/components/phonetic/CellPopup.tsx`
 
-**Apply compact mode when size <= 90%:**
-- Conditionally reduce padding: `p-1` instead of `p-2` for cells
-- Remove `min-w-[60px]` constraint from column headers
-- Add dynamic `max-w` to cells to maintain word wrap:
-  - Formula: `max-w-[${Math.round(80 * tableTextSize / 100)}px]`
-  - At 100%: max-w-[80px]
-  - At 50%: max-w-[40px]
-  - At 200%: max-w-[160px] (though compact mode only applies at 90% or less)
+**Add state for expanded view:**
+```typescript
+const [isExpanded, setIsExpanded] = useState(false);
+```
 
-**Apply bold toggle:**
-- When `tableBold` is false, conditionally remove `font-bold` and `font-medium` classes
-- This affects:
-  - Pinyin text in cells (currently `font-bold text-sm`)
-  - Zhuyin text in cells (currently `font-medium`)
-  - Header row text
-  - Initial column text
+**Fetch word data:**
+```typescript
+const words = getWordsForPinyin(pinyin);
+```
 
-### 4. Confirmation: English Rhyme and Chinese Words Rows
+**New popup layout:**
 
-Both rows will be affected by the text size scaling because:
+```
++------------------------------------------------------+
+| Common Words for {pinyin}      [Expand ▼] / [Less ▲] |
++------------------------------------------------------+
+| DEFAULT VIEW (collapsed):                             |
+| Chinese    | Pinyin   | English Meaning              |
+|------------|----------|------------------------------|
+| 之         | zhi      | possessive particle...       |
+| 知         | zhi      | to know, realize             |
++------------------------------------------------------+
 
-1. **ChineseWordsPopup** (line 32): The trigger button uses `text-lg` class. Since we apply `fontSize` as a percentage to the parent container, this will scale proportionally. At 100%, `text-lg` stays as is. At 50%, the font renders at 50% of `text-lg` size.
+| EXPANDED VIEW:                                        |
+| HSK | Chinese  | Tone Category | English Meaning  |↗ |
+|-----|----------|---------------|------------------|---|
+| 1   | 之       | 1 - High      | possessive...    | ↗|
+| 1   | 知       | 1 - High      | to know...       | ↗|
++------------------------------------------------------+
+```
 
-2. **RhymeWordsPopup** (line 32): The trigger button inherits the parent's font size. It will scale with the container.
+**Chinese column logic:**
+- Show Traditional
+- If Simplified differs: show "Traditional - Simplified" (e.g., "時 - 时")
+- If same: show only once (e.g., "是")
 
-3. Both header rows (`bg-red-900` for Chinese Words and `bg-blue-900` for English Rhyme) will have their `min-w-[60px]` removed in compact mode and will receive the same `max-w` constraint.
+**Tone category display:**
+- 1 - High
+- 2 - Rising
+- 3 - Dipping
+- 4 - Falling
+- 5 - Neutral
+
+**Expand/collapse toggle:**
+- Use lucide icons: `ChevronDown` / `ChevronUp`
+- Button text: "Expand" / "Less"
+
+**External link (expanded view only):**
+- Links to MDBG with query: `*{traditional_character}*`
+- Use `ExternalLink` icon
+
+**Keep existing content below the table:**
+- Audio disclaimer with pinyin/zhuyin
+- MDBG and Yabla search links for the pinyin
+
+### 4. Handle Empty States
+
+If no words are found for a pinyin:
+- Show the existing popup content (audio disclaimer + dictionary links)
+- Skip the table section entirely
 
 ---
 
 ## Technical Details
 
-### Text Size Step Navigation
+### Data File Processing
+
+The uploaded file has:
+- Line 1: "ZZZZ First 10" (header to remove)
+- Lines 2-4462: JSON array
+
+Processing steps:
+1. Remove line 1
+2. Parse as JSON
+3. Transform field names to readable TypeScript
+4. Create a lookup Map keyed by pinyinStub
+
+### Tone Category Labels
 
 ```typescript
-const TEXT_SIZE_STEPS = [50, 60, 70, 80, 90, 100, 110, 125, 150, 175, 200];
-
-const handleDecrease = () => {
-  const currentIndex = TEXT_SIZE_STEPS.indexOf(tableTextSize);
-  if (currentIndex > 0) {
-    onTableTextSizeChange(TEXT_SIZE_STEPS[currentIndex - 1]);
-  }
-};
-
-const handleIncrease = () => {
-  const currentIndex = TEXT_SIZE_STEPS.indexOf(tableTextSize);
-  if (currentIndex < TEXT_SIZE_STEPS.length - 1) {
-    onTableTextSizeChange(TEXT_SIZE_STEPS[currentIndex + 1]);
-  }
+const TONE_LABELS: Record<number, string> = {
+  1: "1 - High",
+  2: "2 - Rising", 
+  3: "3 - Dipping",
+  4: "4 - Falling",
+  5: "5 - Neutral"
 };
 ```
 
-### Compact Mode Logic
+### Files to Create/Modify
 
-When `tableTextSize <= 90`:
-- Cell inner padding: `p-1` instead of `p-2`
-- Remove `min-w-[60px]` from headers
-- Apply dynamic max-width for word wrap: `style={{ maxWidth: \`${Math.round(80 * tableTextSize / 100)}px\` }}`
+| File | Action |
+|------|--------|
+| `src/data/pinyinStubsToWordsData.ts` | **Create** - New data source with cleaned JSON |
+| `src/lib/zhuyinUtils.ts` | **Modify** - Add `buildMDBGUrlForWord()` function |
+| `src/components/phonetic/CellPopup.tsx` | **Modify** - Complete rewrite with expandable table |
 
-### Bold Toggle Logic
+### Component Structure for CellPopup
 
-- When `tableBold` is `true` (default): keep existing `font-bold` and `font-medium` classes
-- When `tableBold` is `false`: replace with `font-normal` class
+```typescript
+export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const words = getWordsForPinyin(pinyin);
+  const cleanedPinyin = cleanPinyin(pinyin);
+  
+  return (
+    <Popover>
+      <PopoverTrigger>...</PopoverTrigger>
+      <PopoverContent>
+        {words.length > 0 && (
+          <>
+            {/* Header with title and expand toggle */}
+            {/* Table with conditional columns */}
+          </>
+        )}
+        {/* Existing audio disclaimer and dictionary links */}
+      </PopoverContent>
+    </Popover>
+  );
+};
+```
 
-### Files to Modify
+### Table Column Definitions
 
-| File | Changes |
-|------|---------|
-| `src/components/phonetic/PhoneticChart.tsx` | Add state for `tableTextSize` and `tableBold`, pass to children |
-| `src/components/phonetic/SettingsPanel.tsx` | Add new props, add text size row with +/- buttons, percentage display, reset button, and bold toggle |
-| `src/components/phonetic/PhoneticTable.tsx` | Add props, apply dynamic font-size style, compact mode styles with max-width, bold toggle |
+**Collapsed (default):**
+| Column | Width | Content |
+|--------|-------|---------|
+| Chinese | auto | Traditional + optional "- Simplified" |
+| Pinyin | auto | fullPinyin field |
+| English Meaning | auto | meaning field (truncated if needed) |
+
+**Expanded:**
+| Column | Width | Content |
+|--------|-------|---------|
+| HSK | narrow | hskLevel (show "-" if -1) |
+| Chinese | auto | Traditional + optional "- Simplified" |
+| Tone Category | auto | Number + Label (e.g., "1 - High") |
+| English Meaning | auto | meaning field |
+| Link | icon | ExternalLink to MDBG |
 
 ---
 
-## UI Layout in Settings
+## Visual Design
 
-The new setting will be placed after "Show English Rhyme Words" and before "Other Settings":
-
-```text
-Table Text Size    [-]  100%  [+]   [Reset to 100%]      Bold [on/off]
-```
-
-Single row layout with:
-- Label on the left
-- Minus button, percentage display, Plus button in the middle
-- Reset button (small, ghost variant) - only shown when not at 100%
-- Bold toggle with label on the right
+- Popup width: `min-w-[400px]` to accommodate table
+- Table uses existing shadcn/ui Table components
+- Expand button: Small ghost button with icon + text
+- Consistent with existing `ChineseWordsPopup` styling
+- External link button styled as ghost, icon-only
 
