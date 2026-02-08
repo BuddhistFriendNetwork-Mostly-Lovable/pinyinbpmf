@@ -16,9 +16,10 @@ export const CellPopup = ({ zhuyin, open, onOpenChange, children }: CellPopupPro
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent className="w-auto p-2" side="top" sideOffset={5}>
-        Pinyin audio not 100% perfect. <BR></BR>
+        Pinyin audio not 100% perfect.
+        <br />
         Find real words using the MDBG dictionary link.
-        <br></br>
+        <br />
         <a
           href={mdbgUrl}
           target="_blank"
