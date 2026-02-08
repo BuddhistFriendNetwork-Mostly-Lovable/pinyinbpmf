@@ -252,17 +252,16 @@ export function getChineseWordsDisplay(finalPinyin: string, count: number): stri
   const wordsRaw = getChineseWords(finalPinyin);
   if (wordsRaw.length === 0 || count < 1) return "";
 
+  // Extract just the word part, taking only the first variant if there's a comma
   return wordsRaw
     .slice(0, count)
     .map((entry) => {
-      // Use the first variant if there are traditional/simplified options.
       const word = entry.w.split(",")[0];
-      // Add non-breaking spaces between characters for readability.
+      // Add non-breaking spaces between characters for multi-char words
       return word.length <= 1 ? word : word.split("").join("\u00A0");
     })
-    .join("\u2009"); // Thinspace between words
+    .join("\u2009"); // Thinspace
 }
-
 
 export function getMDBGUrl(chineseText: string): string {
   // Use the first variant if there are traditional/simplified options
