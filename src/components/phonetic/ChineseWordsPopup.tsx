@@ -12,7 +12,7 @@ interface ChineseWordsPopupProps {
 
 export const ChineseWordsPopup = ({ finalPinyin }: ChineseWordsPopupProps) => {
   const words = getChineseWords(finalPinyin);
-  const displayText = getChineseWordsDisplay(finalPinyin);
+  const displayText = getChineseWordsDisplay(finalPinyin, 3); // currently hardcoded up to 3 example words
   const { speak } = useTTS();
 
   if (words.length === 0) {
