@@ -15,11 +15,11 @@ interface CellPopupProps {
 }
 
 const TONE_LABELS: Record<number, string> = {
-  1: "1 - High",
-  2: "2 - Rising",
-  3: "3 - Dipping",
-  4: "4 - Falling",
-  5: "5 - Neutral",
+  1: "1-High",
+  2: "2-Rising",
+  3: "3-Dipping",
+  4: "4-Falling",
+  5: "5-Neutral",
 };
 
 const formatChinese = (entry: PinyinWordEntry): string => {
@@ -37,7 +37,7 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
   const [isExpanded, setIsExpanded] = useState(false);
   const mdbgUrl = buildMDBGUrl(pinyin);
   const yablaUrl = buildYablaUrl(pinyin);
-  
+
   // Get words for this pinyin stub
   const pinyinStub = stripToneMarks(pinyin);
   const words = getWordsForPinyinStub(pinyinStub);
@@ -56,7 +56,7 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
             href="https://www.google.com/search?q=state+of+chinese+TTS+default+support+on+phones+and+browsers"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 hover:underline"
+            className="text-sm text-primary hover:text-primary/80 hover:underline"
             onClick={() => onOpenChange(false)}
           >
             <span className="font-italic">Why?</span>
@@ -91,12 +91,7 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
           <div className="border-t pt-3">
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-sm font-semibold">Common Words for {pinyin}</h4>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-7 px-2 text-xs"
-                onClick={() => setIsExpanded(!isExpanded)}
-              >
+              <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => setIsExpanded(!isExpanded)}>
                 {isExpanded ? (
                   <>
                     Less <ChevronUp className="h-3 w-3 ml-1" />
@@ -125,11 +120,7 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
                 <TableBody>
                   {words.map((entry, index) => (
                     <TableRow key={index} className="h-auto">
-                      {isExpanded && (
-                        <TableCell className="px-1 py-0.5">
-                          {entry.h === -1 ? "—" : entry.h}
-                        </TableCell>
-                      )}
+                      {isExpanded && <TableCell className="px-1 py-0.5">{entry.h === -1 ? "—" : entry.h}</TableCell>}
                       <TableCell className="text-sm font-medium px-1 py-0.5 whitespace-nowrap">
                         {formatChinese(entry)}
                       </TableCell>
@@ -138,9 +129,7 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
                           {TONE_LABELS[entry.t] || entry.t}
                         </TableCell>
                       ) : (
-                        <TableCell className="text-muted-foreground px-1 py-0.5">
-                          {entry.fp}
-                        </TableCell>
+                        <TableCell className="text-muted-foreground px-1 py-0.5">{entry.fp}</TableCell>
                       )}
                       <TableCell className="px-1 py-0.5 max-w-[120px] truncate" title={entry.e}>
                         {entry.e}
