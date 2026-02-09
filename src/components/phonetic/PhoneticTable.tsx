@@ -170,7 +170,7 @@ export const PhoneticTable = ({
                   )}
                 >
                   <span className="leading-tight" style={{ fontSize: "0.75em" }}>
-                    Chinese Words
+                    Chinese Rhyme Words
                   </span>
                 </TableHead>
                 {finals.map((final) => (
