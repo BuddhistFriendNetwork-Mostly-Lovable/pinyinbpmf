@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ExternalLink, ChevronDown, ChevronUp, Volume2 } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { buildMDBGUrl, buildYablaUrl, cleanPinyin, stripToneMarks } from "@/lib/zhuyinUtils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
@@ -38,7 +37,6 @@ const buildWordMDBGUrl = (traditionalChar: string): string => {
 export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: CellPopupProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { speak } = useTTS();
-  const isMobile = useIsMobile();
   const mdbgUrl = buildMDBGUrl(pinyin);
   const yablaUrl = buildYablaUrl(pinyin);
 
@@ -109,29 +107,29 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
             </div>
 
             <div className="max-h-[200px] overflow-y-auto overflow-x-auto -mx-3">
-              <Table className="text-xs w-full table-fixed">
+              <Table className="text-xs w-max min-w-full">
                 {isExpanded && (
                   <TableHeader>
                     <TableRow className="h-auto">
-                      <TableHead className="text-xs px-1 py-0.5" style={{ width: '5%' }}>HSK</TableHead>
-                      <TableHead className="text-xs px-1 py-0.5" style={{ width: '15%' }}>中文</TableHead>
-                      <TableHead className="px-1 py-0.5" style={{ width: '8%' }}></TableHead>
-                      <TableHead className="text-xs px-1 py-0.5" style={{ width: '10%' }}>Tone</TableHead>
-                      <TableHead className="text-xs px-1 py-0.5" style={{ width: '35%' }}>Meaning</TableHead>
-                      <TableHead className="px-1 py-0.5" style={{ width: '5%' }}></TableHead>
+                      <TableHead className="text-xs px-1 py-0.5">HSK</TableHead>
+                      <TableHead className="text-xs px-1 py-0.5">中文</TableHead>
+                      <TableHead className="px-1 py-0.5"></TableHead>
+                      <TableHead className="text-xs px-1 py-0.5">Tone</TableHead>
+                      <TableHead className="text-xs px-1 py-0.5">Meaning</TableHead>
+                      <TableHead className="px-1 py-0.5"></TableHead>
                     </TableRow>
                   </TableHeader>
                 )}
                 <TableBody>
                   {words.map((entry, index) => (
                     <TableRow key={index} className="h-auto">
-                      {isExpanded && <TableCell className="px-1 py-0.5" style={{ width: '5%' }}>{entry.h === -1 ? "—" : entry.h}</TableCell>}
-                      <TableCell className="text-sm font-medium px-1 py-0.5" style={isExpanded ? { width: '15%' } : undefined}>
+                      {isExpanded && <TableCell className="px-1 py-0.5">{entry.h === -1 ? "—" : entry.h}</TableCell>}
+                      <TableCell className="text-sm font-medium px-1 py-0.5 whitespace-nowrap">
                         <span className="inline-flex items-center gap-0.5">
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-5 w-5 p-0 min-w-0 flex-shrink-0"
+                            className="h-5 w-5 p-0 min-w-0"
                             onClick={(e) => {
                               e.stopPropagation();
                               speak(entry.ct.split(",")[0], "zhuyin-comment");
@@ -140,22 +138,22 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
                           >
                             <Volume2 className="h-3 w-3" />
                           </Button>
-                          <span className="break-words">{formatChinese(entry)}</span>
+                          {formatChinese(entry)}
                         </span>
                       </TableCell>
-                      {isExpanded && <TableCell className="text-muted-foreground px-1 py-0.5" style={{ width: '8%' }}>{entry.fp}</TableCell>}
+                      {isExpanded && <TableCell className="text-muted-foreground px-1 py-0.5">{entry.fp}</TableCell>}
                       {isExpanded ? (
-                        <TableCell className="text-muted-foreground px-1 py-0.5" style={{ width: '10%' }}>
-                          {isMobile ? entry.t : (TONE_LABELS[entry.t] || entry.t)}
+                        <TableCell className="text-muted-foreground px-1 py-0.5 whitespace-nowrap">
+                          {TONE_LABELS[entry.t] || entry.t}
                         </TableCell>
                       ) : (
                         <TableCell className="text-muted-foreground px-1 py-0.5">{entry.fp}</TableCell>
                       )}
-                      <TableCell className="px-1 py-0.5 break-words" style={isExpanded ? { width: '35%' } : undefined}>
+                      <TableCell className="px-1 py-0.5 whitespace-nowrap">
                         {entry.e}
                       </TableCell>
                       {isExpanded && (
-                        <TableCell className="px-1 py-0.5" style={{ width: '5%' }}>
+                        <TableCell className="px-1 py-0.5">
                           <a
                             href={buildWordMDBGUrl(entry.ct)}
                             target="_blank"
