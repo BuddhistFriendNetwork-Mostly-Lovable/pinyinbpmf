@@ -47,7 +47,7 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent className="w-auto min-w-[400px] p-3" side="top" sideOffset={5}>
+      <PopoverContent className="w-auto min-w-[320px] p-3" side="top" sideOffset={5}>
         <p className="text-sm text-muted-foreground mb-2">
           Pinyin audio for <span className="font-bold text-foreground text-base">{pinyin}</span> /{" "}
           <span className="font-bold text-pink-600 dark:text-pink-400 text-base">{zhuyin}</span> is not 100% perfect.
@@ -106,7 +106,7 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
               </Button>
             </div>
 
-            <div className="max-h-[200px] overflow-y-auto overflow-x-auto mx-2">
+            <div className="max-h-[200px] overflow-y-auto overflow-x-auto mx-0">
               <Table className="text-xs w-full ">
                 {isExpanded && (
                   <TableHeader>
