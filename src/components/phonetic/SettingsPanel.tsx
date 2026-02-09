@@ -197,12 +197,7 @@ export const SettingsPanel = ({
             </Button>
           </div>
           {tableTextSize !== 100 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 px-2 text-xs"
-              onClick={() => onTableTextSizeChange(100)}
-            >
+            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onTableTextSizeChange(100)}>
               Reset to 100%
             </Button>
           )}
@@ -289,7 +284,8 @@ export const SettingsPanel = ({
                   onCheckedChange={(checked) => onShowMDBGPopupChange(checked === true)}
                 />
                 <Label htmlFor="mdbg-popup" className="cursor-pointer text-sm">
-                  Search for pinyin/zhuyin on MDBG dictionary
+                  Show the popup. This searches for pinyin/zhuyin on MDBG dictionary. And shows common words with the
+                  pinyin stub.
                 </Label>
               </div>
               <div className="flex flex-wrap gap-2">
