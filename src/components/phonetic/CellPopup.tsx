@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
-import { buildMDBGUrl, buildYablaUrl, stripToneMarks } from "@/lib/zhuyinUtils";
+import { buildMDBGUrl, buildYablaUrl, cleanPinyin, stripToneMarks } from "@/lib/zhuyinUtils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -39,7 +39,7 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
   const yablaUrl = buildYablaUrl(pinyin);
 
   // Get words for this pinyin stub
-  const pinyinStub = stripToneMarks(pinyin);
+  const pinyinStub = cleanPinyin(stripToneMarks(pinyin));
   const words = getWordsForPinyinStub(pinyinStub);
 
   return (
@@ -125,9 +125,7 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
                       <TableCell className="text-sm font-medium px-1 py-0.5 whitespace-nowrap">
                         {formatChinese(entry)}
                       </TableCell>
-                      {isExpanded && (
-                        <TableCell className="text-muted-foreground px-1 py-0.5">{entry.fp}</TableCell>
-                      )}
+                      {isExpanded && <TableCell className="text-muted-foreground px-1 py-0.5">{entry.fp}</TableCell>}
                       {isExpanded ? (
                         <TableCell className="text-muted-foreground px-1 py-0.5 whitespace-nowrap">
                           {TONE_LABELS[entry.t] || entry.t}
