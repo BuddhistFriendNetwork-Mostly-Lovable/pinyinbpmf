@@ -107,7 +107,7 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
             </div>
 
             <div className="max-h-[200px] overflow-y-auto overflow-x-auto mx-2">
-              <Table className="text-xs w-max min-w-full ">
+              <Table className="text-xs w-full ">
                 {isExpanded && (
                   <TableHeader>
                     <TableRow className="h-auto">
