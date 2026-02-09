@@ -113,8 +113,8 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
                     <TableRow className="h-auto">
                       <TableHead className="text-xs px-1 py-0.5">HSK</TableHead>
                       <TableHead className="text-xs px-1 py-0.5">中文</TableHead>
-                      <TableHead className="px-1 py-0.5"></TableHead>
-                      <TableHead className="text-xs px-1 py-0.5">Tone</TableHead>
+                      <TableHead className="px-1 py-0.5">P</TableHead>
+                      <TableHead className="text-xs px-1 py-0.5">T</TableHead>
                       <TableHead className="text-xs px-1 py-0.5">Meaning</TableHead>
                       <TableHead className="px-1 py-0.5"></TableHead>
                     </TableRow>
@@ -143,15 +143,15 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
                       </TableCell>
                       {isExpanded && <TableCell className="text-muted-foreground px-1 py-0.5">{entry.fp}</TableCell>}
                       {isExpanded ? (
-                        <TableCell className="text-muted-foreground px-0.5 py-0.5 whitespace-nowrap">
-                          {entry.t}
+                        <TableCell className="text-muted-foreground px-1 py-0.5 whitespace-nowrap">
+                          {TONE_LABELS[entry.t] || entry.t}
                         </TableCell>
                       ) : (
-                        <TableCell className="text-muted-foreground px-0.5 py-0.5">{entry.fp}</TableCell>
+                        <TableCell className="text-muted-foreground px-1 py-0.5">{entry.fp}</TableCell>
                       )}
                       <TableCell className="px-1 py-0.5 whitespace-nowrap">{entry.e}</TableCell>
                       {isExpanded && (
-                        <TableCell className="px-0 py-0.5">
+                        <TableCell className="px-1 py-0.5">
                           <a
                             href={buildWordMDBGUrl(entry.ct)}
                             target="_blank"
