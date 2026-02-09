@@ -106,7 +106,7 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
               </Button>
             </div>
 
-            <div className="max-h-[200px] overflow-y-auto overflow-x-auto">
+            <div className="max-h-[200px] overflow-y-auto overflow-x-auto -mx-3 px-3">
               <Table className="text-xs">
                 {isExpanded && (
                   <TableHeader>
