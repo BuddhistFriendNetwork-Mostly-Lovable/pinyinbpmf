@@ -111,6 +111,7 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
                     <TableRow className="h-auto">
                       <TableHead className="text-xs px-1 py-0.5">HSK</TableHead>
                       <TableHead className="text-xs px-1 py-0.5">中文</TableHead>
+                      <TableHead className="px-1 py-0.5"></TableHead>
                       <TableHead className="text-xs px-1 py-0.5">Tone</TableHead>
                       <TableHead className="text-xs px-1 py-0.5">Meaning</TableHead>
                       <TableHead className="px-1 py-0.5"></TableHead>
@@ -124,6 +125,9 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
                       <TableCell className="text-sm font-medium px-1 py-0.5 whitespace-nowrap">
                         {formatChinese(entry)}
                       </TableCell>
+                      {isExpanded && (
+                        <TableCell className="text-muted-foreground px-1 py-0.5">{entry.fp}</TableCell>
+                      )}
                       {isExpanded ? (
                         <TableCell className="text-muted-foreground px-1 py-0.5 whitespace-nowrap">
                           {TONE_LABELS[entry.t] || entry.t}
