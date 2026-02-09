@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
+import { ExternalLink, ChevronDown, ChevronUp, Volume2 } from "lucide-react";
 import { buildMDBGUrl, buildYablaUrl, cleanPinyin, stripToneMarks } from "@/lib/zhuyinUtils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getWordsForPinyinStub, type PinyinWordEntry } from "@/data/pinyinStubsToWordsData";
+import { useTTS } from "@/hooks/useTTS";
 
 interface CellPopupProps {
   pinyin: string;
@@ -35,6 +36,7 @@ const buildWordMDBGUrl = (traditionalChar: string): string => {
 
 export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: CellPopupProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { speak } = useTTS();
   const mdbgUrl = buildMDBGUrl(pinyin);
   const yablaUrl = buildYablaUrl(pinyin);
 
@@ -123,7 +125,21 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
                     <TableRow key={index} className="h-auto">
                       {isExpanded && <TableCell className="px-1 py-0.5">{entry.h === -1 ? "—" : entry.h}</TableCell>}
                       <TableCell className="text-sm font-medium px-1 py-0.5 whitespace-nowrap">
-                        {formatChinese(entry)}
+                        <span className="inline-flex items-center gap-0.5">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-5 w-5 p-0 min-w-0"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              speak(entry.ct.split(",")[0], "zhuyin-comment");
+                            }}
+                            title="Speak this word"
+                          >
+                            <Volume2 className="h-3 w-3" />
+                          </Button>
+                          {formatChinese(entry)}
+                        </span>
                       </TableCell>
                       {isExpanded && <TableCell className="text-muted-foreground px-1 py-0.5">{entry.fp}</TableCell>}
                       {isExpanded ? (
