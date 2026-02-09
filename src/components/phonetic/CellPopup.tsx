@@ -106,8 +106,8 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
               </Button>
             </div>
 
-            <div className="max-h-[200px] overflow-y-auto overflow-x-auto -mx-3 px-3">
-              <Table className="text-xs">
+            <div className="max-h-[200px] overflow-y-auto overflow-x-auto -mx-3">
+              <Table className="text-xs w-max min-w-full">
                 {isExpanded && (
                   <TableHeader>
                     <TableRow className="h-auto">
@@ -149,7 +149,7 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
                       ) : (
                         <TableCell className="text-muted-foreground px-1 py-0.5">{entry.fp}</TableCell>
                       )}
-                      <TableCell className="px-1 py-0.5 max-w-[120px] truncate" title={entry.e}>
+                      <TableCell className="px-1 py-0.5 whitespace-nowrap">
                         {entry.e}
                       </TableCell>
                       {isExpanded && (
