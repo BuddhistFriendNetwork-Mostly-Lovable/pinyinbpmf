@@ -20,6 +20,22 @@ export const cleanPinyin = (pinyin: string): string => {
 };
 
 /**
+ * Strips tone marks from pinyin to get the base stub.
+ * e.g., "zhī" -> "zhi", "shì" -> "shi"
+ */
+export const stripToneMarks = (pinyin: string): string => {
+  const toneMap: Record<string, string> = {
+    'ā': 'a', 'á': 'a', 'ǎ': 'a', 'à': 'a',
+    'ē': 'e', 'é': 'e', 'ě': 'e', 'è': 'e',
+    'ī': 'i', 'í': 'i', 'ǐ': 'i', 'ì': 'i',
+    'ō': 'o', 'ó': 'o', 'ǒ': 'o', 'ò': 'o',
+    'ū': 'u', 'ú': 'u', 'ǔ': 'u', 'ù': 'u',
+    'ǖ': 'ü', 'ǘ': 'ü', 'ǚ': 'ü', 'ǜ': 'ü',
+  };
+  return pinyin.split('').map(char => toneMap[char] || char).join('').toLowerCase();
+};
+
+/**
  * Formats Zhuyin for separated TTS pronunciation.
  * Separates each character with Chinese period to force distinct sounds.
  */
