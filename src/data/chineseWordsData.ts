@@ -271,5 +271,5 @@ export function getChineseWordsDisplay(finalPinyin: string, count: number): stri
 export function getMDBGUrl(chineseText: string): string {
   // Use the first variant if there are traditional/simplified options
   const word = chineseText.split(",")[0];
-  return `https://www.mdbg.net/chinese/dictionary?page=worddict&email=&wdrst=0&wdqb=${encodeURIComponent(word)}`;
+  return `https://www.mdbg.net/chinese/dictionary?page=worddict&email=&wdrst=1&wdqb=${encodeURIComponent(word)}`;
 }
