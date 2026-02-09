@@ -31,7 +31,7 @@ const formatChinese = (entry: PinyinWordEntry): string => {
 };
 
 const buildWordMDBGUrl = (traditionalChar: string): string => {
-  return `https://www.mdbg.net/chinese/dictionary?page=worddict&wdqb=*${encodeURIComponent(traditionalChar)}*`;
+  return `https://www.mdbg.net/chinese/dictionary?page=worddict&wdrst=1&wdqb=*${encodeURIComponent(traditionalChar)}*`;
 };
 
 export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: CellPopupProps) => {
