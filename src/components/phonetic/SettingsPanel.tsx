@@ -152,7 +152,7 @@ export const SettingsPanel = ({
         <div className="flex items-center gap-3">
           <Switch id="show-chinese-words" checked={showChineseWords} onCheckedChange={onShowChineseWordsChange} />
           <Label htmlFor="show-chinese-words" className="text-sm font-medium cursor-pointer">
-            Show Example Chinese Words
+            Show Chinese Rhyme Words
           </Label>
         </div>
 
