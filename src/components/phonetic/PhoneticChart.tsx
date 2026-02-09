@@ -23,8 +23,8 @@ export const PhoneticChart = () => {
       setSettingsOpen(false);
       hasAutoHidden.current = true;
       toast({
-        description: "Settings Hidden after 5 seconds. Click Settings to Show Again.",
-        duration: 4000,
+        description: "Settings hidden after 5 seconds. Click `Settings` to show again.",
+        duration: 3000,
       });
     }, 5000);
 
