@@ -109,46 +109,44 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
               </Button>
             </div>
 
-            <div className="max-h-[200px] overflow-y-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    {isExpanded && <TableHead className="w-10 text-xs">HSK</TableHead>}
-                    <TableHead className="text-xs">Chinese</TableHead>
-                    {isExpanded ? (
-                      <TableHead className="text-xs">Tone Category</TableHead>
-                    ) : (
-                      <TableHead className="text-xs">Pinyin</TableHead>
-                    )}
-                    <TableHead className="text-xs">English Meaning</TableHead>
-                    {isExpanded && <TableHead className="w-8"></TableHead>}
-                  </TableRow>
-                </TableHeader>
+            <div className="max-h-[200px] overflow-y-auto overflow-x-auto">
+              <Table className="text-xs">
+                {isExpanded && (
+                  <TableHeader>
+                    <TableRow className="h-auto">
+                      <TableHead className="text-xs px-1 py-0.5">HSK</TableHead>
+                      <TableHead className="text-xs px-1 py-0.5">中文</TableHead>
+                      <TableHead className="text-xs px-1 py-0.5">Tone</TableHead>
+                      <TableHead className="text-xs px-1 py-0.5">Meaning</TableHead>
+                      <TableHead className="px-1 py-0.5"></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                )}
                 <TableBody>
                   {words.map((entry, index) => (
-                    <TableRow key={index}>
+                    <TableRow key={index} className="h-auto">
                       {isExpanded && (
-                        <TableCell className="text-xs py-1.5">
+                        <TableCell className="px-1 py-0.5">
                           {entry.h === -1 ? "—" : entry.h}
                         </TableCell>
                       )}
-                      <TableCell className="text-sm font-medium py-1.5">
+                      <TableCell className="text-sm font-medium px-1 py-0.5 whitespace-nowrap">
                         {formatChinese(entry)}
                       </TableCell>
                       {isExpanded ? (
-                        <TableCell className="text-xs text-muted-foreground py-1.5">
+                        <TableCell className="text-muted-foreground px-1 py-0.5 whitespace-nowrap">
                           {TONE_LABELS[entry.t] || entry.t}
                         </TableCell>
                       ) : (
-                        <TableCell className="text-xs text-muted-foreground py-1.5">
+                        <TableCell className="text-muted-foreground px-1 py-0.5">
                           {entry.fp}
                         </TableCell>
                       )}
-                      <TableCell className="text-xs py-1.5 max-w-[150px] truncate" title={entry.e}>
+                      <TableCell className="px-1 py-0.5 max-w-[120px] truncate" title={entry.e}>
                         {entry.e}
                       </TableCell>
                       {isExpanded && (
-                        <TableCell className="py-1.5">
+                        <TableCell className="px-1 py-0.5">
                           <a
                             href={buildWordMDBGUrl(entry.ct)}
                             target="_blank"
