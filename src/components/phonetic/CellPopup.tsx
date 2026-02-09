@@ -124,7 +124,7 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
                   {words.map((entry, index) => (
                     <TableRow key={index} className="h-auto">
                       {isExpanded && <TableCell className="px-1 py-0.5">{entry.h === -1 ? "—" : entry.h}</TableCell>}
-                      <TableCell className="text-sm font-medium px-1 py-0.5 whitespace-nowrap">
+                      <TableCell className="text-sm font-medium px-1 py-0.5">
                         <span className="inline-flex items-center gap-0.5">
                           <Button
                             variant="ghost"
@@ -143,13 +143,13 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
                       </TableCell>
                       {isExpanded && <TableCell className="text-muted-foreground px-1 py-0.5">{entry.fp}</TableCell>}
                       {isExpanded ? (
-                        <TableCell className="text-muted-foreground px-0.5 py-0.5 whitespace-nowrap">
+                        <TableCell className="text-muted-foreground px-0.5 py-0.5">
                           {entry.t}
                         </TableCell>
                       ) : (
-                        <TableCell className="text-muted-foreground px-0.5 py-0.5">{entry.fp}</TableCell>
+                        <TableCell className="text-muted-foreground px-0.5 py-0.5 whitespace-nowrap">{entry.fp}</TableCell>
                       )}
-                      <TableCell className="px-1 py-0.5 whitespace-nowrap">{entry.e}</TableCell>
+                      <TableCell className="px-1 py-0.5">{entry.e}</TableCell>
                       {isExpanded && (
                         <TableCell className="px-0 py-0.5">
                           <a
