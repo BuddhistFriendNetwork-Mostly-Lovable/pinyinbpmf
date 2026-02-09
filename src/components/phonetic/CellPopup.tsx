@@ -143,17 +143,15 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
                       </TableCell>
                       {isExpanded && <TableCell className="text-muted-foreground px-1 py-0.5">{entry.fp}</TableCell>}
                       {isExpanded ? (
-                        <TableCell className="text-muted-foreground px-1 py-0.5 whitespace-nowrap">
-                          {TONE_LABELS[entry.t] || entry.t}
+                        <TableCell className="text-muted-foreground px-0.5 py-0.5 whitespace-nowrap">
+                          {entry.t}
                         </TableCell>
                       ) : (
-                        <TableCell className="text-muted-foreground px-1 py-0.5">{entry.fp}</TableCell>
+                        <TableCell className="text-muted-foreground px-0.5 py-0.5">{entry.fp}</TableCell>
                       )}
-                      <TableCell className="px-1 py-0.5 whitespace-nowrap">
-                        {entry.e}
-                      </TableCell>
+                      <TableCell className="px-1 py-0.5 whitespace-nowrap">{entry.e}</TableCell>
                       {isExpanded && (
-                        <TableCell className="px-1 py-0.5">
+                        <TableCell className="px-0 py-0.5">
                           <a
                             href={buildWordMDBGUrl(entry.ct)}
                             target="_blank"
