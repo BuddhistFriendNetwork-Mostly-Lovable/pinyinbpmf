@@ -7,16 +7,16 @@ const ZHUYIN_REGEX = /[\u3105-\u3129]/g;
  */
 export const cleanZhuyin = (zhuyin: string): string => {
   const matches = zhuyin.match(ZHUYIN_REGEX);
-  if (!matches) return '';
-  return matches.slice(0, 3).join('');
+  if (!matches) return "";
+  return matches.slice(0, 3).join("");
 };
 
 /**
- * Cleans pinyin by keeping only a-z and A-Z characters.
+ * Cleans pinyin by keeping only a-z and A-Z characters and ü
  * Strips parentheses, asterisks, and any other non-letter characters.
  */
 export const cleanPinyin = (pinyin: string): string => {
-  return pinyin.replace(/[^a-zA-Z]/g, '');
+  return pinyin.replace(/[^a-zA-Zü]/g, "");
 };
 
 /**
@@ -25,14 +25,36 @@ export const cleanPinyin = (pinyin: string): string => {
  */
 export const stripToneMarks = (pinyin: string): string => {
   const toneMap: Record<string, string> = {
-    'ā': 'a', 'á': 'a', 'ǎ': 'a', 'à': 'a',
-    'ē': 'e', 'é': 'e', 'ě': 'e', 'è': 'e',
-    'ī': 'i', 'í': 'i', 'ǐ': 'i', 'ì': 'i',
-    'ō': 'o', 'ó': 'o', 'ǒ': 'o', 'ò': 'o',
-    'ū': 'u', 'ú': 'u', 'ǔ': 'u', 'ù': 'u',
-    'ǖ': 'ü', 'ǘ': 'ü', 'ǚ': 'ü', 'ǜ': 'ü',
+    ā: "a",
+    á: "a",
+    ǎ: "a",
+    à: "a",
+    ē: "e",
+    é: "e",
+    ě: "e",
+    è: "e",
+    ī: "i",
+    í: "i",
+    ǐ: "i",
+    ì: "i",
+    ō: "o",
+    ó: "o",
+    ǒ: "o",
+    ò: "o",
+    ū: "u",
+    ú: "u",
+    ǔ: "u",
+    ù: "u",
+    ǖ: "ü",
+    ǘ: "ü",
+    ǚ: "ü",
+    ǜ: "ü",
   };
-  return pinyin.split('').map(char => toneMap[char] || char).join('').toLowerCase();
+  return pinyin
+    .split("")
+    .map((char) => toneMap[char] || char)
+    .join("")
+    .toLowerCase();
 };
 
 /**
@@ -41,7 +63,7 @@ export const stripToneMarks = (pinyin: string): string => {
  */
 export const formatZhuyinForSeparateTTS = (zhuyin: string): string => {
   const clean = cleanZhuyin(zhuyin);
-  return clean.split('').join('。') + '。';
+  return clean.split("").join("。") + "。";
 };
 
 /**
