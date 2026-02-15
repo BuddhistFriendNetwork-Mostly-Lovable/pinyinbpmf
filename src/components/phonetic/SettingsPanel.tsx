@@ -87,22 +87,22 @@ export const SettingsPanel = ({
           <span className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
             Settings
-          </span>
-          {autoMinimizeCountdown > 0 && (
-            <span className="text-foreground/50 text-xs font-normal flex items-center gap-1">
-              (Auto-minimize in {autoMinimizeCountdown}s.{" "}
-              <span
-                className="cursor-pointer hover:opacity-100"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onCancelAutoMinimize();
-                }}
-              >
-                ❌
+            {autoMinimizeCountdown > 0 && (
+              <span className="text-foreground/50 text-xs font-normal flex items-center gap-1">
+                (Auto-minimize in {autoMinimizeCountdown}s.{" "}
+                <span
+                  className="cursor-pointer hover:opacity-100"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onCancelAutoMinimize();
+                  }}
+                >
+                  ❌
+                </span>
+                )
               </span>
-              )
-            </span>
-          )}
+            )}
+          </span>
           {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </Button>
       </CollapsibleTrigger>
@@ -239,14 +239,14 @@ export const SettingsPanel = ({
           <CollapsibleContent className="space-y-4 pt-2">
             {/* Audio Section */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium">Chart Audio</Label>
+              <Label className="text-sm font-medium">Audio</Label>
               <div className="flex flex-wrap gap-2">
                 <Button
                   variant={audioMode === "zhuyin-comment" ? "default" : "outline"}
                   size="sm"
                   onClick={() => onAudioModeChange("zhuyin-comment")}
                 >
-                  Pinyin{" "}
+                  Zhuyin + Comment{" "}
                   <span
                     className="ml-1 text-xs underline cursor-pointer opacity-70 hover:opacity-100"
                     onClick={(e) => {
