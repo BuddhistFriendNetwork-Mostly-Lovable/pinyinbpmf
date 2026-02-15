@@ -15,23 +15,36 @@ import pinyinChartExample from "@/assets/pinyin-chart-example.png";
 
 export const PhoneticChart = () => {
   const [settingsOpen, setSettingsOpen] = useState(true);
+  const [autoMinimizeCountdown, setAutoMinimizeCountdown] = useState(5);
   const hasAutoHidden = useRef(false);
+  const cancelledRef = useRef(false);
 
-  // Auto-hide settings after 5 seconds on initial load
+  // Countdown timer for auto-hide
   useEffect(() => {
-    if (hasAutoHidden.current) return;
+    if (hasAutoHidden.current || cancelledRef.current) return;
 
-    const timer = setTimeout(() => {
+    if (autoMinimizeCountdown <= 0) {
       setSettingsOpen(false);
       hasAutoHidden.current = true;
+      setAutoMinimizeCountdown(-1);
       toast({
-        description: "Settings hidden after 5 seconds. Click `Settings` to show again.",
+        description: "Settings hidden. Click `Settings` to show again.",
         duration: 3000,
       });
-    }, 5000);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setAutoMinimizeCountdown((prev) => prev - 1);
+    }, 1000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [autoMinimizeCountdown]);
+
+  const handleCancelAutoMinimize = () => {
+    cancelledRef.current = true;
+    setAutoMinimizeCountdown(-1);
+  };
   const [displayMode, setDisplayMode] = useState<DisplayMode>("both");
   const [highlightGotchas, setHighlightGotchas] = useState(true);
   const [activeGotchaCategories, setActiveGotchaCategories] = useState<Set<GotchaCategory>>(
@@ -73,6 +86,8 @@ export const PhoneticChart = () => {
       </header>
 
       <SettingsPanel
+        autoMinimizeCountdown={autoMinimizeCountdown}
+        onCancelAutoMinimize={handleCancelAutoMinimize}
         displayMode={displayMode}
         onDisplayModeChange={setDisplayMode}
         highlightGotchas={highlightGotchas}
