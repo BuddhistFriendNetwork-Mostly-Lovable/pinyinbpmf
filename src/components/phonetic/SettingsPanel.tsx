@@ -227,7 +227,7 @@ export const SettingsPanel = ({
                   size="sm"
                   onClick={() => onAudioModeChange("zhuyin-comment")}
                 >
-                  Zhuyin + Comment{" "}
+                  Pinyin{" "}
                   <span
                     className="ml-1 text-xs underline cursor-pointer opacity-70 hover:opacity-100"
                     onClick={(e) => {
