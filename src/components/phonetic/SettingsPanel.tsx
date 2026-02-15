@@ -239,14 +239,14 @@ export const SettingsPanel = ({
           <CollapsibleContent className="space-y-4 pt-2">
             {/* Audio Section */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium">Audio</Label>
+              <Label className="text-sm font-medium">Chart Audio</Label>
               <div className="flex flex-wrap gap-2">
                 <Button
                   variant={audioMode === "zhuyin-comment" ? "default" : "outline"}
                   size="sm"
                   onClick={() => onAudioModeChange("zhuyin-comment")}
                 >
-                  Zhuyin + Comment{" "}
+                  Pinyin{" "}
                   <span
                     className="ml-1 text-xs underline cursor-pointer opacity-70 hover:opacity-100"
                     onClick={(e) => {
