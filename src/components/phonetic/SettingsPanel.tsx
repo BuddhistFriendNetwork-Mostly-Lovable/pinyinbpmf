@@ -13,6 +13,8 @@ export type DisplayMode = "zhuyin" | "pinyin" | "both";
 const TEXT_SIZE_STEPS = [50, 60, 70, 80, 90, 100, 110, 125, 150, 175, 200];
 
 interface SettingsPanelProps {
+  autoMinimizeCountdown: number;
+  onCancelAutoMinimize: () => void;
   displayMode: DisplayMode;
   onDisplayModeChange: (mode: DisplayMode) => void;
   highlightGotchas: boolean;
@@ -39,6 +41,8 @@ interface SettingsPanelProps {
 }
 
 export const SettingsPanel = ({
+  autoMinimizeCountdown,
+  onCancelAutoMinimize,
   displayMode,
   onDisplayModeChange,
   highlightGotchas,
@@ -84,6 +88,21 @@ export const SettingsPanel = ({
             <Settings className="h-4 w-4" />
             Settings
           </span>
+          {autoMinimizeCountdown > 0 && (
+            <span className="text-foreground/50 text-xs font-normal flex items-center gap-1">
+              (Auto-minimize in {autoMinimizeCountdown}s.{" "}
+              <span
+                className="cursor-pointer hover:opacity-100"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCancelAutoMinimize();
+                }}
+              >
+                ❌
+              </span>
+              )
+            </span>
+          )}
           {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </Button>
       </CollapsibleTrigger>
