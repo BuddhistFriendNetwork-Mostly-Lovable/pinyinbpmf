@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Volume2, Copy, ExternalLink, HelpCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { getChineseWords, getMDBGUrl, type ChineseWordEntry } from "@/data/chineseWordsData";
 import { useTTS } from "@/hooks/useTTS";
 import { toast } from "@/hooks/use-toast";
+import { ImageViewerDialog } from "./ImageViewerDialog";
 import pinyinChartExample from "@/assets/pinyin-chart-example.png";
 import helpChartPreview from "@/assets/help-chart-preview.png";
 
@@ -17,7 +19,10 @@ interface HelpDialogProps {
 }
 
 export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
+  const [imageViewerOpen, setImageViewerOpen] = useState(false);
+
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-full h-full max-h-full sm:max-w-4xl sm:h-[90vh] flex flex-col p-0">
         <DialogHeader className="p-4 pb-0">
@@ -29,7 +34,9 @@ export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
             <img 
               src={helpChartPreview} 
               alt="Preview of the Pinyin-Zhuyin chart"
-              className="w-[30%] sm:w-auto sm:h-[20vh] object-contain rounded border shadow-sm"
+              className="w-[30%] sm:w-auto sm:h-[20vh] object-contain rounded border shadow-sm cursor-pointer hover:opacity-80 transition-opacity mr-8"
+              onClick={() => onOpenChange(false)}
+              title="Close help guide"
             />
           </div>
         </DialogHeader>
@@ -92,7 +99,7 @@ export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
             <TabsContent value="chinese" className="h-full mt-0">
               <ScrollArea className="h-full" type="auto">
                 <div className="pr-4">
-                  <IKnowChineseTab />
+                  <IKnowChineseTab onOpenImageViewer={() => setImageViewerOpen(true)} />
                 </div>
                 <ScrollBar orientation="horizontal" />
               </ScrollArea>
@@ -101,6 +108,13 @@ export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
         </Tabs>
       </DialogContent>
     </Dialog>
+    <ImageViewerDialog
+      open={imageViewerOpen}
+      onOpenChange={setImageViewerOpen}
+      src={pinyinChartExample}
+      alt="Pinyin chart showing the complete table of Chinese sounds"
+    />
+    </>
   );
 };
 
@@ -397,7 +411,7 @@ const IKnowPinyinTab = () => {
   );
 };
 
-const IKnowChineseTab = () => (
+const IKnowChineseTab = ({ onOpenImageViewer }: { onOpenImageViewer: () => void }) => (
   <div className="space-y-4 pb-4">
     <p className="text-muted-foreground">
       Did you know that Chinese has about <strong>410 total sounds</strong>?
@@ -448,7 +462,9 @@ const IKnowChineseTab = () => (
     <img
       src={pinyinChartExample}
       alt="Pinyin chart showing the complete table of Chinese sounds with initials on the left and finals on top"
-      className="w-full rounded-lg border my-4"
+      className="w-full rounded-lg border my-4 cursor-pointer hover:opacity-80 transition-opacity"
+      onClick={onOpenImageViewer}
+      title="Click to view fullscreen and download"
     />
     <p className="text-muted-foreground">
       If the table is 20 × 30, there are 600 combinations. But not every combination is valid, so that's why it gets

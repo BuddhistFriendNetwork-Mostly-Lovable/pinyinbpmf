@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SettingsPanel, type DisplayMode } from "./SettingsPanel";
 import { PhoneticTable } from "./PhoneticTable";
@@ -7,9 +7,11 @@ import { GotchaInfoDialog } from "./GotchaInfoDialog";
 import { TTSInfoDialog } from "./TTSInfoDialog";
 import { EnglishRhymeInfoDialog } from "./EnglishRhymeInfoDialog";
 import { HelpDialog } from "./HelpDialog";
+import { ImageViewerDialog } from "./ImageViewerDialog";
 import { gotchaCategories, type GotchaCategory } from "@/data/phoneticData";
 import type { AudioMode } from "@/hooks/useTTS";
 import { toast } from "@/hooks/use-toast";
+import pinyinChartExample from "@/assets/pinyin-chart-example.png";
 
 export const PhoneticChart = () => {
   const [settingsOpen, setSettingsOpen] = useState(true);
@@ -43,6 +45,7 @@ export const PhoneticChart = () => {
   const [showEnglishRhyme, setShowEnglishRhyme] = useState(true);
   const [englishRhymeInfoOpen, setEnglishRhymeInfoOpen] = useState(false);
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
+  const [imageViewerOpen, setImageViewerOpen] = useState(false);
   const [tableTextSize, setTableTextSize] = useState(100);
   const [tableBold, setTableBold] = useState(true);
 
@@ -108,10 +111,23 @@ export const PhoneticChart = () => {
         tableBold={tableBold}
       />
 
+      <div className="mt-8 mb-4 text-center">
+        <Button variant="outline" size="sm" onClick={() => setImageViewerOpen(true)}>
+          <Download className="h-4 w-4 mr-2" />
+          Download PNG Chart
+        </Button>
+      </div>
+
       <GotchaInfoDialog open={gotchaInfoOpen} onOpenChange={setGotchaInfoOpen} />
       <TTSInfoDialog open={ttsInfoOpen} onOpenChange={setTTSInfoOpen} />
       <EnglishRhymeInfoDialog open={englishRhymeInfoOpen} onOpenChange={setEnglishRhymeInfoOpen} />
       <HelpDialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen} />
+      <ImageViewerDialog
+        open={imageViewerOpen}
+        onOpenChange={setImageViewerOpen}
+        src={pinyinChartExample}
+        alt="Pinyin-Zhuyin conversion chart"
+      />
     </div>
   );
 };
