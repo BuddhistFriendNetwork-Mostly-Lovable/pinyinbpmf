@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ExternalLink, ChevronDown, ChevronUp, Volume2 } from "lucide-react";
 import { buildMDBGUrl, buildYablaUrl, cleanPinyin, stripToneMarks } from "@/lib/zhuyinUtils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getWordsForPinyinStub, type PinyinWordEntry } from "@/data/pinyinStubsToWordsData";
+import type { PinyinWordEntry } from "@/data/pinyinStubsToWordsData";
+import { getWordsForPinyinStubAsync } from "@/data/lazyDataLoader";
 import { useTTS } from "@/hooks/useTTS";
 
 interface CellPopupProps {
@@ -36,13 +37,26 @@ const buildWordMDBGUrl = (traditionalChar: string): string => {
 
 export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: CellPopupProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [words, setWords] = useState<PinyinWordEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { speak } = useTTS();
   const mdbgUrl = buildMDBGUrl(pinyin);
   const yablaUrl = buildYablaUrl(pinyin);
 
-  // Get words for this pinyin stub
   const pinyinStub = cleanPinyin(stripToneMarks(pinyin));
-  const words = getWordsForPinyinStub(pinyinStub);
+
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    setIsLoading(true);
+    getWordsForPinyinStubAsync(pinyinStub).then((result) => {
+      if (!cancelled) {
+        setWords(result);
+        setIsLoading(false);
+      }
+    });
+    return () => { cancelled = true; };
+  }, [open, pinyinStub]);
 
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
@@ -88,8 +102,11 @@ export const CellPopup = ({ pinyin, zhuyin, open, onOpenChange, children }: Cell
           </a>
         </div>
 
-        {/* Common Words Table */}
-        {words.length > 0 && (
+        {isLoading ? (
+          <div className="border-t pt-3">
+            <p className="text-xs text-muted-foreground">Loading words…</p>
+          </div>
+        ) : words.length > 0 && (
           <div className="border-t pt-3">
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-sm font-semibold">Common Words for {pinyin}</h4>
