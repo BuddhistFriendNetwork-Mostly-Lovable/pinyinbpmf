@@ -1,68 +1,42 @@
 
-# Create pinyinStubsToWordsData.ts Data File
 
-## Overview
-Create a new data file in `src/data/` that stores Chinese word entries grouped by pinyin stub (pinyin without tone marks). This will include TypeScript interfaces and a lookup function.
+## Dynamic Import for pinyinStubsToWordsData
 
-## Data Structure
+### What changes
+Only `CellPopup.tsx` imports from `pinyinStubsToWordsData.ts`. We will lazy-load that 25K-line module on first popup open instead of bundling it with the initial page load.
 
-The data follows this structure:
-- **pinyinStub**: Base pinyin without tone (e.g., "zhi", "chi", "shi")
-- **characters**: Array of word entries with:
-  - `h`: HSK level (-1 = not in HSK)
-  - `ct`: Chinese Traditional character
-  - `fp`: Full pinyin with tone marks
-  - `e`: English meaning
-  - `t`: Tone number (1-5)
-  - `cs`: Chinese Simplified character
+### Steps
 
-## File to Create
+1. **Create `src/data/lazyDataLoader.ts`**
+   - A small module that exposes `getWordsForPinyinStubAsync(stub: string): Promise<PinyinWordEntry[]>`
+   - Uses `import()` to dynamically load `pinyinStubsToWordsData` on first call
+   - Caches the module so subsequent calls are instant
 
-### `src/data/pinyinStubsToWordsData.ts`
+2. **Update `CellPopup.tsx`**
+   - Remove the static import of `getWordsForPinyinStub`
+   - Keep the `PinyinWordEntry` type import (type-only imports have zero runtime cost)
+   - Load words asynchronously when the popup opens using `useState` + `useEffect`
+   - Show a brief "Loading..." text while data loads on first open
+   - After first load, all subsequent popups will be instant (module is cached)
 
-**TypeScript Interfaces:**
-```typescript
-export interface PinyinWordEntry {
-  h: number;    // HSK level (-1 = not in HSK)
-  ct: string;   // Chinese Traditional
-  fp: string;   // Full pinyin with tone
-  e: string;    // English meaning
-  t: number;    // Tone (1-5)
-  cs: string;   // Chinese Simplified
-}
+### Technical detail
 
-export interface PinyinStubData {
-  pinyinStub: string;
-  characters: PinyinWordEntry[];
+```text
+// lazyDataLoader.ts
+let cached: typeof import("@/data/pinyinStubsToWordsData") | null = null;
+
+export async function getWordsForPinyinStubAsync(stub: string) {
+  if (!cached) {
+    cached = await import("@/data/pinyinStubsToWordsData");
+  }
+  return cached.getWordsForPinyinStub(stub);
 }
 ```
 
-**Data Storage:**
-- Store the array as a constant
-- Create a Map for O(1) lookup by pinyinStub
+In CellPopup, the words will be fetched in a `useEffect` keyed on `open` and `pinyinStub`, so data only loads when the popup actually opens.
 
-**Exports:**
-```typescript
-// Get all word entries for a given pinyin stub
-export function getWordsForPinyinStub(pinyinStub: string): PinyinWordEntry[]
+### Result
+- Initial bundle shrinks by ~25K lines of data
+- PWA service worker auto-caches the split chunk for offline use
+- No visible impact to user experience (sub-100ms lazy load)
 
-// Get the raw data array (if needed for iteration)
-export const pinyinStubsData: PinyinStubData[]
-```
-
-## Sample Data Entries
-
-The file will contain 5 pinyin stubs from the provided data:
-| Pinyin Stub | # of Characters |
-|-------------|-----------------|
-| zhi         | 10              |
-| chi         | 10              |
-| shi         | 10              |
-| ri          | 2               |
-| zi          | 10              |
-
-## Implementation Notes
-
-- The lookup function will return an empty array if the pinyin stub is not found
-- Data is stored as-is with short property names (`h`, `ct`, `fp`, `e`, `t`, `cs`) to minimize file size
-- A Map is built at module load time for efficient lookups
