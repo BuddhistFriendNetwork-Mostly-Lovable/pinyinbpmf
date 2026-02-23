@@ -38,7 +38,7 @@ export const englishRhymeWords: Record<string, string[]> = {
   ui: ["way 100%", "sway 100%"],
   uai: ["why 90%", "why (stretch the w as a 'u') 100%", "*Kawhi* Leonard (NBA star, blended) 100%"],
   uan: ["Juan 100%", "swan 95%", "wand (-d) 90%"],
-  un: ["one 50%", "dun dun dun (suspense) 40%", "❌sun 0%", "See /en/, very close sound-alike"],
+  un: ["when 70%", "Gwen 70%", "one 50%", "dun dun dun (suspense) 40%", "❌sun 0%", "See /en/, very close sound-alike"],
   uang: ["Juan + g 100%", "wrong (with w sound) 70%", "Swan + g 95%"],
 
   // --- The Ü (Umlaut) Group ---
