@@ -15,10 +15,10 @@ export const EnglishRhymeInfoDialog = ({ open, onOpenChange }: EnglishRhymeInfoD
             Because of English dialects, this is not perfect. But it gives you a quick guide. For correct pronunciation,
             click a cell and then open the MDBG to hear the Chinese word.
             <div className="mt-4">
-              <ExternalLink href="https://github.com/BuddhistFriendNetwork-Mostly-Lovable/pinyinbpmf/blob/main/src/data/englishRhymeData.ts">
+              <a href="https://github.com/BuddhistFriendNetwork-Mostly-Lovable/pinyinbpmf/blob/main/src/data/englishRhymeData.ts" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80">
                 View data source on GitHub
-              </ExternalLink>
-            </div>{" "}
+              </a>
+            </div>
           </DialogDescription>
         </DialogHeader>
       </DialogContent>
