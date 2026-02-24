@@ -20,7 +20,7 @@ export const englishRhymeWords: Record<string, string[]> = {
   iao: ["meow 100%"],
   ie: ["yet (drop the t) 100%", "jet (drop the t) 90%", "❌pie 0%"],
   iu: ["yo-yo 90%", "Leo 60%", "(Christian) Dior (drop the r) 60%"],
-  ian: ["yen (currency) 95%", "Ben 70%", "❌Ian (name) 0%"],
+  ian: ["yen (currency) 95%", "Bien (french) 90%", "Jen 80%"],
   in: ["mean 100%", "bean 90%", "❌pin 0%"],
   iang: ["young 85%", "Zion + G 85%"],
   ing: ["*ding* dong 100%", "*ping* pong 100%"],
