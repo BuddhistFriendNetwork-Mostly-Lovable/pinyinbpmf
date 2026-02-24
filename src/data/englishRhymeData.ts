@@ -29,7 +29,7 @@ export const englishRhymeWords: Record<string, string[]> = {
   // --- The O Group ---
   o: ["poor (-r) 80%", "paw 75%", "❌go 0%"],
   ong: ["cone+g 100%", "home+ng 100%", "ping ❌pong (see /-ang/) 0%", "❌long (see /-ang/) 0%"],
-  ou: ["oh 100%", "go 100%", "so 100%", "row 100%", "❌you 0%"],
+  ou: ["go 100%", "oh 100%", "so 100%", "row 100%", "❌you 0%"],
 
   // --- The U Group ---
   u: ["boo 100%", "two 100%", "goo 100%"],
