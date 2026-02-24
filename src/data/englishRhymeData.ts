@@ -122,3 +122,12 @@ export const getTopRhymeWord = (finalPinyin: string): string | null => {
   const { word } = parseRhymeWord(rhymes[0]);
   return word;
 };
+
+/**
+ * Get all endings that match a given difficulty level
+ */
+export const endingsWithDifficulty = (difficulty: number): string[] => {
+  return Object.entries(difficultyCategorization)
+    .filter(([, level]) => level === difficulty)
+    .map(([key]) => key);
+};
