@@ -1,14 +1,14 @@
 export const englishRhymeWords: Record<string, string[]> = {
   // --- The A Group ---
   a: ["mama 100%", "haha 100%", "cha cha 80%"],
-  ai: ["why 100%", "buy 100%", "tie 100%"],
+  ai: ["pie 100%", "buy 100%", "tie 100%"],
   ao: ["pouch (-ch) 90%", "cow*** (accents) 60%", "ouch 80%", "how 60%"],
   an: ["pawn 80%", "fawn 80%", "(Jamaica) hey *man* 100%", "Indian *naan* 100%", "❌man 0%"],
   ang: ["ping *pong* 80%", "king *kong* 80%", "❌bang 0%"],
 
   // --- The E Group ---
   e: ["duh 100%", "the (unstressed) 90%", "❌me 0%"],
-  ei: ["weigh 100%", "hey 100%", "say 100%"],
+  ei: ["day 100%", "hey 100%", "say 100%"],
   en: ["fun 60%", "*hon*ey 95%", "❌Ben 0%"],
   eng: ["lung 80%", "sung 80%", "❌*eng*lish 0%"],
   er: ["grrr 100%", "fur 100%"],
