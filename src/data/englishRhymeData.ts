@@ -128,3 +128,38 @@ export const getTopRhymeWord = (finalPinyin: string): string | null => {
   const { word } = parseRhymeWord(rhymes[0]);
   return word;
 };
+
+/**
+ * Get the danger text (0% similarity entry) for a given final.
+ * Returns the cleaned short label and full original text, or null if none.
+ */
+export const getDangerWord = (
+  finalPinyin: string,
+): { shortLabel: string; fullText: string } | null => {
+  const rhymes = getRhymeWords(finalPinyin);
+  const dangerEntry = rhymes.find((r) => r.includes("0%"));
+  if (!dangerEntry) return null;
+
+  // Full text is the raw entry
+  const fullText = dangerEntry;
+
+  // Short label: remove emojis (❌, ✅, etc.), take text before first "(", strip percentage, trim
+  let short = dangerEntry
+    .replace(/[\u274C\u2705\u{1F6D1}]/gu, "") // remove common emojis
+    .replace(/❌/g, "")
+    .trim();
+
+  // Take text before first "(" if present
+  const parenIdx = short.indexOf("(");
+  if (parenIdx > 0) {
+    short = short.substring(0, parenIdx).trim();
+  }
+
+  // Remove percentage at end
+  short = short.replace(/\s*\d+%\s*$/, "").trim();
+
+  // Remove asterisks used for emphasis
+  short = short.replace(/\*/g, "");
+
+  return { shortLabel: short, fullText };
+};

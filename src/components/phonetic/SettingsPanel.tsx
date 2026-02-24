@@ -32,6 +32,9 @@ interface SettingsPanelProps {
   showEnglishRhyme: boolean;
   onShowEnglishRhymeChange: (enabled: boolean) => void;
   onOpenEnglishRhymeInfo: () => void;
+  showDangerGuess: boolean;
+  onShowDangerGuessChange: (enabled: boolean) => void;
+  onOpenDangerGuessInfo: () => void;
   tableTextSize: number;
   onTableTextSizeChange: (size: number) => void;
   tableBold: boolean;
@@ -60,6 +63,9 @@ export const SettingsPanel = ({
   showEnglishRhyme,
   onShowEnglishRhymeChange,
   onOpenEnglishRhymeInfo,
+  showDangerGuess,
+  onShowDangerGuessChange,
+  onOpenDangerGuessInfo,
   tableTextSize,
   onTableTextSizeChange,
   tableBold,
@@ -186,6 +192,22 @@ export const SettingsPanel = ({
             size="sm"
             className="h-6 w-6 rounded-full p-0 text-muted-foreground hover:text-foreground"
             onClick={onOpenEnglishRhymeInfo}
+          >
+            ?
+          </Button>
+        </div>
+
+        {/* Show English Guess Dangers Toggle */}
+        <div className="flex items-center gap-3">
+          <Switch id="show-danger-guess" checked={showDangerGuess} onCheckedChange={onShowDangerGuessChange} />
+          <Label htmlFor="show-danger-guess" className="text-sm font-medium cursor-pointer">
+            Show English Guess Dangers
+          </Label>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 rounded-full p-0 text-muted-foreground hover:text-foreground"
+            onClick={onOpenDangerGuessInfo}
           >
             ?
           </Button>
