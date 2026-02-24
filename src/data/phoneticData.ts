@@ -27,7 +27,7 @@ export const gotchaCategories: GotchaCategoryInfo[] = [
   { id: "iong", name: "-iong (ㄩㄥ)", color: "hsl(270, 67%, 60%)", bgClass: "bg-purple-200" },
   { id: "y to e silent", name: "Tricky y; e or silent", color: "hsl(142, 71%, 45%)", bgClass: "bg-green-200" },
   { id: "labial-o", name: "Labial + o", color: "hsl(174, 72%, 56%)", bgClass: "bg-teal-200" },
-  { id: "uong", name: "-ong as -(u)ong", color: "hsl(104, 52%, 56%)", bgClass: "bg-red-350" },
+  { id: "uong", name: "-ong as -(u)ong", color: "hsl(104, 52%, 56%)", bgClass: "bg-red-170" },
   { id: "buzzing-i", name: "Buzzing i", color: "hsl(330, 81%, 70%)", bgClass: "bg-pink-200" },
   { id: "iu", name: "-iu (ㄧㄡ)", color: "hsl(30, 41%, 50%)", bgClass: "bg-amber-300" },
   { id: "ui", name: "-ui (ㄨㄟ)", color: "hsl(16, 85%, 65%)", bgClass: "bg-orange-300" },
