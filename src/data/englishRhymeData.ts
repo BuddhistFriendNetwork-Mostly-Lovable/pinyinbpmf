@@ -88,7 +88,7 @@ export const difficultyCategorization: Record<string, number> = {
   i_buzz: 5,
   o: 5,
   uo: 5,
-  en: 4,
+  en: 5,
 
   //6
   i: 6,
