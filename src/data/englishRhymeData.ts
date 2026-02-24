@@ -159,7 +159,7 @@ export const getDangerWord = (
   short = short.replace(/\s*\d+%\s*$/, "").trim();
 
   // Remove asterisks used for emphasis
-  short = short.replace(/\*/g, "");
+  // short = short.replace(/\*/g, "");
 
   return { shortLabel: short, fullText };
 };
