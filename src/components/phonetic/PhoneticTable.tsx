@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { finals, initials, getCell, gotchaCategories, type GotchaCategory } from "@/data/phoneticData";
+import { endings, initials, getCell, gotchaCategories, type GotchaCategory } from "@/data/phoneticData";
 import { RhymeWordsPopup } from "./RhymeWordsPopup";
 import { ChineseWordsPopup } from "./ChineseWordsPopup";
 import { useTTS, type AudioMode } from "@/hooks/useTTS";
@@ -173,7 +173,7 @@ export const PhoneticTable = ({
                     Chinese Rhyme Words
                   </span>
                 </TableHead>
-                {finals.map((final) => (
+                {endings.map((final) => (
                   <TableHead
                     key={`chinese-${final.pinyin}`}
                     className={cn(
@@ -215,7 +215,7 @@ export const PhoneticTable = ({
                     </Button>
                   </div>
                 </TableHead>
-                {finals.map((final) => (
+                {endings.map((final) => (
                   <TableHead
                     key={`rhyme-${final.pinyin}`}
                     className={cn(
@@ -243,7 +243,7 @@ export const PhoneticTable = ({
               >
                 Init
               </TableHead>
-              {finals.map((final) => (
+              {endings.map((final) => (
                 <TableHead
                   key={final.pinyin}
                   className={cn(
@@ -300,7 +300,7 @@ export const PhoneticTable = ({
                     </>
                   )}
                 </TableCell>
-                {finals.map((final) => {
+                {endings.map((final) => {
                   const cell = getCell(initial.pinyin, final.pinyin);
                   return renderCell(cell, final.pinyin);
                 })}
