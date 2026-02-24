@@ -6,6 +6,7 @@ export type GotchaCategory =
   | "iong" // jiong, qiong, xiong, yong
   | "y to e silent" // yi
   | "labial-o" // bo, po, mo, fo
+  | "uong"
   | "buzzing-i" // zhi, chi, shi, ri, zi, ci, si
   | "iu" // miu, diu, niu, liu, jiu, qiu, xiu, you
   | "ui" // all -ui cells
