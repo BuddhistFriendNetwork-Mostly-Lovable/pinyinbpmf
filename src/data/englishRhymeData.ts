@@ -137,7 +137,7 @@ export const getDangerWord = (
   finalPinyin: string,
 ): { shortLabel: string; fullText: string } | null => {
   const rhymes = getRhymeWords(finalPinyin);
-  const dangerEntry = rhymes.find((r) => r.includes("0%"));
+  const dangerEntry = rhymes.find((r) => /(?<!\d)0%/.test(r));
   if (!dangerEntry) return null;
 
   // Full text is the raw entry
