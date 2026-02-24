@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { endings, initials, getCell, gotchaCategories, type GotchaCategory } from "@/data/phoneticData";
 import { RhymeWordsPopup } from "./RhymeWordsPopup";
 import { ChineseWordsPopup } from "./ChineseWordsPopup";
+import { DangerWordsCell } from "./DangerWordsCell";
 import { useTTS, type AudioMode } from "@/hooks/useTTS";
 import type { DisplayMode } from "./SettingsPanel";
 import { CellPopup } from "./CellPopup";
@@ -18,6 +19,7 @@ interface PhoneticTableProps {
   showChineseWords: boolean;
   showEnglishRhyme: boolean;
   onOpenEnglishRhymeInfo: () => void;
+  showDangerGuess: boolean;
   tableTextSize: number;
   tableBold: boolean;
 }
@@ -39,6 +41,7 @@ export const PhoneticTable = ({
   showChineseWords,
   showEnglishRhyme,
   onOpenEnglishRhymeInfo,
+  showDangerGuess,
   tableTextSize,
   tableBold,
 }: PhoneticTableProps) => {
@@ -227,6 +230,37 @@ export const PhoneticTable = ({
                     style={isCompact ? { maxWidth: `${dynamicMaxWidth}px` } : undefined}
                   >
                     <RhymeWordsPopup finalPinyin={final.pinyin} />
+                  </TableHead>
+                ))}
+              </TableRow>
+            )}
+
+            {/* English Guess Dangers Row */}
+            {showDangerGuess && (
+              <TableRow className={cn("bg-yellow-400", isCompact && "[&>th]:py-0.5")}>
+                <TableHead
+                  className={cn(
+                    "sticky left-0 z-20 bg-yellow-400 text-blue-900 w-16",
+                    tableBold ? "font-bold" : "font-normal",
+                    isCompact && "h-auto",
+                  )}
+                >
+                  <span className="leading-tight" style={{ fontSize: "0.75em" }}>
+                    English Guess Dangers
+                  </span>
+                </TableHead>
+                {endings.map((final) => (
+                  <TableHead
+                    key={`danger-${final.pinyin}`}
+                    className={cn(
+                      "text-center bg-yellow-400 text-blue-900 p-0",
+                      "border-l border-r border-yellow-600/30",
+                      !isCompact && "min-w-[60px]",
+                      isCompact && "h-auto",
+                    )}
+                    style={isCompact ? { maxWidth: `${dynamicMaxWidth}px` } : undefined}
+                  >
+                    <DangerWordsCell finalPinyin={final.pinyin} />
                   </TableHead>
                 ))}
               </TableRow>

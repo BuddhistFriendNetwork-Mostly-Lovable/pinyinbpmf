@@ -6,6 +6,7 @@ import { PhoneticTable } from "./PhoneticTable";
 import { GotchaInfoDialog } from "./GotchaInfoDialog";
 import { TTSInfoDialog } from "./TTSInfoDialog";
 import { EnglishRhymeInfoDialog } from "./EnglishRhymeInfoDialog";
+import { DangerGuessInfoDialog } from "./DangerGuessInfoDialog";
 import { HelpDialog } from "./HelpDialog";
 import { ImageViewerDialog } from "./ImageViewerDialog";
 import { gotchaCategories, type GotchaCategory } from "@/data/phoneticData";
@@ -59,6 +60,8 @@ export const PhoneticChart = () => {
   const [englishRhymeInfoOpen, setEnglishRhymeInfoOpen] = useState(false);
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
+  const [showDangerGuess, setShowDangerGuess] = useState(false);
+  const [dangerGuessInfoOpen, setDangerGuessInfoOpen] = useState(false);
   const [tableTextSize, setTableTextSize] = useState(100);
   const [tableBold, setTableBold] = useState(true);
 
@@ -105,6 +108,9 @@ export const PhoneticChart = () => {
         showEnglishRhyme={showEnglishRhyme}
         onShowEnglishRhymeChange={setShowEnglishRhyme}
         onOpenEnglishRhymeInfo={() => setEnglishRhymeInfoOpen(true)}
+        showDangerGuess={showDangerGuess}
+        onShowDangerGuessChange={setShowDangerGuess}
+        onOpenDangerGuessInfo={() => setDangerGuessInfoOpen(true)}
         tableTextSize={tableTextSize}
         onTableTextSizeChange={setTableTextSize}
         tableBold={tableBold}
@@ -122,6 +128,7 @@ export const PhoneticChart = () => {
         showChineseWords={showChineseWords}
         showEnglishRhyme={showEnglishRhyme}
         onOpenEnglishRhymeInfo={() => setEnglishRhymeInfoOpen(true)}
+        showDangerGuess={showDangerGuess}
         tableTextSize={tableTextSize}
         tableBold={tableBold}
       />
@@ -136,6 +143,7 @@ export const PhoneticChart = () => {
       <GotchaInfoDialog open={gotchaInfoOpen} onOpenChange={setGotchaInfoOpen} />
       <TTSInfoDialog open={ttsInfoOpen} onOpenChange={setTTSInfoOpen} />
       <EnglishRhymeInfoDialog open={englishRhymeInfoOpen} onOpenChange={setEnglishRhymeInfoOpen} />
+      <DangerGuessInfoDialog open={dangerGuessInfoOpen} onOpenChange={setDangerGuessInfoOpen} />
       <HelpDialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen} />
       <ImageViewerDialog
         open={imageViewerOpen}
