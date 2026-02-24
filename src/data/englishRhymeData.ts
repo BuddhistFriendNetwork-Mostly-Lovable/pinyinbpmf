@@ -1,3 +1,12 @@
+export const difficultyCategorization: Record<string, number> = {
+  "a": 1, "ai": 1, "e": 1, "ei": 1, "er": 1, "iao": 1, "ie": 1, "in": 1, "ing": 1, "ong": 1, "ou": 1, "ua": 1, "ui": 1, "uang": 1,
+  "uai": 2, "ia": 2, "iang": 2,
+  "üe": 3, "iong": 3, "ao": 3, "an": 3, "iu": 3,
+  "ian": 4, "ang": 4, "eng": 4, "o": 4, "en": 4,
+  "i_buzz": 5, "uo": 5,
+  "i": 6, "u": 6, "uan": 6, "un": 6, "ü": 6, "üan": 6, "ün": 6,
+};
+
 export const englishRhymeWords: Record<string, string[]> = {
   // --- The A Group ---
   a: ["mama 100%", "haha 100%", "cha cha 80%"],
