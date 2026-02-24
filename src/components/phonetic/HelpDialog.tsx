@@ -549,7 +549,10 @@ const IKnowChineseTab = ({ onOpenImageViewer }: { onOpenImageViewer: () => void 
       symbol? How are all the ㄩ symbol pinyin related? And, wow, weird but true: pinyin: "-iong" converts to zhuyin:
       "ㄩㄥ". There is no "ee" sound in pinyin: "-iong". When I learned that, my head exploded.
     </p>
-    <p className="text-muted-foreground">If you know what "IPA" is, think of Zhuyin like Chinese IPA.</p>
+    <p className="text-muted-foreground">If you know what "IPA" is, think of Zhuyin like Chinese IPA. However, there are
+      several shifts in the sounds depending on the medial. This Gemini link response covers them well. (
+      <ExternalLink_ href="https://gemini.google.com/share/da98a1eb6ba6">
+        https://gemini.google.com/share/da98a1eb6ba6</ExternalLink_>)</p>
 
     <Separator />
 
