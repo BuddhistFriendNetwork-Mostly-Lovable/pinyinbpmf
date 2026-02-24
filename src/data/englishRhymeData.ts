@@ -78,13 +78,19 @@ export const difficultyCategorization: Record<string, number> = {
   ao: 3,
   an: 3,
   iu: 3,
+
+  // 4
   ian: 4,
   ang: 4,
   eng: 4,
-  o: 4,
-  en: 4,
+
+  // 5
   i_buzz: 5,
+  o: 5,
   uo: 5,
+  en: 4,
+
+  //6
   i: 6,
   u: 6,
   uan: 6,
@@ -121,13 +127,4 @@ export const getTopRhymeWord = (finalPinyin: string): string | null => {
   if (rhymes.length === 0) return null;
   const { word } = parseRhymeWord(rhymes[0]);
   return word;
-};
-
-/**
- * Get all endings that match a given difficulty level
- */
-export const endingsWithDifficulty = (difficulty: number): string[] => {
-  return Object.entries(difficultyCategorization)
-    .filter(([, level]) => level === difficulty)
-    .map(([key]) => key);
 };
