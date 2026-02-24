@@ -1,42 +1,28 @@
 
 
-## Dynamic Import for pinyinStubsToWordsData
+## Rename `finals` to `endings` and Add `medial`/`final` Fields
 
-### What changes
-Only `CellPopup.tsx` imports from `pinyinStubsToWordsData.ts`. We will lazy-load that 25K-line module on first popup open instead of bundling it with the initial page load.
+### Overview
+Rename the exported `finals` array to `endings` in `phoneticData.ts`, and add two new fields (`medial` and `final`) to each element based on the zhuyin character count. Then update all references across the codebase.
 
-### Steps
+### Changes
 
-1. **Create `src/data/lazyDataLoader.ts`**
-   - A small module that exposes `getWordsForPinyinStubAsync(stub: string): Promise<PinyinWordEntry[]>`
-   - Uses `import()` to dynamically load `pinyinStubsToWordsData` on first call
-   - Caches the module so subsequent calls are instant
+#### 1. `src/data/phoneticData.ts`
+- Rename `export const finals` to `export const endings`
+- Add `medial` and `final` fields to every element:
+  - **1-character zhuyin** (e.g., `ㄚ`, `ㄜ`, `ㄧ`): `medial: ""`, `final: "ㄚ"`
+  - **2-character zhuyin** (e.g., `ㄧㄚ`, `ㄨㄟ`): `medial: "ㄧ"`, `final: "ㄚ"`
 
-2. **Update `CellPopup.tsx`**
-   - Remove the static import of `getWordsForPinyinStub`
-   - Keep the `PinyinWordEntry` type import (type-only imports have zero runtime cost)
-   - Load words asynchronously when the popup opens using `useState` + `useEffect`
-   - Show a brief "Loading..." text while data loads on first open
-   - After first load, all subsequent popups will be instant (module is cached)
-
-### Technical detail
-
-```text
-// lazyDataLoader.ts
-let cached: typeof import("@/data/pinyinStubsToWordsData") | null = null;
-
-export async function getWordsForPinyinStubAsync(stub: string) {
-  if (!cached) {
-    cached = await import("@/data/pinyinStubsToWordsData");
-  }
-  return cached.getWordsForPinyinStub(stub);
-}
+Examples:
+```
+{ pinyin: "a",   zhuyin: "ㄚ",   group: "a", medial: "",  final: "ㄚ" }
+{ pinyin: "ia",  zhuyin: "ㄧㄚ", group: "i", medial: "ㄧ", final: "ㄚ" }
+{ pinyin: "uan", zhuyin: "ㄨㄢ", group: "u", medial: "ㄨ", final: "ㄢ" }
 ```
 
-In CellPopup, the words will be fetched in a `useEffect` keyed on `open` and `pinyinStub`, so data only loads when the popup actually opens.
+#### 2. `src/components/phonetic/PhoneticTable.tsx`
+- Update the import: `finals` becomes `endings`
+- Update all 4 references where `finals.map(...)` is used, changing to `endings.map(...)`
 
-### Result
-- Initial bundle shrinks by ~25K lines of data
-- PWA service worker auto-caches the split chunk for offline use
-- No visible impact to user experience (sub-100ms lazy load)
+No other files import `finals` directly (the HelpDialog reference is just alt text, no code change needed there).
 
