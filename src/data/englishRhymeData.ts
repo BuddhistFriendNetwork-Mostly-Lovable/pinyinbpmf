@@ -7,7 +7,7 @@ export const englishRhymeWords: Record<string, string[]> = {
   ang: ["ping *pong* 80%", "king *kong* 80%", "❌❌bang (see /-ei/ and /eng/) 0%"],
 
   // --- The E Group ---
-  e: ["duh 100%", "the (unstressed) 90%", "❌me (see /-i/) 0%"],
+  e: ["duh 100%", "the (unstressed) 90%", "❌bee (see /-i/) 0%"],
   ei: ["day 100%", "hey 100%", "say 100%"],
   en: ["fun 60%", "*hon*ey 95%", "❌Ben 20%"],
   eng: ["lung 80%", "sung 80%", "❌*eng*lish (see /-ing/) 0%"],
