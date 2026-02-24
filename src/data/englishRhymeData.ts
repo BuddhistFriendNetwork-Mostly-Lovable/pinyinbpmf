@@ -1,12 +1,3 @@
-export const difficultyCategorization: Record<string, number> = {
-  "a": 1, "ai": 1, "e": 1, "ei": 1, "er": 1, "iao": 1, "ie": 1, "in": 1, "ing": 1, "ong": 1, "ou": 1, "ua": 1, "ui": 1, "uang": 1,
-  "uai": 2, "ia": 2, "iang": 2,
-  "üe": 3, "iong": 3, "ao": 3, "an": 3, "iu": 3,
-  "ian": 4, "ang": 4, "eng": 4, "o": 4, "en": 4,
-  "i_buzz": 5, "uo": 5,
-  "i": 6, "u": 6, "uan": 6, "un": 6, "ü": 6, "üan": 6, "ün": 6,
-};
-
 export const englishRhymeWords: Record<string, string[]> = {
   // --- The A Group ---
   a: ["mama 100%", "haha 100%", "cha cha 80%"],
@@ -55,6 +46,52 @@ export const englishRhymeWords: Record<string, string[]> = {
   üe: ["duet (soft t) 85%", "sweat (puckered lips, soft t) 70%", "you+eh 80%"],
   üan: ["U.N. (United Nations) 80%", "yen (puckered lips) 85%", "Ian 50%", "❌Juan 0%"],
   ün: ["jean (puckered lips) 80%", "Queen - Q 80%"],
+};
+
+export const difficultyCategorization: Record<string, number> = {
+  // Category 0: Most easy, unambiguous
+  ai: 0,
+  ei: 0,
+  ing: 0,
+  uang: 0,
+  a: 0,
+  er: 0,
+  iao: 0,
+
+  // Category 1: Easy, but not obvious (Updated)
+  ua: 1,
+  ui: 1,
+  uai: 1,
+  ia: 1,
+  iang: 1,
+
+  // Category 2: Increased difficulty (Updated)
+  e: 2,
+  ie: 2,
+  in: 2,
+  ong: 2,
+  ou: 2,
+
+  // Categories 3 - 6: Unchanged
+  üe: 3,
+  iong: 3,
+  ao: 3,
+  an: 3,
+  iu: 3,
+  ian: 4,
+  ang: 4,
+  eng: 4,
+  o: 4,
+  en: 4,
+  i_buzz: 5,
+  uo: 5,
+  i: 6,
+  u: 6,
+  uan: 6,
+  un: 6,
+  ü: 6,
+  üan: 6,
+  ün: 6,
 };
 
 /**
