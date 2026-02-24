@@ -14,7 +14,7 @@ export const englishRhymeWords: Record<string, string[]> = {
   er: ["grrr 100%", "fur 100%"],
 
   // --- The I Group ---
-  i: ["see 100%", "tea 100%", "pee 100%"],
+  i: ["bee 100%", "tea 100%", "pee 100%"],
   i_buzz: ["zzz (bee sound) 90%", "❌see 0%"],
   ia: ["see-ya 90%", "gee-ah 80%"],
   iao: ["meow 100%"],
