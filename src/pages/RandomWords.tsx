@@ -523,9 +523,11 @@ const RandomWords = () => {
               <Plus className="h-4 w-4 mr-1" /> More Words (20)
             </Button>
           )}
-          <Button variant="outline" onClick={addMore}>
-            <Plus className="h-4 w-4 mr-1" /> +Add 20 more
-          </Button>
+          {words.length >= 20 && (
+            <Button variant="outline" onClick={addMore}>
+              <Plus className="h-4 w-4 mr-1" /> +Add 20 more
+            </Button>
+          )}
           <Button variant="outline" onClick={randomizeAll}>
             <RefreshCw className="h-4 w-4 mr-1" /> Random New Words
           </Button>
