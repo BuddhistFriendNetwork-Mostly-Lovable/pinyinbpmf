@@ -44,7 +44,8 @@ function getZhuyinForStub(stub: string): string {
   // Fallback: look in endings
   const ending = endings.find((e) => e.pinyin === stub);
   if (ending) return ending.zhuyin;
-  return "";
+  console.log("Error with ",stub);
+  return "ERR";
 }
 
 export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onSpeak, onSetDifficulty, onRemove }: WordCardProps) => {
@@ -88,10 +89,42 @@ export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onS
     );
   };
 
+ const function  splitZhuyin(chars) {
+  const medials = ['ㄧ', 'ㄨ', 'ㄩ'];
+  let boxes = ["", "", ""]; // [Initial, Medial, Final/Tone]
+
+  // Convert string to array to handle multi-character strings correctly
+  const charArray = Array.from(chars);
+
+  // Check if any character in the string is a medial
+  const medialIndex = charArray.findIndex(c => medials.includes(c));
+
+  if (medialIndex !== -1) {
+    // 1. Put the medial in Box 2 (index 1)
+    boxes[1] = charArray[medialIndex];
+
+    // 2. Put everything before it in Box 1 (index 0)
+    boxes[0] = charArray.slice(0, medialIndex).join("");
+
+    // 3. Put everything after it in Box 3 (index 2)
+    boxes[2] = charArray.slice(medialIndex + 1).join("");
+  } else {
+    // No medial found: First char in Box 1, the rest in Box 3
+    boxes[0] = charArray[0] || "";
+    boxes[2] = charArray.slice(1).join("");
+  }
+
+  return boxes;
+}
+  
   const zhuyinBoxes = () => {
     if (!zhuyinChars) return null;
-    const chars = zhuyinChars.split("");
+    const chars3boxArray = splitZhuyin(zhuyinChars);
     if (settings.zhuyinFormat === "boxes") {
+
+      // look for the medial, if yes, put that in box2 (center) and put everything else at front and end
+      // if not, put the first character in box1, and the second character in 3rd box.
+      
       // 3 boxes
       return (
         <div className="flex gap-0.5">
@@ -100,7 +133,7 @@ export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onS
               key={i}
               className="w-6 h-6 border border-muted-foreground/30 rounded flex items-center justify-center text-sm"
             >
-              {chars[i] || ""}
+              {chars3boxArray[i] || ""}
             </div>
           ))}
         </div>
