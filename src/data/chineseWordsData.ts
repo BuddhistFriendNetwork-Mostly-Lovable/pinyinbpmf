@@ -220,10 +220,10 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
   // --- Ü (Umlaut) Group ---
   ü: [
     { w: "雨", m: "rain", p: "yǔ" },
-    { w: "魚,鱼", m: "fish", p: "yú" },
     { w: "去", m: "to go", p: "qù" },
-    { w: "綠,绿", m: "green", p: "lǜ" },
     { w: "女", m: "female", p: "nǚ" },
+    { w: "綠,绿", m: "green", p: "lǜ" },
+    { w: "魚,鱼", m: "fish", p: "yú" },
   ],
   üe: [
     { w: "月", m: "moon/month", p: "yuè" },
