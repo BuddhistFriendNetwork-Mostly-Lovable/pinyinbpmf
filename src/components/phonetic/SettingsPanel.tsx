@@ -201,7 +201,7 @@ export const SettingsPanel = ({
         <div className="flex items-center gap-3">
           <Switch id="show-danger-guess" checked={showDangerGuess} onCheckedChange={onShowDangerGuessChange} />
           <Label htmlFor="show-danger-guess" className="text-sm font-medium cursor-pointer">
-            Show English Guess 🛑 Danger 🛑
+            Show English Guess/Pronunciation 🛑 Dangers 🛑
           </Label>
           <Button
             variant="ghost"
