@@ -138,7 +138,6 @@ export const PhoneticChart = () => {
           <Download className="h-4 w-4 mr-2" />
           Download PNG Chart
         </Button>
-        <br></br>
         <div>
           <a href="/random-words" className="text-sm text-primary underline hover:text-primary/80">
             🎲 Random Words Practice →
