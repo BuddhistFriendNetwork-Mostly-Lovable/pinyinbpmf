@@ -482,9 +482,9 @@ const VowelTrainer = () => {
                     </Button>
                     <br></br>
                     <Button
-                      variant={activeQuickSelect === "All" ? "default" : "outline"}
+                      variant={activeQuickSelect === "all" ? "default" : "outline"}
                       size="sm"
-                      onClick={() => quickSelect("All")}
+                      onClick={() => quickSelect("all")}
                     >
                       All
                     </Button>
