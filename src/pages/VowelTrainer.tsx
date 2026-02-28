@@ -63,9 +63,9 @@ const QUICK_SELECTS = {
   comboDip: { label: "Combo Dip", keys: ["iao", "iu", "uai", "ui"] },
   comboNasal: { label: "Combo Nasal", keys: ["ian", "in", "iang", "ing", "uan", "un", "uang", "üan", "ün", "iong"] },
   iMedial: { label: "i + Finals", keys: ["i", "ia", "ie", "iao", "iu", "ian", "in", "iang", "ing", "iong"] },
-  uMedial: { label: "u + Finals", keys: ["ua", "uo", "uai", "ui", "uan", "un", "uang"] },
+  uMedial: { label: "u + Finals", keys: ["u", "ua", "uo", "uai", "ui", "uan", "un", "uang"] },
   üMedial: { label: "ü + Finals", keys: ["ü", "iong", "üe", "üan", "ün"] },
-  all: { label: "All", keys: allPinyinFinals },
+  all: { label: "All", keys: allPinyinFinals }
 } as const;
 
 type QuickSelectId = keyof typeof QUICK_SELECTS;
