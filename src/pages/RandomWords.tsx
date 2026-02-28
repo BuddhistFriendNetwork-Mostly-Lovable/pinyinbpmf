@@ -82,7 +82,7 @@ const RandomWords = () => {
   useEffect(() => {
     // Dynamic import to lazy load the big data file
     import("@/data/pinyinStubsToWordsData").then(() => {
-      const generated = GenerateNwordsFromPinyin([], 20, DefaultPinyinList);
+      const generated = GenerateNwordsFromPinyin([], 4, DefaultPinyinList);
       setWords(generated);
       setHiddenRows(
         generated.map((_, i) =>
@@ -149,7 +149,7 @@ const RandomWords = () => {
   }, [words, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding]);
 
   const randomizeAll = useCallback(() => {
-    const generated = GenerateNwordsFromPinyin([], 20, DefaultPinyinList);
+    const generated = GenerateNwordsFromPinyin([], 4, DefaultPinyinList);
     setWords(generated);
     setHiddenRows(
       generated.map((_, i) =>
@@ -416,8 +416,22 @@ const RandomWords = () => {
 
         {/* Action buttons */}
         <div className="flex gap-2 flex-wrap justify-center mb-6">
+          {words.length < 20 && (
+            <Button variant="outline" onClick={() => {
+              const target = 20;
+              const newWords = GenerateNwordsFromPinyin(words, target, DefaultPinyinList);
+              const newHidden = newWords.slice(words.length).map((_, i) =>
+                generateHiddenState(words.length + i, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding),
+              );
+              setWords(newWords);
+              setHiddenRows((prev) => [...prev, ...newHidden]);
+              setUserDifficulties((prev) => [...prev, ...newWords.slice(words.length).map(() => null as UserDifficulty)]);
+            }}>
+              <Plus className="h-4 w-4 mr-1" /> More Words (20)
+            </Button>
+          )}
           <Button variant="outline" onClick={addMore}>
-            <Plus className="h-4 w-4 mr-1" /> Add 20 more
+            <Plus className="h-4 w-4 mr-1" /> +Add 20 more
           </Button>
           <Button variant="outline" onClick={randomizeAll}>
             <RefreshCw className="h-4 w-4 mr-1" /> Random New Words
