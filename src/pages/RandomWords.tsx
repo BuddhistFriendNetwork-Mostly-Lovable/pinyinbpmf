@@ -301,11 +301,17 @@ const RandomWords = () => {
     setHiddenRows((prev) => prev.map(() => [false, false, false, false]));
   }, []);
 
+  const lastHideAllTime = useRef<number>(0);
+
   const hideEverything = useCallback(() => {
+    const now = Date.now();
+    const doubleClick = now - lastHideAllTime.current < 3000;
+    lastHideAllTime.current = now;
+
     setHiddenRows((prev) =>
       prev.map((h, i) => {
         if (dontHideFirstN && i < firstN) return h;
-        // Don't hide row 0 (Chinese)
+        if (doubleClick) return [true, true, true, true];
         return [h[0], true, true, true];
       }),
     );
