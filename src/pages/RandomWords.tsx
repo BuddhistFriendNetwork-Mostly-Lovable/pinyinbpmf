@@ -572,6 +572,11 @@ const RandomWords = () => {
                   return next;
                 })
               }
+              onRemove={() => {
+                setWords((prev) => prev.filter((_, idx) => idx !== i));
+                setHiddenRows((prev) => prev.filter((_, idx) => idx !== i));
+                setUserDifficulties((prev) => prev.filter((_, idx) => idx !== i));
+              }}
             />
           ))}
         </div>
