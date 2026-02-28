@@ -1,8 +1,7 @@
 import { Volume2, Eye, EyeOff, ExternalLink, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { RandomWordEntry } from "@/lib/randomWordsUtils";
-import { cleanZhuyin } from "@/lib/zhuyinUtils";
-import { buildMDBGUrl } from "@/lib/zhuyinUtils";
+import { cleanZhuyin, buildMDBGUrl, buildMDBGUrlChinese } from "@/lib/zhuyinUtils";
 import { chartData, endings } from "@/data/phoneticData";
 
 export interface WordCardDisplaySettings {
