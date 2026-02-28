@@ -436,10 +436,10 @@ const RandomWords = () => {
           <Button variant="outline" onClick={randomizeAll}>
             <RefreshCw className="h-4 w-4 mr-1" /> Random New Words
           </Button>
-          <Button variant="outline" onClick={showEverything}>
+          <Button variant="outline" onClick={showEverything} disabled={words.length <= 5}>
             <Eye className="h-4 w-4 mr-1" /> Show All
           </Button>
-          <Button variant="outline" onClick={hideEverything}>
+          <Button variant="outline" onClick={hideEverything} disabled={words.length <= 5}>
             <EyeOff className="h-4 w-4 mr-1" /> Hide All
           </Button>
         </div>
