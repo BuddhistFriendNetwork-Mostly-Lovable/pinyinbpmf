@@ -9,6 +9,10 @@ import { cleanPinyin, stripToneMarks } from "@/lib/zhuyinUtils";
 import { useTTS } from "@/hooks/useTTS";
 import type { RandomWordEntry } from "@/lib/randomWordsUtils";
 
+interface VowelTrainerEntry extends RandomWordEntry {
+  ending: string;
+}
+
 const LS_KEY = "vowel-trainer-selected-endings";
 const LS_MODE_KEY = "vowel-trainer-select-mode";
 
@@ -64,13 +68,13 @@ function detectQuickSelect(selected: Set<string>, allKeys: string[]): QuickSelec
   return null;
 }
 
-function toRandomWordEntry(entry: ChineseWordEntry): RandomWordEntry {
+function toVowelTrainerEntry(entry: ChineseWordEntry, ending: string): VowelTrainerEntry {
   const parts = entry.w.split(",");
   const ct = parts[0];
   const cs = parts.length > 1 ? parts[1] : ct;
   const firstSyllable = entry.short || entry.p;
   const stub = cleanPinyin(stripToneMarks(firstSyllable));
-  return { cs, ct, e: entry.m, fp: entry.p, pinyinStub: stub, h: -9, t: -9 };
+  return { cs, ct, e: entry.m, fp: entry.p, pinyinStub: stub, h: -9, t: -9, ending };
 }
 
 const displaySettings: WordCardDisplaySettings = {
@@ -143,20 +147,38 @@ const VowelTrainer = () => {
     });
   }, []);
 
+  const [maxWordsPerEnding, setMaxWordsPerEnding] = useState(1);
+
   const words = useMemo(() => {
-    const result: { word: RandomWordEntry; key: string }[] = [];
+    const result: { word: VowelTrainerEntry; key: string }[] = [];
     for (const ending of allKeys) {
       if (!selectedEndings.has(ending)) continue;
       const entries = getChineseWords(ending);
       for (const entry of entries) {
         const k = `${ending}-${entry.w}-${entry.p}`;
         if (!removedKeys.has(k)) {
-          result.push({ word: toRandomWordEntry(entry), key: k });
+          result.push({ word: toVowelTrainerEntry(entry, ending), key: k });
         }
       }
     }
     return result;
   }, [selectedEndings, allKeys, removedKeys]);
+
+  const wordsToShow = useMemo(() => {
+    let currentEnding = "";
+    let count = 0;
+    return words.map(({ word }) => {
+      if (word.ending !== currentEnding) {
+        currentEnding = word.ending;
+        count = 0;
+      }
+      count++;
+      return count <= maxWordsPerEnding;
+    });
+  }, [words, maxWordsPerEnding]);
+
+  const visibleWords = useMemo(() => words.filter((_, i) => wordsToShow[i]), [words, wordsToShow]);
+  const visibleCount = visibleWords.length;
 
   const getHidden = (key: string) => hiddenRows[key] || [false, false, false, false];
 
@@ -184,10 +206,10 @@ const VowelTrainer = () => {
   const showAll = useCallback(() => {
     setHiddenRows((prev) => {
       const next = { ...prev };
-      for (const { key } of words) next[key] = [false, false, false, false];
+      for (const { key } of visibleWords) next[key] = [false, false, false, false];
       return next;
     });
-  }, [words]);
+  }, [visibleWords]);
 
   const hideAll = useCallback(() => {
     const now = Date.now();
@@ -195,13 +217,13 @@ const VowelTrainer = () => {
     lastHideAllTime.current = now;
     setHiddenRows((prev) => {
       const next = { ...prev };
-      for (const { key } of words) {
+      for (const { key } of visibleWords) {
         const cur = prev[key] || [false, false, false, false];
         next[key] = double ? [true, true, true, true] : [cur[0], true, true, true];
       }
       return next;
     });
-  }, [words]);
+  }, [visibleWords]);
 
   const displayKey = (key: string) => key.replace(/ü/g, "ü");
 
@@ -260,14 +282,23 @@ const VowelTrainer = () => {
             <Eye className="h-3.5 w-3.5 mr-1" /> Show All
           </Button>
           <Button variant="outline" size="sm" onClick={hideAll}>
-            <EyeOff className="h-3.5 w-3.5 mr-1" /> Hide All
+          <EyeOff className="h-3.5 w-3.5 mr-1" /> Hide All
           </Button>
-          <span className="text-xs text-muted-foreground">{words.length} words</span>
+          <span className="text-xs text-muted-foreground">{visibleCount} words out of {words.length} total</span>
+          <Button variant="outline" size="sm" onClick={() => setMaxWordsPerEnding(prev => prev + 1)}>
+            Show More
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => setMaxWordsPerEnding(9999)}>
+            Show All Words
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => setMaxWordsPerEnding(1)}>
+            1 per ending
+          </Button>
         </div>
 
         {/* Word cards grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 mb-6">
-          {words.map(({ word, key }) => (
+          {visibleWords.map(({ word, key }) => (
             <WordCard
               key={key}
               word={word}
