@@ -1,6 +1,18 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ChevronDown, ChevronRight, Shuffle, Plus, RefreshCw, Eye, EyeOff, Save, BookOpen, HelpCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronDown,
+  ChevronRight,
+  Shuffle,
+  Plus,
+  RefreshCw,
+  Eye,
+  EyeOff,
+  Save,
+  BookOpen,
+  HelpCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -52,7 +64,7 @@ const RandomWords = () => {
   const [formattingOpen, setFormattingOpen] = useState(false);
   const [speechOpen, setSpeechOpen] = useState(false);
   const [hidingOpen, setHidingOpen] = useState(false);
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(true);
 
   // Preset state
   const [activePreset, setActivePreset] = useState<QuickPreset>(EasyPreset);
@@ -187,7 +199,17 @@ const RandomWords = () => {
     setWords(newWords);
     setHiddenRows((prev) => [...prev, ...newHidden]);
     setUserDifficulties((prev) => [...prev, ...newWords.slice(words.length).map(() => null as UserDifficulty)]);
-  }, [words, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding, activePinyinList]);
+  }, [
+    words,
+    hideChinese,
+    hideEnglish,
+    hidePinyin,
+    hideZhuyin,
+    dontHideFirstN,
+    firstN,
+    randomizeHiding,
+    activePinyinList,
+  ]);
 
   const randomizeAll = useCallback(() => {
     const generated = GenerateNwordsFromPinyin([], 4, activePinyinList);
@@ -229,7 +251,16 @@ const RandomWords = () => {
       setWords(asWords);
       setHiddenRows(
         asWords.map((_, i) =>
-          generateHiddenState(i, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding),
+          generateHiddenState(
+            i,
+            hideChinese,
+            hideEnglish,
+            hidePinyin,
+            hideZhuyin,
+            dontHideFirstN,
+            firstN,
+            randomizeHiding,
+          ),
         ),
       );
       setUserDifficulties(savedEntries.map((s) => s.difficulty));
@@ -630,7 +661,16 @@ const RandomWords = () => {
                           setWords(generated);
                           setHiddenRows(
                             generated.map((_, i) =>
-                              generateHiddenState(i, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding),
+                              generateHiddenState(
+                                i,
+                                hideChinese,
+                                hideEnglish,
+                                hidePinyin,
+                                hideZhuyin,
+                                dontHideFirstN,
+                                firstN,
+                                randomizeHiding,
+                              ),
                             ),
                           );
                           setUserDifficulties(generated.map(() => null));
