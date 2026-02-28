@@ -11405,14 +11405,6 @@ export const pinyinStubsData: PinyinStubData[] = [
       },
       {
         "h": -1,
-        "ct": "嫖",
-        "fp": "piáo",
-        "e": "to visit prostitutes",
-        "t": 2,
-        "cs": "嫖"
-      },
-      {
-        "h": -1,
         "ct": "瓢",
         "fp": "piáo",
         "e": "ladle, gourd",
