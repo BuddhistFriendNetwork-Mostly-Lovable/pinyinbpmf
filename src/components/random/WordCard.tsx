@@ -1,7 +1,6 @@
 import { Volume2, Eye, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { RandomWordEntry } from "@/lib/randomWordsUtils";
-import { getDifficultyForStub, getDifficultyDotColor } from "@/lib/randomWordsUtils";
 import { cleanZhuyin } from "@/lib/zhuyinUtils";
 import { buildMDBGUrl } from "@/lib/zhuyinUtils";
 import { chartData, endings } from "@/data/phoneticData";
@@ -18,12 +17,16 @@ export interface WordCardDisplaySettings {
   mdbgIgnoreTone: boolean;
 }
 
+export type UserDifficulty = "easy" | "medium" | "hard" | null;
+
 interface WordCardProps {
   word: RandomWordEntry;
   hidden: boolean[];
   settings: WordCardDisplaySettings;
+  userDifficulty: UserDifficulty;
   onReveal: (rowIndex: number) => void;
   onSpeak: (text: string, lang: "zh" | "en") => void;
+  onSetDifficulty: (d: UserDifficulty) => void;
 }
 
 function getZhuyinForStub(stub: string): string {
@@ -42,9 +45,7 @@ function getZhuyinForStub(stub: string): string {
   return "";
 }
 
-export const WordCard = ({ word, hidden, settings, onReveal, onSpeak }: WordCardProps) => {
-  const difficulty = getDifficultyForStub(word.pinyinStub);
-  const dotColor = getDifficultyDotColor(difficulty);
+export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onSpeak, onSetDifficulty }: WordCardProps) => {
 
   const chineseText = settings.showOnlyFirstChar ? word.cs[0] : word.cs;
   const pinyinText = settings.showOnlyFirstChar ? word.fp.split(" ")[0] : word.fp;
@@ -165,8 +166,27 @@ export const WordCard = ({ word, hidden, settings, onReveal, onSpeak }: WordCard
       {/* Row 4: Zhuyin */}
       {settings.showZhuyin && renderRow(3, zhuyinBoxes())}
 
-      {/* Difficulty dot */}
-      <div className={cn("absolute bottom-1 right-1 w-2.5 h-2.5 rounded-full", dotColor)} />
+      {/* Difficulty dots */}
+      <div className="flex items-center justify-end gap-1 px-1.5 py-1">
+        {(["easy", "medium", "hard"] as const).map((level) => {
+          const color = level === "easy" ? "bg-green-500" : level === "medium" ? "bg-yellow-500" : "bg-red-500";
+          const isSelected = userDifficulty === level;
+          const isNull = userDifficulty === null;
+          return (
+            <button
+              key={level}
+              onClick={() => onSetDifficulty(isSelected ? null : level)}
+              className={cn(
+                "w-3 h-3 rounded-full transition-all",
+                color,
+                !isNull && !isSelected && "opacity-[0.35]",
+                isSelected && "ring-2 ring-blue-500 ring-offset-1",
+              )}
+              title={`Mark as ${level}`}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };
