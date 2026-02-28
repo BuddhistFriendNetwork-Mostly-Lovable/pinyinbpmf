@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ChevronDown, ChevronRight, Shuffle, Plus, RefreshCw, Eye, EyeOff, Save, BookOpen } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronRight, Shuffle, Plus, RefreshCw, Eye, EyeOff, Save, BookOpen, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -11,10 +11,15 @@ import { WordCard, type WordCardDisplaySettings, type UserDifficulty } from "@/c
 import {
   GenerateNwordsFromPinyin,
   DefaultPinyinList,
+  PinyinListFromQuickPreset,
+  EasyPreset,
+  quickPresets,
   generateHiddenState,
   type RandomWordEntry,
   type HideMode,
+  type QuickPreset,
 } from "@/lib/randomWordsUtils";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { useTTS } from "@/hooks/useTTS";
 import { toast } from "@/hooks/use-toast";
 import { useSavedDifficulties, type SavedWordEntry } from "@/hooks/useSavedDifficulties";
@@ -47,6 +52,11 @@ const RandomWords = () => {
   const [formattingOpen, setFormattingOpen] = useState(false);
   const [speechOpen, setSpeechOpen] = useState(false);
   const [hidingOpen, setHidingOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  // Preset state
+  const [activePreset, setActivePreset] = useState<QuickPreset>(EasyPreset);
+  const activePinyinList = useMemo(() => PinyinListFromQuickPreset(activePreset), [activePreset]);
 
   // Settings panel auto-collapse
   const [settingsOpen, setSettingsOpen] = useState(true);
@@ -88,7 +98,7 @@ const RandomWords = () => {
   useEffect(() => {
     // Dynamic import to lazy load the big data file
     import("@/data/pinyinStubsToWordsData").then(() => {
-      const generated = GenerateNwordsFromPinyin([], 4, DefaultPinyinList);
+      const generated = GenerateNwordsFromPinyin([], 4, activePinyinList);
       setWords(generated);
       setHiddenRows(
         generated.map((_, i) =>
@@ -159,7 +169,7 @@ const RandomWords = () => {
   }, [words, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding]);
 
   const addMore = useCallback(() => {
-    const newWords = GenerateNwordsFromPinyin(words, words.length + 20, DefaultPinyinList);
+    const newWords = GenerateNwordsFromPinyin(words, words.length + 20, activePinyinList);
     const newHidden = newWords
       .slice(words.length)
       .map((_, i) =>
@@ -177,10 +187,10 @@ const RandomWords = () => {
     setWords(newWords);
     setHiddenRows((prev) => [...prev, ...newHidden]);
     setUserDifficulties((prev) => [...prev, ...newWords.slice(words.length).map(() => null as UserDifficulty)]);
-  }, [words, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding]);
+  }, [words, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding, activePinyinList]);
 
   const randomizeAll = useCallback(() => {
-    const generated = GenerateNwordsFromPinyin([], 4, DefaultPinyinList);
+    const generated = GenerateNwordsFromPinyin([], 4, activePinyinList);
     setWords(generated);
     setHiddenRows(
       generated.map((_, i) =>
@@ -198,7 +208,7 @@ const RandomWords = () => {
     );
     setUserDifficulties(generated.map(() => null));
     setTrainingMode(false);
-  }, [hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding]);
+  }, [hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding, activePinyinList]);
 
   const handleSaveDifficulties = useCallback(() => {
     const count = saveDifficulties(words, userDifficulties);
@@ -548,7 +558,7 @@ const RandomWords = () => {
                   variant="outline"
                   onClick={() => {
                     const target = 20;
-                    const newWords = GenerateNwordsFromPinyin(words, target, DefaultPinyinList);
+                    const newWords = GenerateNwordsFromPinyin(words, target, activePinyinList);
                     const newHidden = newWords
                       .slice(words.length)
                       .map((_, i) =>
@@ -592,12 +602,48 @@ const RandomWords = () => {
           </Button>
         </div>
 
-        {/* Filters stub */}
-        <Card>
-          <CardContent className="p-6 text-center">
-            <p className="text-muted-foreground">🔧 Filters & Restrictions coming soon.</p>
-          </CardContent>
-        </Card>
+        {/* Filters & Restrictions */}
+        <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
+          <Card className="mb-4">
+            <CollapsibleTrigger className="w-full">
+              <CardContent className="p-3 flex items-center justify-between cursor-pointer">
+                <h2 className="text-sm font-semibold flex items-center gap-2">
+                  {filtersOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                  🔧 Filters & Restrictions
+                </h2>
+              </CardContent>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="p-3 pt-0">
+                <p className="text-xs text-muted-foreground mb-2 font-medium">Quick Menu</p>
+                <div className="flex flex-wrap gap-2">
+                  {quickPresets.map((preset) => (
+                    <div key={preset.name} className="flex items-center gap-1">
+                      <Button
+                        variant={activePreset.name === preset.name ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setActivePreset(preset)}
+                      >
+                        {preset.name}
+                      </Button>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-7 w-7">
+                            <HelpCircle className="h-3.5 w-3.5" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="text-sm whitespace-pre-line max-w-sm">
+                          <p className="font-semibold mb-1">{preset.name}</p>
+                          <p className="text-xs text-muted-foreground">{preset.notes}</p>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
 
         <ReviewModal
           open={reviewOpen}
