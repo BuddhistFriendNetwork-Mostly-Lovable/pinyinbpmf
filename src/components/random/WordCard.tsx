@@ -1,4 +1,4 @@
-import { Volume2, Eye, EyeOff, ExternalLink } from "lucide-react";
+import { Volume2, Eye, EyeOff, ExternalLink, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { RandomWordEntry } from "@/lib/randomWordsUtils";
 import { cleanZhuyin } from "@/lib/zhuyinUtils";
@@ -27,6 +27,7 @@ interface WordCardProps {
   onReveal: (rowIndex: number) => void;
   onSpeak: (text: string, lang: "zh" | "en") => void;
   onSetDifficulty: (d: UserDifficulty) => void;
+  onRemove?: () => void;
 }
 
 function getZhuyinForStub(stub: string): string {
@@ -45,7 +46,7 @@ function getZhuyinForStub(stub: string): string {
   return "";
 }
 
-export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onSpeak, onSetDifficulty }: WordCardProps) => {
+export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onSpeak, onSetDifficulty, onRemove }: WordCardProps) => {
 
   const chineseText = settings.showOnlyFirstChar ? word.cs[0] : word.cs;
   const pinyinText = settings.showOnlyFirstChar ? word.fp.split(" ")[0] : word.fp;
@@ -109,6 +110,15 @@ export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onS
 
   return (
     <div className="border rounded-lg overflow-hidden bg-card text-card-foreground shadow-sm relative">
+      {onRemove && (
+        <button
+          onClick={onRemove}
+          className="absolute top-0.5 right-0.5 z-20 p-0.5 rounded hover:bg-destructive/20 transition-colors"
+          title="Remove card"
+        >
+          <X className="h-3 w-3 text-muted-foreground hover:text-destructive" />
+        </button>
+      )}
       {/* Row 1: Chinese */}
       {renderRow(
         0,
