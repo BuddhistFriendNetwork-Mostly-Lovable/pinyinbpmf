@@ -636,10 +636,10 @@ const RandomWords = () => {
               </Button>
             </>
           )}
-          <Button variant="outline" onClick={showEverything} disabled={words.length <= 5}>
+          <Button variant="outline" onClick={showEverything} disabled={words.length <= 2}>
             <Eye className="h-4 w-4 mr-1" /> Show All
           </Button>
-          <Button variant="outline" onClick={hideEverything} disabled={words.length <= 5}>
+          <Button variant="outline" onClick={hideEverything} disabled={words.length <= 2}>
             <EyeOff className="h-4 w-4 mr-1" /> Hide All
           </Button>
         </div>
