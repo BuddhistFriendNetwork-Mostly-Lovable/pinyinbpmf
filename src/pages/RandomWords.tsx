@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ChevronDown, ChevronRight, Shuffle, Plus, RefreshCw, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronRight, Shuffle, Plus, RefreshCw, Eye, EyeOff, Save, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -17,6 +17,8 @@ import {
 } from "@/lib/randomWordsUtils";
 import { useTTS } from "@/hooks/useTTS";
 import { toast } from "@/hooks/use-toast";
+import { useSavedDifficulties, type SavedWordEntry } from "@/hooks/useSavedDifficulties";
+import { ReviewModal } from "@/components/random/ReviewModal";
 
 const RandomWords = () => {
   // Display settings
@@ -75,6 +77,10 @@ const RandomWords = () => {
   const [hiddenRows, setHiddenRows] = useState<boolean[][]>([]);
   const [userDifficulties, setUserDifficulties] = useState<UserDifficulty[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [trainingMode, setTrainingMode] = useState(false);
+  const [reviewOpen, setReviewOpen] = useState(false);
+
+  const { saveDifficulties, getByDifficulty, hasSavedWords } = useSavedDifficulties();
 
   const { speak } = useTTS();
 
@@ -191,7 +197,36 @@ const RandomWords = () => {
       ),
     );
     setUserDifficulties(generated.map(() => null));
+    setTrainingMode(false);
   }, [hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding]);
+
+  const handleSaveDifficulties = useCallback(() => {
+    const count = saveDifficulties(words, userDifficulties);
+    toast({ description: `Saved! ${count} total words in your collection.`, duration: 2000 });
+  }, [words, userDifficulties, saveDifficulties]);
+
+  const handleLoadTraining = useCallback(
+    (savedEntries: SavedWordEntry[]) => {
+      const asWords: RandomWordEntry[] = savedEntries.map((s) => ({
+        h: s.h,
+        ct: s.ct,
+        cs: s.cs,
+        e: s.e,
+        fp: s.fp,
+        t: s.t,
+        pinyinStub: s.pinyinStub,
+      }));
+      setWords(asWords);
+      setHiddenRows(
+        asWords.map((_, i) =>
+          generateHiddenState(i, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding),
+        ),
+      );
+      setUserDifficulties(savedEntries.map((s) => s.difficulty));
+      setTrainingMode(true);
+    },
+    [hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding],
+  );
 
   const showAllRows = useCallback(
     (rowIndex: number) => {
@@ -320,13 +355,23 @@ const RandomWords = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-2 py-4 max-w-6xl">
         {/* Header */}
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-4 flex-wrap">
           <Link to="/">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-1" /> Back to Chart
             </Button>
           </Link>
-          <h1 className="text-2xl font-bold">Random Words Practice</h1>
+          <h1 className="text-2xl font-bold flex-1">Random Words Practice</h1>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={handleSaveDifficulties}>
+              <Save className="h-4 w-4 mr-1" /> Save Difficulties
+            </Button>
+            {hasSavedWords && (
+              <Button variant="outline" size="sm" onClick={() => setReviewOpen(true)}>
+                <BookOpen className="h-4 w-4 mr-1" /> Review
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Settings */}
@@ -492,45 +537,53 @@ const RandomWords = () => {
 
         {/* Action buttons */}
         <div className="flex gap-2 flex-wrap justify-center mb-6">
-          {words.length < 20 && (
-            <Button
-              variant="outline"
-              onClick={() => {
-                const target = 20;
-                const newWords = GenerateNwordsFromPinyin(words, target, DefaultPinyinList);
-                const newHidden = newWords
-                  .slice(words.length)
-                  .map((_, i) =>
-                    generateHiddenState(
-                      words.length + i,
-                      hideChinese,
-                      hideEnglish,
-                      hidePinyin,
-                      hideZhuyin,
-                      dontHideFirstN,
-                      firstN,
-                      randomizeHiding,
-                    ),
-                  );
-                setWords(newWords);
-                setHiddenRows((prev) => [...prev, ...newHidden]);
-                setUserDifficulties((prev) => [
-                  ...prev,
-                  ...newWords.slice(words.length).map(() => null as UserDifficulty),
-                ]);
-              }}
-            >
-              <Plus className="h-4 w-4 mr-1" /> More Words (20)
-            </Button>
+          {trainingMode ? (
+            <span className="text-sm font-semibold text-muted-foreground px-4 py-2 border rounded-md bg-muted">
+              TRAINING
+            </span>
+          ) : (
+            <>
+              {words.length < 20 && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    const target = 20;
+                    const newWords = GenerateNwordsFromPinyin(words, target, DefaultPinyinList);
+                    const newHidden = newWords
+                      .slice(words.length)
+                      .map((_, i) =>
+                        generateHiddenState(
+                          words.length + i,
+                          hideChinese,
+                          hideEnglish,
+                          hidePinyin,
+                          hideZhuyin,
+                          dontHideFirstN,
+                          firstN,
+                          randomizeHiding,
+                        ),
+                      );
+                    setWords(newWords);
+                    setHiddenRows((prev) => [...prev, ...newHidden]);
+                    setUserDifficulties((prev) => [
+                      ...prev,
+                      ...newWords.slice(words.length).map(() => null as UserDifficulty),
+                    ]);
+                  }}
+                >
+                  <Plus className="h-4 w-4 mr-1" /> More Words (20)
+                </Button>
+              )}
+              {words.length >= 20 && (
+                <Button variant="outline" onClick={addMore}>
+                  <Plus className="h-4 w-4 mr-1" /> +Add 20 more
+                </Button>
+              )}
+              <Button variant="outline" onClick={randomizeAll}>
+                <RefreshCw className="h-4 w-4 mr-1" /> Random New Words
+              </Button>
+            </>
           )}
-          {words.length >= 20 && (
-            <Button variant="outline" onClick={addMore}>
-              <Plus className="h-4 w-4 mr-1" /> +Add 20 more
-            </Button>
-          )}
-          <Button variant="outline" onClick={randomizeAll}>
-            <RefreshCw className="h-4 w-4 mr-1" /> Random New Words
-          </Button>
           <Button variant="outline" onClick={showEverything} disabled={words.length <= 5}>
             <Eye className="h-4 w-4 mr-1" /> Show All
           </Button>
@@ -545,6 +598,13 @@ const RandomWords = () => {
             <p className="text-muted-foreground">🔧 Filters & Restrictions coming soon.</p>
           </CardContent>
         </Card>
+
+        <ReviewModal
+          open={reviewOpen}
+          onOpenChange={setReviewOpen}
+          getByDifficulty={getByDifficulty}
+          onLoadTraining={handleLoadTraining}
+        />
       </div>
     </div>
   );
