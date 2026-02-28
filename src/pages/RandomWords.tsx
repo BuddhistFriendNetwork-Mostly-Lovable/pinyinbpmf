@@ -411,7 +411,13 @@ const RandomWords = () => {
           <h1 className="text-2xl font-bold flex-1">Random Words Practice</h1>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" onClick={handleSaveDifficulties}>
-              <Save className="h-4 w-4 mr-1" /> Save Difficulties
+              <Save className="h-4 w-4 mr-1" /> Save
+              {/* Green Dot */}
+              <span className="w-3 h-3 rounded-full bg-green-500" />
+              {/* Yellow Dot (Using the hex code from your snippet) */}
+              <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#FBBF24" }} />
+              {/* Red Dot */}
+              <span className="w-3 h-3 rounded-full bg-red-500" />
             </Button>
             {hasSavedWords && (
               <Button variant="outline" size="sm" onClick={() => setReviewOpen(true)}>
