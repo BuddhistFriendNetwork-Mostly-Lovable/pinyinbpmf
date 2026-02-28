@@ -268,6 +268,10 @@ export function getChineseWordsDisplay(finalPinyin: string, count: number): stri
     .join("\u2002"); // EnSpace
 }
 
+export function getAllEndingKeys(): string[] {
+  return Object.keys(chineseWords);
+}
+
 export function getMDBGUrl(chineseText: string): string {
   // Use the first variant if there are traditional/simplified options
   const word = chineseText.split(",")[0];
