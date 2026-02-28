@@ -141,7 +141,7 @@ export const PhoneticChart = () => {
         <br></br>
         <div>
           <a href="/random-words" className="text-sm text-primary underline hover:text-primary/80">
-            🎲 Random Words Practice →
+            🎲 Random Sounds Practice →
           </a>
         </div>
 
