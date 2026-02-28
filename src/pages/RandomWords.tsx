@@ -408,7 +408,7 @@ const RandomWords = () => {
               <ArrowLeft className="h-4 w-4 mr-1" /> Back to Chart
             </Button>
           </Link>
-          <h1 className="text-2xl font-bold flex-1">Random Words Practice</h1>
+          <h1 className="text-2xl font-bold flex-1">Random Sounds Practice</h1>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" onClick={handleSaveDifficulties}>
               <Save className="h-4 w-4 mr-1" /> Save

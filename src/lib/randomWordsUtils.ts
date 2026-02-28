@@ -23,10 +23,7 @@ export interface QuickPreset {
 /**
  * Get all valid pinyin combinations from given initials and endings arrays.
  */
-export function AllPinyinFromInitialAndEnding(
-  initialsArray: string[],
-  endingsArray: string[],
-): string[] {
+export function AllPinyinFromInitialAndEnding(initialsArray: string[], endingsArray: string[]): string[] {
   const result: string[] = [];
 
   for (const init of initialsArray) {
@@ -128,9 +125,7 @@ export function GenerateNwordsFromPinyin(
 export function getDifficultyForStub(pinyinStub: string): number {
   // Try to match the stub's ending against difficultyCategorization
   // We check from longest ending to shortest
-  const sortedEndings = Object.keys(difficultyCategorization).sort(
-    (a, b) => b.length - a.length,
-  );
+  const sortedEndings = Object.keys(difficultyCategorization).sort((a, b) => b.length - a.length);
 
   for (const ending of sortedEndings) {
     if (ending === "i_buzz") continue; // special case
@@ -179,7 +174,7 @@ function generateEasyNotes(): string {
 }
 
 export const EasyPreset: QuickPreset = {
-  name: "Easy",
+  name: "Easy Sounds",
   autogenInit: ["b", "p", "m", "f", "d", "t", "n", "g", "k", "h", "j", "q", "x"],
   autogenEndings: easyEndingsList,
   specialAdds: ["wo", "yi", "san", "si", "wu"],
@@ -188,9 +183,27 @@ export const EasyPreset: QuickPreset = {
 EasyPreset.notes = generateEasyNotes();
 
 const allConsonantInitials = [
-  "b", "p", "m", "f", "d", "t", "n", "l",
-  "g", "k", "h", "j", "q", "x",
-  "zh", "ch", "sh", "r", "z", "c", "s",
+  "b",
+  "p",
+  "m",
+  "f",
+  "d",
+  "t",
+  "n",
+  "l",
+  "g",
+  "k",
+  "h",
+  "j",
+  "q",
+  "x",
+  "zh",
+  "ch",
+  "sh",
+  "r",
+  "z",
+  "c",
+  "s",
 ];
 
 export const UmlautPreset: QuickPreset = {
@@ -242,18 +255,8 @@ export function generateHiddenState(
   };
 
   if (randomizeHiding) {
-    return [
-      Math.random() < 0.5,
-      Math.random() < 0.5,
-      Math.random() < 0.5,
-      Math.random() < 0.5,
-    ];
+    return [Math.random() < 0.5, Math.random() < 0.5, Math.random() < 0.5, Math.random() < 0.5];
   }
 
-  return [
-    resolveHide(hideChinese),
-    resolveHide(hideEnglish),
-    resolveHide(hidePinyin),
-    resolveHide(hideZhuyin),
-  ];
+  return [resolveHide(hideChinese), resolveHide(hideEnglish), resolveHide(hidePinyin), resolveHide(hideZhuyin)];
 }
