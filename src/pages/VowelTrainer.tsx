@@ -377,6 +377,15 @@ const VowelTrainer = () => {
           ))}
         </div>
 
+        <div className="flex items-center gap-2 mb-3">
+          <Button variant="outline" size="sm" onClick={showAll}>
+            <Eye className="h-3.5 w-3.5 mr-1" /> Show Card
+          </Button>
+          <Button variant="outline" size="sm" onClick={hideAll}>
+            <EyeOff className="h-3.5 w-3.5 mr-1" /> Hide Card Rows
+          </Button>
+        </div>
+
         {/* Bottom: Quick Selects (collapsible) */}
         <Collapsible open={quickSelectsOpen} onOpenChange={setQuickSelectsOpen}>
           <CollapsibleTrigger className="flex items-center gap-2 w-full py-2 px-3 hover:bg-accent rounded-md text-sm font-medium">
@@ -420,15 +429,6 @@ const VowelTrainer = () => {
                     Final Nasals (n, ng)
                   </Button>
                 </div>
-              </div>
-
-              <div className="flex items-center gap-2 mb-3">
-                <Button variant="outline" size="sm" onClick={showAll}>
-                  <Eye className="h-3.5 w-3.5 mr-1" /> Show Card
-                </Button>
-                <Button variant="outline" size="sm" onClick={hideAll}>
-                  <EyeOff className="h-3.5 w-3.5 mr-1" /> Hide Card Rows
-                </Button>
               </div>
 
               <Collapsible open={combosOpen} onOpenChange={setCombosOpen}>
