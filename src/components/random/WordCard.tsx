@@ -15,6 +15,7 @@ export interface WordCardDisplaySettings {
   showMDBGWord: boolean;
   showMDBGPinyin: boolean;
   mdbgIgnoreTone: boolean;
+  showDifficultyDots?: boolean;
 }
 
 export type UserDifficulty = "easy" | "medium" | "hard" | null;
@@ -210,27 +211,29 @@ export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onS
         </button>
 
         {/* Right: difficulty dots */}
-        <div className="flex items-center gap-1">
-          {(["easy", "medium", "hard"] as const).map((level) => {
-            const color = level === "easy" ? "bg-green-500" : level === "hard" ? "bg-red-500" : "";
-            const isSelected = userDifficulty === level;
-            const isNull = userDifficulty === null;
-            return (
-              <button
-                key={level}
-                onClick={() => onSetDifficulty(isSelected ? null : level)}
-                className={cn(
-                  "w-3 h-3 rounded-full transition-all",
-                  color,
-                  !isNull && !isSelected && "opacity-[0.35]",
-                  isSelected && "ring-2 ring-blue-500 ring-offset-1",
-                )}
-                style={level === "medium" ? { backgroundColor: "#FBBF24" } : undefined}
-                title={`Mark as ${level}`}
-              />
-            );
-          })}
-        </div>
+        {settings.showDifficultyDots !== false && (
+          <div className="flex items-center gap-1">
+            {(["easy", "medium", "hard"] as const).map((level) => {
+              const color = level === "easy" ? "bg-green-500" : level === "hard" ? "bg-red-500" : "";
+              const isSelected = userDifficulty === level;
+              const isNull = userDifficulty === null;
+              return (
+                <button
+                  key={level}
+                  onClick={() => onSetDifficulty(isSelected ? null : level)}
+                  className={cn(
+                    "w-3 h-3 rounded-full transition-all",
+                    color,
+                    !isNull && !isSelected && "opacity-[0.35]",
+                    isSelected && "ring-2 ring-blue-500 ring-offset-1",
+                  )}
+                  style={level === "medium" ? { backgroundColor: "#FBBF24" } : undefined}
+                  title={`Mark as ${level}`}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
