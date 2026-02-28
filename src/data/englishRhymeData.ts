@@ -101,6 +101,15 @@ export const difficultyCategorization: Record<string, number> = {
 };
 
 /**
+ * Get all endings matching a specific difficulty level
+ */
+export const endingsWithDifficulty = (level: number): string[] => {
+  return Object.entries(difficultyCategorization)
+    .filter(([, v]) => v === level)
+    .map(([k]) => k);
+};
+
+/**
  * Get rhyme words for a final, returning empty array if none exist
  */
 export const getRhymeWords = (finalPinyin: string): string[] => {
