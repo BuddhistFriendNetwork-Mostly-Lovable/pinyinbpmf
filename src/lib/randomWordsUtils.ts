@@ -12,6 +12,14 @@ export interface GenerateFlags {
   includeParentheses?: boolean;
 }
 
+export interface QuickPreset {
+  name: string;
+  autogenInit: string[];
+  autogenEndings: string[];
+  specialAdds: string[];
+  notes: string;
+}
+
 /**
  * Get all valid pinyin combinations from given initials and endings arrays.
  */
@@ -28,9 +36,10 @@ export function AllPinyinFromInitialAndEnding(
       if (!cell) continue;
 
       const pinyin = cell.pinyin;
-      if (pinyin.startsWith("(")) {
-        // Keep the full parenthesized text
-        result.push(pinyin);
+      // Extract just the parenthesized part, e.g. "(ye) --> ie" becomes "(ye)"
+      const parenMatch = pinyin.match(/^(\([^)]+\))/);
+      if (parenMatch) {
+        result.push(parenMatch[1]);
       } else {
         result.push(pinyin);
       }
@@ -38,6 +47,18 @@ export function AllPinyinFromInitialAndEnding(
   }
 
   return result;
+}
+
+/**
+ * Generate a pinyin list from a QuickPreset.
+ */
+export function PinyinListFromQuickPreset(preset: QuickPreset): string[] {
+  const resolvedEndings = preset.autogenEndings.map((e) => {
+    const ending = endings.find((end) => end.pinyin === e);
+    return ending ? ending.pinyin : e;
+  });
+  const autogen = AllPinyinFromInitialAndEnding(preset.autogenInit, resolvedEndings);
+  return [...autogen, ...preset.specialAdds];
 }
 
 /**
@@ -146,21 +167,43 @@ export function getDifficultyDotColor(level: number): string {
   return "bg-red-500";
 }
 
-// Build default pinyin list
-const defaultInitials = ["b", "p", "m", "f", "d", "t", "n", "g", "k", "h", "j", "q", "x"];
-const easyEndings = [
-  ...endingsWithDifficulty(0),
-  ...endingsWithDifficulty(1),
+// --- Quick Presets ---
+
+const easyEndingsList = [...endingsWithDifficulty(0), ...endingsWithDifficulty(1)];
+
+function generateEasyNotes(): string {
+  const initials = EasyPreset.autogenInit;
+  const endingNames = EasyPreset.autogenEndings;
+  const specials = EasyPreset.specialAdds;
+  return `Initials (${initials.length}): ${initials.join(", ")}.\nEndings (${endingNames.length}): ${endingNames.join(", ")}.\nSpecial Adds (${specials.length}): ${specials.join(", ")}.`;
+}
+
+export const EasyPreset: QuickPreset = {
+  name: "Easy",
+  autogenInit: ["b", "p", "m", "f", "d", "t", "n", "g", "k", "h", "j", "q", "x"],
+  autogenEndings: easyEndingsList,
+  specialAdds: ["wo", "yi", "san", "si", "wu"],
+  notes: "", // filled below
+};
+EasyPreset.notes = generateEasyNotes();
+
+const allConsonantInitials = [
+  "b", "p", "m", "f", "d", "t", "n", "l",
+  "g", "k", "h", "j", "q", "x",
+  "zh", "ch", "sh", "r", "z", "c", "s",
 ];
 
-// Get ending pinyin strings
-const easyEndingPinyins = easyEndings.map((e) => {
-  const ending = endings.find((end) => end.pinyin === e);
-  return ending ? ending.pinyin : e;
-});
+export const UmlautPreset: QuickPreset = {
+  name: "Umlauts",
+  autogenInit: allConsonantInitials,
+  autogenEndings: ["ü", "üe", "üan", "ün", "iong"],
+  specialAdds: [],
+  notes: `All Umlaut endings: ü, üe, üan, ün — which also includes "iong". The Zhuyin for "-iong" uses ㄩ, which is the Umlaut sound.\n\nNotice that usually this is written in pinyin without the two dots (ü). So "u" actually is tricky: It can be the ü sound or the u sound like "bu".\n\nTIP: for "j, q, x, and y", the u is always ü. Everything else is the u like english "boo".`,
+};
 
-const autogenPart1 = AllPinyinFromInitialAndEnding(defaultInitials, easyEndingPinyins);
-export const DefaultPinyinList = [...autogenPart1, "wo", "yi", "san", "si", "wu"];
+export const quickPresets: QuickPreset[] = [EasyPreset, UmlautPreset];
+
+export const DefaultPinyinList = PinyinListFromQuickPreset(EasyPreset);
 
 export type HideMode = "always" | "never" | "sometimes";
 
