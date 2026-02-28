@@ -153,6 +153,7 @@ const VowelTrainer = () => {
   const [quickSelectsOpen, setQuickSelectsOpen] = useState(false);
   const [removedKeys, setRemovedKeys] = useState<Set<string>>(new Set());
   const [hiddenRows, setHiddenRows] = useState<Record<string, boolean[]>>({});
+  const [showCardColors, setShowCardColors] = useState(true);
   const { speak } = useTTS();
   const allKeys = useMemo(() => getAllEndingKeys(), []);
   const endingColors = useMemo(() => generateEndingColors(allKeys.length), [allKeys]);
@@ -372,7 +373,7 @@ const VowelTrainer = () => {
               onSpeak={handleSpeak}
               onSetDifficulty={() => {}}
               onRemove={() => setRemovedKeys((prev) => new Set(prev).add(key))}
-              style={{ backgroundColor: endingColorMap[word.ending] }}
+              style={showCardColors ? { backgroundColor: endingColorMap[word.ending] } : undefined}
             />
           ))}
         </div>
@@ -383,6 +384,9 @@ const VowelTrainer = () => {
           </Button>
           <Button variant="outline" size="sm" onClick={hideAll}>
             <EyeOff className="h-3.5 w-3.5 mr-1" /> Hide Card Rows
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => setShowCardColors(prev => !prev)}>
+            {showCardColors ? "Remove Colors" : "Show Colors"}
           </Button>
         </div>
 
