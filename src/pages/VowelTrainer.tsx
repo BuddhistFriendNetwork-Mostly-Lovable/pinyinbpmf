@@ -77,18 +77,17 @@ function toVowelTrainerEntry(entry: ChineseWordEntry, ending: string): VowelTrai
   return { cs, ct, e: entry.m, fp: entry.p, pinyinStub: stub, h: -9, t: -9, ending };
 }
 
-const ENDING_COLORS = [
-  "hsl(0 70% 92%)",    // red
-  "hsl(30 80% 90%)",   // orange
-  "hsl(55 80% 88%)",   // yellow
-  "hsl(120 50% 90%)",  // green
-  "hsl(170 50% 88%)",  // teal
-  "hsl(200 70% 90%)",  // sky
-  "hsl(230 60% 92%)",  // blue
-  "hsl(270 50% 92%)",  // purple
-  "hsl(310 50% 92%)",  // pink
-  "hsl(340 60% 92%)",  // rose
-];
+/** Generate N distinct colors by varying hue and alternating lightness */
+function generateEndingColors(n: number): string[] {
+  const colors: string[] = [];
+  for (let i = 0; i < n; i++) {
+    const hue = Math.round((i * 360) / n) % 360;
+    const lightness = i % 2 === 0 ? 88 : 78;
+    const saturation = i % 3 === 0 ? 55 : 70;
+    colors.push(`hsl(${hue} ${saturation}% ${lightness}%)`);
+  }
+  return colors;
+}
 
 const displaySettings: WordCardDisplaySettings = {
   showOnlyFirstChar: false,
@@ -117,11 +116,12 @@ const VowelTrainer = () => {
   const [hiddenRows, setHiddenRows] = useState<Record<string, boolean[]>>({});
   const { speak } = useTTS();
   const allKeys = useMemo(() => getAllEndingKeys(), []);
+  const endingColors = useMemo(() => generateEndingColors(allKeys.length), [allKeys]);
   const endingColorMap = useMemo(() => {
     const map: Record<string, string> = {};
-    allKeys.forEach((key, i) => { map[key] = ENDING_COLORS[i % ENDING_COLORS.length]; });
+    allKeys.forEach((key, i) => { map[key] = endingColors[i]; });
     return map;
-  }, [allKeys]);
+  }, [allKeys, endingColors]);
   const lastHideAllTime = useRef<number>(0);
 
   const applySelection = useCallback((next: Set<string>, qsId: QuickSelectId | null = null) => {
