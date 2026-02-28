@@ -2,7 +2,7 @@ export interface ChineseWordEntry {
   w: string; // Chinese word (may contain comma for trad,simp)
   m: string; // Meaning
   p: string; // Pinyin with tones
-  short: string; // pinyin for just the first syllable.
+  short?: string; // pinyin for just the first syllable.
 }
 
 const chineseWords: Record<string, ChineseWordEntry[]> = {
