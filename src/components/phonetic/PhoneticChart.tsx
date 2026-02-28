@@ -144,12 +144,13 @@ export const PhoneticChart = () => {
             🎲 Random Words Practice →
           </a>
         </div>
-        <br></br>
+
         <div>
           <a href="/vowel-trainer" className="text-sm text-primary underline hover:text-primary/80">
             Vowel Trainer 🅰 🄴 🄸 🅾 🅄 →
           </a>
         </div>
+        <br></br>
       </div>
 
       <GotchaInfoDialog open={gotchaInfoOpen} onOpenChange={setGotchaInfoOpen} />
