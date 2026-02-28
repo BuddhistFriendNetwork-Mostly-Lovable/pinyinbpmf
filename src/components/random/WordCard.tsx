@@ -58,7 +58,7 @@ export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onS
   const rawZhuyin = getZhuyinForStub(word.pinyinStub);
   const zhuyinChars = cleanZhuyin(rawZhuyin);
 
-  const mdbgWordUrl = buildMDBGUrl(word.cs);
+  const mdbgWordUrl = buildMDBGUrl(word.ct);
   const mdbgPinyinUrl = settings.mdbgIgnoreTone
     ? `https://www.mdbg.net/chinese/dictionary?page=worddict&wdqb=p%3A${encodeURIComponent(word.pinyinStub)}*`
     : `https://www.mdbg.net/chinese/dictionary?page=worddict&wdqb=p%3A${encodeURIComponent(word.fp)}*`;
