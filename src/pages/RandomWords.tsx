@@ -622,7 +622,20 @@ const RandomWords = () => {
                       <Button
                         variant={activePreset.name === preset.name ? "default" : "outline"}
                         size="sm"
-                        onClick={() => setActivePreset(preset)}
+                        onClick={() => {
+                          setActivePreset(preset);
+                          // Trigger regeneration with this preset's list
+                          const newList = PinyinListFromQuickPreset(preset);
+                          const generated = GenerateNwordsFromPinyin([], 4, newList);
+                          setWords(generated);
+                          setHiddenRows(
+                            generated.map((_, i) =>
+                              generateHiddenState(i, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding),
+                            ),
+                          );
+                          setUserDifficulties(generated.map(() => null));
+                          setTrainingMode(false);
+                        }}
                       >
                         {preset.name}
                       </Button>
