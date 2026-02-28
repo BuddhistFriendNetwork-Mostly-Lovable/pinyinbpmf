@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Eye, EyeOff, ChevronDown, ChevronRight, ToggleLeft, ToggleRight } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { WordCard, type WordCardDisplaySettings, type UserDifficulty } from "@/components/random/WordCard";
@@ -10,12 +10,11 @@ import { useTTS } from "@/hooks/useTTS";
 import type { RandomWordEntry } from "@/lib/randomWordsUtils";
 
 const LS_KEY = "vowel-trainer-selected-endings";
-const LS_MODE_KEY = "vowel-trainer-select-mode";
 
 const QUICK_SELECTS = {
   medials: { label: "Medials", keys: ["i", "u", "ü"] },
-  finalMono: { label: "Final Monophthongs", keys: ["a", "e", "o"] },
-  finalDip: { label: "Final Diphthongs", keys: ["ai", "ei", "ao", "ou"] },
+  finalMono: { label: "Final Mono(ph)thongs", keys: ["a", "e", "o"] },
+  finalDip: { label: "Final Di(ph)thongs", keys: ["ai", "ei", "ao", "ou"] },
   finalNasal: { label: "Final Nasals (n, ng)", keys: ["an", "en", "ang", "eng"] },
   comboMono: { label: "Combo Mono", keys: ["ia", "ie", "ua", "uo", "üe"] },
   comboDip: { label: "Combo Dip", keys: ["iao", "iu", "uai", "ui"] },
@@ -25,49 +24,22 @@ const QUICK_SELECTS = {
   üMedial: { label: "ü + Finals", keys: ["ü", "iong", "üe", "üan", "ün"] },
 } as const;
 
-type QuickSelectId = keyof typeof QUICK_SELECTS;
-type SelectMode = "one" | "many";
-
 function loadSelected(): Set<string> {
   try {
     const raw = localStorage.getItem(LS_KEY);
     if (raw) return new Set(JSON.parse(raw));
   } catch {}
-  // Default to medials
-  return new Set(QUICK_SELECTS.medials.keys);
-}
-
-function loadMode(): SelectMode {
-  try {
-    const raw = localStorage.getItem(LS_MODE_KEY);
-    if (raw === "one" || raw === "many") return raw;
-  } catch {}
-  return "many";
+  return new Set(getAllEndingKeys());
 }
 
 function saveSelected(s: Set<string>) {
   localStorage.setItem(LS_KEY, JSON.stringify([...s]));
 }
 
-function saveMode(m: SelectMode) {
-  localStorage.setItem(LS_MODE_KEY, m);
-}
-
-/** Check if a set exactly matches a quickselect's keys */
-function detectQuickSelect(selected: Set<string>, allKeys: string[]): QuickSelectId | null {
-  for (const [id, qs] of Object.entries(QUICK_SELECTS)) {
-    const validKeys = qs.keys.filter(k => allKeys.includes(k));
-    if (validKeys.length === selected.size && validKeys.every(k => selected.has(k))) {
-      return id as QuickSelectId;
-    }
-  }
-  return null;
-}
-
 function toRandomWordEntry(entry: ChineseWordEntry): RandomWordEntry {
   const parts = entry.w.split(",");
-  const cs = parts[0];
-  const ct = parts.length > 1 ? parts[1] : cs;
+  const ct = parts[0];
+  const cs = parts.length > 1 ? parts[1] : cs;
   const firstSyllable = entry.p.split(/[^a-zA-Züāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ]+/)[0] || entry.p;
   const stub = stripToneMarks(cleanPinyin(firstSyllable));
   return { cs, ct, e: entry.m, fp: entry.p, pinyinStub: stub, h: -9, t: -9 };
@@ -88,60 +60,39 @@ const displaySettings: WordCardDisplaySettings = {
 
 const VowelTrainer = () => {
   const [selectedEndings, setSelectedEndings] = useState<Set<string>>(loadSelected);
-  const [selectMode, setSelectMode] = useState<SelectMode>(loadMode);
-  const [activeQuickSelect, setActiveQuickSelect] = useState<QuickSelectId | null>(() => {
-    const sel = loadSelected();
-    const allKeys = getAllEndingKeys();
-    return detectQuickSelect(sel, allKeys);
-  });
+  const [endingsOpen, setEndingsOpen] = useState(true);
   const [combosOpen, setCombosOpen] = useState(false);
-  const [quickSelectsOpen, setQuickSelectsOpen] = useState(false);
   const [removedKeys, setRemovedKeys] = useState<Set<string>>(new Set());
   const [hiddenRows, setHiddenRows] = useState<Record<string, boolean[]>>({});
   const { speak } = useTTS();
   const allKeys = useMemo(() => getAllEndingKeys(), []);
   const lastHideAllTime = useRef<number>(0);
 
-  const applySelection = useCallback((next: Set<string>, qsId: QuickSelectId | null = null) => {
-    setSelectedEndings(next);
-    saveSelected(next);
-    setActiveQuickSelect(qsId);
+  const toggleEnding = useCallback((key: string) => {
+    setSelectedEndings((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      saveSelected(next);
+      return next;
+    });
+  }, []);
+
+  const clearAll = useCallback(() => {
+    setSelectedEndings(new Set());
+    saveSelected(new Set());
     setRemovedKeys(new Set());
   }, []);
 
-  const toggleEnding = useCallback((key: string) => {
-    setSelectedEndings((prev) => {
-      let next: Set<string>;
-      if (selectMode === "one") {
-        next = prev.has(key) && prev.size === 1 ? new Set<string>() : new Set([key]);
-      } else {
-        next = new Set(prev);
-        if (next.has(key)) next.delete(key);
-        else next.add(key);
-      }
+  const quickSelect = useCallback(
+    (keys: readonly string[]) => {
+      const next = new Set(keys.filter((k) => allKeys.includes(k)));
+      setSelectedEndings(next);
       saveSelected(next);
-      setActiveQuickSelect(null); // manual toggle breaks quickselect match
-      return next;
-    });
-  }, [selectMode]);
-
-  const clearAll = useCallback(() => {
-    applySelection(new Set(), null);
-  }, [applySelection]);
-
-  const quickSelect = useCallback((id: QuickSelectId) => {
-    const keys = QUICK_SELECTS[id].keys;
-    const next = new Set(keys.filter(k => allKeys.includes(k)));
-    applySelection(next, id);
-  }, [allKeys, applySelection]);
-
-  const toggleMode = useCallback(() => {
-    setSelectMode(prev => {
-      const next = prev === "many" ? "one" : "many";
-      saveMode(next);
-      return next;
-    });
-  }, []);
+      setRemovedKeys(new Set());
+    },
+    [allKeys],
+  );
 
   const words = useMemo(() => {
     const result: { word: RandomWordEntry; key: string }[] = [];
@@ -170,16 +121,19 @@ const VowelTrainer = () => {
     });
   }, []);
 
-  const handleSpeak = useCallback((text: string, lang: "zh" | "en") => {
-    if (lang === "zh") speak(text);
-    else if ("speechSynthesis" in window) {
-      speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = "en-US";
-      u.rate = 0.9;
-      speechSynthesis.speak(u);
-    }
-  }, [speak]);
+  const handleSpeak = useCallback(
+    (text: string, lang: "zh" | "en") => {
+      if (lang === "zh") speak(text);
+      else if ("speechSynthesis" in window) {
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "en-US";
+        u.rate = 0.9;
+        speechSynthesis.speak(u);
+      }
+    },
+    [speak],
+  );
 
   const showAll = useCallback(() => {
     setHiddenRows((prev) => {
@@ -203,12 +157,8 @@ const VowelTrainer = () => {
     });
   }, [words]);
 
+  // Display ü keys nicely
   const displayKey = (key: string) => key.replace(/ü/g, "ü");
-
-  // Title logic: show quickselect name if it's active and mode is "many"
-  const titleLabel = activeQuickSelect && selectMode === "many"
-    ? `QuickSelect: ${QUICK_SELECTS[activeQuickSelect].label}`
-    : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -221,40 +171,9 @@ const VowelTrainer = () => {
             </Button>
           </Link>
           <h1 className="text-2xl font-bold flex-1">Vowel Trainer</h1>
-          <Button variant="outline" size="sm" onClick={toggleMode} className="gap-1.5">
-            {selectMode === "many" ? <ToggleRight className="h-4 w-4" /> : <ToggleLeft className="h-4 w-4" />}
-            {selectMode === "many" ? "Multi" : "Single"}
-          </Button>
         </div>
 
-        {/* Ending toggles (always visible) */}
-        <div className="mb-3 space-y-2">
-          <div className="flex items-center gap-2 flex-wrap">
-            <Button variant="outline" size="sm" onClick={clearAll}>
-              Clear All
-            </Button>
-            {titleLabel && (
-              <span className="text-sm font-medium text-primary">{titleLabel}</span>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {allKeys.map((key) => (
-              <button
-                key={key}
-                onClick={() => toggleEnding(key)}
-                className={`px-2 py-1 rounded text-sm border transition-colors ${
-                  selectedEndings.has(key)
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-muted text-muted-foreground border-border hover:bg-accent"
-                }`}
-              >
-                {displayKey(key)}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Show/Hide all + count */}
+        {/* Top: Show/Hide all buttons */}
         <div className="flex items-center gap-2 mb-3">
           <Button variant="outline" size="sm" onClick={showAll}>
             <Eye className="h-3.5 w-3.5 mr-1" /> Show All
@@ -282,16 +201,17 @@ const VowelTrainer = () => {
           ))}
         </div>
 
-        {/* Bottom: Quick Selects (collapsible) */}
-        <Collapsible open={quickSelectsOpen} onOpenChange={setQuickSelectsOpen}>
+        {/* Bottom: Endings selector */}
+        <Collapsible open={endingsOpen} onOpenChange={setEndingsOpen}>
           <CollapsibleTrigger className="flex items-center gap-2 w-full py-2 px-3 hover:bg-accent rounded-md text-sm font-medium">
-            {quickSelectsOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-            Quick Selects
+            {endingsOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            Endings
           </CollapsibleTrigger>
           <CollapsibleContent className="px-3 pb-4 space-y-3">
+            {/* Quick Selects */}
             <div className="space-y-2">
               <div className="flex flex-wrap gap-1.5">
-                <Button variant={activeQuickSelect === "medials" ? "default" : "outline"} size="sm" onClick={() => quickSelect("medials")}>
+                <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.medials.keys)}>
                   Medials
                 </Button>
               </div>
@@ -299,13 +219,13 @@ const VowelTrainer = () => {
               <div>
                 <p className="text-xs text-muted-foreground mb-1 font-medium">No Medials</p>
                 <div className="flex flex-wrap gap-1.5">
-                  <Button variant={activeQuickSelect === "finalMono" ? "default" : "outline"} size="sm" onClick={() => quickSelect("finalMono")}>
+                  <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.finalMono.keys)}>
                     Final Monophthongs
                   </Button>
-                  <Button variant={activeQuickSelect === "finalDip" ? "default" : "outline"} size="sm" onClick={() => quickSelect("finalDip")}>
+                  <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.finalDip.keys)}>
                     Final Diphthongs
                   </Button>
-                  <Button variant={activeQuickSelect === "finalNasal" ? "default" : "outline"} size="sm" onClick={() => quickSelect("finalNasal")}>
+                  <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.finalNasal.keys)}>
                     Final Nasals (n, ng)
                   </Button>
                 </div>
@@ -318,27 +238,48 @@ const VowelTrainer = () => {
                 </CollapsibleTrigger>
                 <CollapsibleContent className="mt-1">
                   <div className="flex flex-wrap gap-1.5">
-                    <Button variant={activeQuickSelect === "comboMono" ? "default" : "outline"} size="sm" onClick={() => quickSelect("comboMono")}>
+                    <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.comboMono.keys)}>
                       Combo Mono
                     </Button>
-                    <Button variant={activeQuickSelect === "comboDip" ? "default" : "outline"} size="sm" onClick={() => quickSelect("comboDip")}>
+                    <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.comboDip.keys)}>
                       Combo Dip
                     </Button>
-                    <Button variant={activeQuickSelect === "comboNasal" ? "default" : "outline"} size="sm" onClick={() => quickSelect("comboNasal")}>
+                    <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.comboNasal.keys)}>
                       Combo Nasal
                     </Button>
-                    <Button variant={activeQuickSelect === "iMedial" ? "default" : "outline"} size="sm" onClick={() => quickSelect("iMedial")}>
+                    <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.iMedial.keys)}>
                       i + Finals
                     </Button>
-                    <Button variant={activeQuickSelect === "uMedial" ? "default" : "outline"} size="sm" onClick={() => quickSelect("uMedial")}>
+                    <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.uMedial.keys)}>
                       u + Finals
                     </Button>
-                    <Button variant={activeQuickSelect === "üMedial" ? "default" : "outline"} size="sm" onClick={() => quickSelect("üMedial")}>
+                    <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.üMedial.keys)}>
                       ü + Finals
                     </Button>
                   </div>
                 </CollapsibleContent>
               </Collapsible>
+            </div>
+
+            <div className="flex gap-2 mb-1">
+              <Button variant="outline" size="sm" onClick={clearAll}>
+                Clear All
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {allKeys.map((key) => (
+                <button
+                  key={key}
+                  onClick={() => toggleEnding(key)}
+                  className={`px-2 py-1 rounded text-sm border transition-colors ${
+                    selectedEndings.has(key)
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-muted text-muted-foreground border-border hover:bg-accent"
+                  }`}
+                >
+                  {displayKey(key)}
+                </button>
+              ))}
             </div>
           </CollapsibleContent>
         </Collapsible>
