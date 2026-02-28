@@ -169,7 +169,7 @@ export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onS
       {/* Difficulty dots */}
       <div className="flex items-center justify-end gap-1 px-1.5 py-1">
         {(["easy", "medium", "hard"] as const).map((level) => {
-          const color = level === "easy" ? "bg-green-500" : level === "medium" ? "bg-yellow-500" : "bg-red-500";
+          const color = level === "easy" ? "bg-green-500" : level === "hard" ? "bg-red-500" : "";
           const isSelected = userDifficulty === level;
           const isNull = userDifficulty === null;
           return (
@@ -182,6 +182,7 @@ export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onS
                 !isNull && !isSelected && "opacity-[0.35]",
                 isSelected && "ring-2 ring-blue-500 ring-offset-1",
               )}
+              style={level === "medium" ? { backgroundColor: "#FBBF24" } : undefined}
               title={`Mark as ${level}`}
             />
           );
