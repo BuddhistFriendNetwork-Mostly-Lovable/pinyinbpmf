@@ -708,7 +708,7 @@ const RandomWords = () => {
             </CollapsibleContent>
           </Card>
         </Collapsible>
-
+        <br></br>
         <ReviewModal
           open={reviewOpen}
           onOpenChange={setReviewOpen}

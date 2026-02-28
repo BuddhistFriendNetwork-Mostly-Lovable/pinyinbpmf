@@ -1,4 +1,4 @@
-import { PhoneticChart } from '@/components/phonetic/PhoneticChart';
+import { PhoneticChart } from "@/components/phonetic/PhoneticChart";
 
 const Index = () => {
   return (
