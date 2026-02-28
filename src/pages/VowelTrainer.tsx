@@ -77,6 +77,19 @@ function toVowelTrainerEntry(entry: ChineseWordEntry, ending: string): VowelTrai
   return { cs, ct, e: entry.m, fp: entry.p, pinyinStub: stub, h: -9, t: -9, ending };
 }
 
+const ENDING_COLORS = [
+  "hsl(0 70% 92%)",    // red
+  "hsl(30 80% 90%)",   // orange
+  "hsl(55 80% 88%)",   // yellow
+  "hsl(120 50% 90%)",  // green
+  "hsl(170 50% 88%)",  // teal
+  "hsl(200 70% 90%)",  // sky
+  "hsl(230 60% 92%)",  // blue
+  "hsl(270 50% 92%)",  // purple
+  "hsl(310 50% 92%)",  // pink
+  "hsl(340 60% 92%)",  // rose
+];
+
 const displaySettings: WordCardDisplaySettings = {
   showOnlyFirstChar: false,
   showPinyin: true,
@@ -104,6 +117,11 @@ const VowelTrainer = () => {
   const [hiddenRows, setHiddenRows] = useState<Record<string, boolean[]>>({});
   const { speak } = useTTS();
   const allKeys = useMemo(() => getAllEndingKeys(), []);
+  const endingColorMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    allKeys.forEach((key, i) => { map[key] = ENDING_COLORS[i % ENDING_COLORS.length]; });
+    return map;
+  }, [allKeys]);
   const lastHideAllTime = useRef<number>(0);
 
   const applySelection = useCallback((next: Set<string>, qsId: QuickSelectId | null = null) => {
@@ -264,10 +282,11 @@ const VowelTrainer = () => {
               <button
                 key={key}
                 onClick={() => toggleEnding(key)}
-                className={`px-2 py-1 rounded text-sm border transition-colors ${
+                style={{ backgroundColor: endingColorMap[key] }}
+                className={`px-2 py-1 rounded text-sm transition-colors text-foreground ${
                   selectedEndings.has(key)
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-muted text-muted-foreground border-border hover:bg-accent"
+                    ? "border-2 border-foreground font-semibold"
+                    : "border border-transparent hover:opacity-80"
                 }`}
               >
                 {displayKey(key)}
@@ -309,6 +328,7 @@ const VowelTrainer = () => {
               onSpeak={handleSpeak}
               onSetDifficulty={() => {}}
               onRemove={() => setRemovedKeys((prev) => new Set(prev).add(key))}
+              style={{ backgroundColor: endingColorMap[word.ending] }}
             />
           ))}
         </div>

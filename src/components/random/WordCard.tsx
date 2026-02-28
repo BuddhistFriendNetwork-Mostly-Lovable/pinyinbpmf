@@ -29,6 +29,8 @@ interface WordCardProps {
   onSpeak: (text: string, lang: "zh" | "en") => void;
   onSetDifficulty: (d: UserDifficulty) => void;
   onRemove?: () => void;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 function getZhuyinForStub(stub: string): string {
@@ -48,7 +50,7 @@ function getZhuyinForStub(stub: string): string {
   return "ERR";
 }
 
-export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onSpeak, onSetDifficulty, onRemove }: WordCardProps) => {
+export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onSpeak, onSetDifficulty, onRemove, className, style }: WordCardProps) => {
 
   const chineseText = settings.showOnlyFirstChar ? word.cs[0] : word.cs;
   const pinyinText = settings.showOnlyFirstChar ? word.fp.split(" ")[0] : word.fp;
@@ -143,7 +145,7 @@ export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onS
   };
 
   return (
-    <div className="border rounded-lg overflow-hidden bg-card text-card-foreground shadow-sm relative">
+    <div className={cn("border rounded-lg overflow-hidden bg-card text-card-foreground shadow-sm relative", className)} style={style}>
       {onRemove && (
         <button
           onClick={onRemove}
