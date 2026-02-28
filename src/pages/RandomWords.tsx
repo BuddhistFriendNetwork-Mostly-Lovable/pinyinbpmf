@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ChevronDown, ChevronRight, Shuffle, Plus, RefreshCw, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { WordCard, type WordCardDisplaySettings } from "@/components/random/WordCard";
+import { WordCard, type WordCardDisplaySettings, type UserDifficulty } from "@/components/random/WordCard";
 import {
   GenerateNwordsFromPinyin,
   DefaultPinyinList,
@@ -48,6 +48,7 @@ const RandomWords = () => {
   // Words and hidden state
   const [words, setWords] = useState<RandomWordEntry[]>([]);
   const [hiddenRows, setHiddenRows] = useState<boolean[][]>([]);
+  const [userDifficulties, setUserDifficulties] = useState<UserDifficulty[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   const { speak } = useTTS();
@@ -63,6 +64,7 @@ const RandomWords = () => {
           generateHiddenState(i, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding),
         ),
       );
+      setUserDifficulties(generated.map(() => null));
       setIsLoaded(true);
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -118,6 +120,7 @@ const RandomWords = () => {
     );
     setWords(newWords);
     setHiddenRows((prev) => [...prev, ...newHidden]);
+    setUserDifficulties((prev) => [...prev, ...newWords.slice(words.length).map(() => null as UserDifficulty)]);
   }, [words, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding]);
 
   const randomizeAll = useCallback(() => {
@@ -128,6 +131,7 @@ const RandomWords = () => {
         generateHiddenState(i, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding),
       ),
     );
+    setUserDifficulties(generated.map(() => null));
   }, [hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding]);
 
   const showAllRows = useCallback(
@@ -354,8 +358,10 @@ const RandomWords = () => {
               word={word}
               hidden={hiddenRows[i] || [false, false, false, false]}
               settings={displaySettings}
+              userDifficulty={userDifficulties[i] ?? null}
               onReveal={(rowIndex) => handleReveal(i, rowIndex)}
               onSpeak={handleSpeak}
+              onSetDifficulty={(d) => setUserDifficulties((prev) => { const next = [...prev]; next[i] = d; return next; })}
             />
           ))}
         </div>
