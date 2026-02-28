@@ -11,6 +11,19 @@ import type { RandomWordEntry } from "@/lib/randomWordsUtils";
 
 const LS_KEY = "vowel-trainer-selected-endings";
 
+const QUICK_SELECTS = {
+  medials: { label: "Medials", keys: ["i", "u", "ü"] },
+  finalMono: { label: "Final Monophthongs", keys: ["a", "e", "o"] },
+  finalDip: { label: "Final Diphthongs", keys: ["ai", "ei", "ao", "ou"] },
+  finalNasal: { label: "Final Nasals (n, ng)", keys: ["an", "en", "ang", "eng"] },
+  comboMono: { label: "Combo Mono", keys: ["ia", "ie", "ua", "uo", "üe"] },
+  comboDip: { label: "Combo Dip", keys: ["iao", "iu", "uai", "ui"] },
+  comboNasal: { label: "Combo Nasal", keys: ["ian", "in", "iang", "ing", "uan", "un", "uang", "üan", "ün", "iong"] },
+  iMedial: { label: "i + Finals", keys: ["i", "ia", "ie", "iao", "iu", "ian", "in", "iang", "ing", "iong"] },
+  uMedial: { label: "u + Finals", keys: ["ua", "uo", "uai", "ui", "uan", "un", "uang"] },
+  üMedial: { label: "ü + Finals", keys: ["ü", "iong", "üe", "üan", "ün"] },
+} as const;
+
 function loadSelected(): Set<string> {
   try {
     const raw = localStorage.getItem(LS_KEY);
@@ -48,6 +61,7 @@ const displaySettings: WordCardDisplaySettings = {
 const VowelTrainer = () => {
   const [selectedEndings, setSelectedEndings] = useState<Set<string>>(loadSelected);
   const [endingsOpen, setEndingsOpen] = useState(true);
+  const [combosOpen, setCombosOpen] = useState(false);
   const [removedKeys, setRemovedKeys] = useState<Set<string>>(new Set());
   const [hiddenRows, setHiddenRows] = useState<Record<string, boolean[]>>({});
   const { speak } = useTTS();
@@ -67,7 +81,15 @@ const VowelTrainer = () => {
   const clearAll = useCallback(() => {
     setSelectedEndings(new Set());
     saveSelected(new Set());
+    setRemovedKeys(new Set());
   }, []);
+
+  const quickSelect = useCallback((keys: readonly string[]) => {
+    const next = new Set(keys.filter(k => allKeys.includes(k)));
+    setSelectedEndings(next);
+    saveSelected(next);
+    setRemovedKeys(new Set());
+  }, [allKeys]);
 
   const words = useMemo(() => {
     const result: { word: RandomWordEntry; key: string }[] = [];
@@ -179,8 +201,61 @@ const VowelTrainer = () => {
             {endingsOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
             Endings
           </CollapsibleTrigger>
-          <CollapsibleContent className="px-3 pb-4">
-            <div className="mb-2">
+          <CollapsibleContent className="px-3 pb-4 space-y-3">
+            {/* Quick Selects */}
+            <div className="space-y-2">
+              <div className="flex flex-wrap gap-1.5">
+                <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.medials.keys)}>
+                  Medials
+                </Button>
+              </div>
+
+              <div>
+                <p className="text-xs text-muted-foreground mb-1 font-medium">No Medials</p>
+                <div className="flex flex-wrap gap-1.5">
+                  <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.finalMono.keys)}>
+                    Final Monophthongs
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.finalDip.keys)}>
+                    Final Diphthongs
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.finalNasal.keys)}>
+                    Final Nasals (n, ng)
+                  </Button>
+                </div>
+              </div>
+
+              <Collapsible open={combosOpen} onOpenChange={setCombosOpen}>
+                <CollapsibleTrigger className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground">
+                  {combosOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+                  Combos (ADVANCED)
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-1">
+                  <div className="flex flex-wrap gap-1.5">
+                    <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.comboMono.keys)}>
+                      Combo Mono
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.comboDip.keys)}>
+                      Combo Dip
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.comboNasal.keys)}>
+                      Combo Nasal
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.iMedial.keys)}>
+                      i + Finals
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.uMedial.keys)}>
+                      u + Finals
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => quickSelect(QUICK_SELECTS.üMedial.keys)}>
+                      ü + Finals
+                    </Button>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+
+            <div className="flex gap-2 mb-1">
               <Button variant="outline" size="sm" onClick={clearAll}>
                 Clear All
               </Button>
