@@ -69,7 +69,7 @@ function toRandomWordEntry(entry: ChineseWordEntry): RandomWordEntry {
   const ct = parts[0];
   const cs = parts.length > 1 ? parts[1] : ct;
   const firstSyllable = entry.short || entry.p;
-  const stub = stripToneMarks(cleanPinyin(firstSyllable));
+  const stub = cleanPinyin(stripToneMarks(firstSyllable));
   return { cs, ct, e: entry.m, fp: entry.p, pinyinStub: stub, h: -9, t: -9 };
 }
 
