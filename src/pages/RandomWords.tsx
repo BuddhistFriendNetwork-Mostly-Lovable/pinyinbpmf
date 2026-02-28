@@ -33,8 +33,8 @@ const RandomWords = () => {
   const [mdbgIgnoreTone, setMdbgIgnoreTone] = useState(true);
 
   // Hiding settings
-  const [dontHideFirstN, setDontHideFirstN] = useState(true);
-  const [firstN] = useState(5);
+  const [dontHideFirstN, setDontHideFirstN] = useState(false);
+  const [firstN] = useState(4);
   const [randomizeHiding, setRandomizeHiding] = useState(false);
   const [hideChinese, setHideChinese] = useState<HideMode>("never");
   const [hideEnglish, setHideEnglish] = useState<HideMode>("sometimes");
@@ -86,7 +86,16 @@ const RandomWords = () => {
       setWords(generated);
       setHiddenRows(
         generated.map((_, i) =>
-          generateHiddenState(i, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding),
+          generateHiddenState(
+            i,
+            hideChinese,
+            hideEnglish,
+            hidePinyin,
+            hideZhuyin,
+            dontHideFirstN,
+            firstN,
+            randomizeHiding,
+          ),
         ),
       );
       setUserDifficulties(generated.map(() => null));
@@ -129,25 +138,36 @@ const RandomWords = () => {
   const regenerateHiding = useCallback(() => {
     setHiddenRows(
       words.map((_, i) =>
-        generateHiddenState(i, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding),
+        generateHiddenState(
+          i,
+          hideChinese,
+          hideEnglish,
+          hidePinyin,
+          hideZhuyin,
+          dontHideFirstN,
+          firstN,
+          randomizeHiding,
+        ),
       ),
     );
   }, [words, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding]);
 
   const addMore = useCallback(() => {
     const newWords = GenerateNwordsFromPinyin(words, words.length + 20, DefaultPinyinList);
-    const newHidden = newWords.slice(words.length).map((_, i) =>
-      generateHiddenState(
-        words.length + i,
-        hideChinese,
-        hideEnglish,
-        hidePinyin,
-        hideZhuyin,
-        dontHideFirstN,
-        firstN,
-        randomizeHiding,
-      ),
-    );
+    const newHidden = newWords
+      .slice(words.length)
+      .map((_, i) =>
+        generateHiddenState(
+          words.length + i,
+          hideChinese,
+          hideEnglish,
+          hidePinyin,
+          hideZhuyin,
+          dontHideFirstN,
+          firstN,
+          randomizeHiding,
+        ),
+      );
     setWords(newWords);
     setHiddenRows((prev) => [...prev, ...newHidden]);
     setUserDifficulties((prev) => [...prev, ...newWords.slice(words.length).map(() => null as UserDifficulty)]);
@@ -158,7 +178,16 @@ const RandomWords = () => {
     setWords(generated);
     setHiddenRows(
       generated.map((_, i) =>
-        generateHiddenState(i, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding),
+        generateHiddenState(
+          i,
+          hideChinese,
+          hideEnglish,
+          hidePinyin,
+          hideZhuyin,
+          dontHideFirstN,
+          firstN,
+          randomizeHiding,
+        ),
       ),
     );
     setUserDifficulties(generated.map(() => null));
@@ -238,9 +267,15 @@ const RandomWords = () => {
         variant="outline"
         size="sm"
       >
-        <ToggleGroupItem value="always" className="text-xs px-2">Always</ToggleGroupItem>
-        <ToggleGroupItem value="never" className="text-xs px-2">Never</ToggleGroupItem>
-        <ToggleGroupItem value="sometimes" className="text-xs px-2">Sometimes</ToggleGroupItem>
+        <ToggleGroupItem value="always" className="text-xs px-2">
+          Always
+        </ToggleGroupItem>
+        <ToggleGroupItem value="never" className="text-xs px-2">
+          Never
+        </ToggleGroupItem>
+        <ToggleGroupItem value="sometimes" className="text-xs px-2">
+          Sometimes
+        </ToggleGroupItem>
       </ToggleGroup>
       <div className="flex gap-1">
         <Button variant="outline" size="sm" className="text-xs h-7" onClick={() => showAllRows(rowIndex)}>
@@ -269,9 +304,7 @@ const RandomWords = () => {
         {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         {title}
       </CollapsibleTrigger>
-      <CollapsibleContent className="pl-6 pr-3 pb-3 space-y-3">
-        {children}
-      </CollapsibleContent>
+      <CollapsibleContent className="pl-6 pr-3 pb-3 space-y-3">{children}</CollapsibleContent>
     </Collapsible>
   );
 
@@ -309,7 +342,10 @@ const RandomWords = () => {
                       (Auto-collapse in {autoCollapseCountdown}s.{" "}
                       <button
                         className="text-destructive hover:underline"
-                        onClick={(e) => { e.stopPropagation(); handleCancelAutoCollapse(); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCancelAutoCollapse();
+                        }}
                       >
                         ❌
                       </button>
@@ -321,84 +357,113 @@ const RandomWords = () => {
             </CollapsibleTrigger>
             <CollapsibleContent>
               <CardContent className="p-3 pt-0 space-y-1">
-
-            <CollapsibleSection title="Word Control / Formatting" open={formattingOpen} onOpenChange={setFormattingOpen}>
-              <div className="flex items-center gap-2">
-                <Switch checked={showOnlyFirstChar} onCheckedChange={setShowOnlyFirstChar} id="firstChar" />
-                <Label htmlFor="firstChar" className="text-sm">Show only first character</Label>
-              </div>
-              <div className="flex items-center gap-2">
-                <Switch checked={showPinyin} onCheckedChange={setShowPinyin} id="pinyin" />
-                <Label htmlFor="pinyin" className="text-sm">Show pinyin</Label>
-              </div>
-              <div className="flex items-center gap-2">
-                <Switch checked={showZhuyin} onCheckedChange={setShowZhuyin} id="zhuyin" />
-                <Label htmlFor="zhuyin" className="text-sm">Show zhuyin</Label>
-              </div>
-              <div className="flex items-center gap-2">
-                <Label className="text-sm">Zhuyin format</Label>
-                <ToggleGroup
-                  type="single"
-                  value={zhuyinFormat}
-                  onValueChange={(v) => v && setZhuyinFormat(v as "boxes" | "plain")}
-                  variant="outline"
-                  size="sm"
+                <CollapsibleSection
+                  title="Word Control / Formatting"
+                  open={formattingOpen}
+                  onOpenChange={setFormattingOpen}
                 >
-                  <ToggleGroupItem value="boxes" className="text-xs px-2">3 Boxes</ToggleGroupItem>
-                  <ToggleGroupItem value="plain" className="text-xs px-2">No Boxes</ToggleGroupItem>
-                </ToggleGroup>
-              </div>
-              <div className="flex items-center gap-2">
-                <Switch checked={speakFirstAutoReveal} onCheckedChange={setSpeakFirstAutoReveal} id="autoReveal" />
-                <Label htmlFor="autoReveal" className="text-sm">Speak first, auto-reveal 1s later</Label>
-              </div>
-            </CollapsibleSection>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={showOnlyFirstChar} onCheckedChange={setShowOnlyFirstChar} id="firstChar" />
+                    <Label htmlFor="firstChar" className="text-sm">
+                      Show only first character
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={showPinyin} onCheckedChange={setShowPinyin} id="pinyin" />
+                    <Label htmlFor="pinyin" className="text-sm">
+                      Show pinyin
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={showZhuyin} onCheckedChange={setShowZhuyin} id="zhuyin" />
+                    <Label htmlFor="zhuyin" className="text-sm">
+                      Show zhuyin
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm">Zhuyin format</Label>
+                    <ToggleGroup
+                      type="single"
+                      value={zhuyinFormat}
+                      onValueChange={(v) => v && setZhuyinFormat(v as "boxes" | "plain")}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <ToggleGroupItem value="boxes" className="text-xs px-2">
+                        3 Boxes
+                      </ToggleGroupItem>
+                      <ToggleGroupItem value="plain" className="text-xs px-2">
+                        No Boxes
+                      </ToggleGroupItem>
+                    </ToggleGroup>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={speakFirstAutoReveal} onCheckedChange={setSpeakFirstAutoReveal} id="autoReveal" />
+                    <Label htmlFor="autoReveal" className="text-sm">
+                      Speak first, auto-reveal 1s later
+                    </Label>
+                  </div>
+                </CollapsibleSection>
 
-            <CollapsibleSection title="Speech / Dictionary Links" open={speechOpen} onOpenChange={setSpeechOpen}>
-              <div className="flex items-center gap-2">
-                <Switch checked={showEnglishSpeaker} onCheckedChange={setShowEnglishSpeaker} id="enSpeak" />
-                <Label htmlFor="enSpeak" className="text-sm">English speaker icon</Label>
-              </div>
-              <div className="flex items-center gap-2">
-                <Switch checked={showChineseSpeaker} onCheckedChange={setShowChineseSpeaker} id="zhSpeak" />
-                <Label htmlFor="zhSpeak" className="text-sm">Chinese speaker icon</Label>
-              </div>
-              <div className="flex items-center gap-2">
-                <Switch checked={showMDBGWord} onCheckedChange={setShowMDBGWord} id="mdbgWord" />
-                <Label htmlFor="mdbgWord" className="text-sm">MDBG link for word</Label>
-              </div>
-              <div className="flex items-center gap-2">
-                <Switch checked={showMDBGPinyin} onCheckedChange={setShowMDBGPinyin} id="mdbgPinyin" />
-                <Label htmlFor="mdbgPinyin" className="text-sm">MDBG link for pinyin</Label>
-              </div>
-              {showMDBGPinyin && (
-                <div className="flex items-center gap-2 pl-6">
-                  <Switch checked={mdbgIgnoreTone} onCheckedChange={setMdbgIgnoreTone} id="ignoreTone" />
-                  <Label htmlFor="ignoreTone" className="text-sm">Ignore tone</Label>
-                </div>
-              )}
-            </CollapsibleSection>
+                <CollapsibleSection title="Speech / Dictionary Links" open={speechOpen} onOpenChange={setSpeechOpen}>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={showEnglishSpeaker} onCheckedChange={setShowEnglishSpeaker} id="enSpeak" />
+                    <Label htmlFor="enSpeak" className="text-sm">
+                      English speaker icon
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={showChineseSpeaker} onCheckedChange={setShowChineseSpeaker} id="zhSpeak" />
+                    <Label htmlFor="zhSpeak" className="text-sm">
+                      Chinese speaker icon
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={showMDBGWord} onCheckedChange={setShowMDBGWord} id="mdbgWord" />
+                    <Label htmlFor="mdbgWord" className="text-sm">
+                      MDBG link for word
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={showMDBGPinyin} onCheckedChange={setShowMDBGPinyin} id="mdbgPinyin" />
+                    <Label htmlFor="mdbgPinyin" className="text-sm">
+                      MDBG link for pinyin
+                    </Label>
+                  </div>
+                  {showMDBGPinyin && (
+                    <div className="flex items-center gap-2 pl-6">
+                      <Switch checked={mdbgIgnoreTone} onCheckedChange={setMdbgIgnoreTone} id="ignoreTone" />
+                      <Label htmlFor="ignoreTone" className="text-sm">
+                        Ignore tone
+                      </Label>
+                    </div>
+                  )}
+                </CollapsibleSection>
 
-            <CollapsibleSection title="Hiding" open={hidingOpen} onOpenChange={setHidingOpen}>
-              <div className="flex items-center gap-2">
-                <Switch checked={dontHideFirstN} onCheckedChange={setDontHideFirstN} id="dontHide" />
-                <Label htmlFor="dontHide" className="text-sm">Don't hide first {firstN} words</Label>
-              </div>
-              <div className="flex items-center gap-2">
-                <Switch checked={randomizeHiding} onCheckedChange={setRandomizeHiding} id="randHide" />
-                <Label htmlFor="randHide" className="text-sm">Randomize initial hiding</Label>
-              </div>
+                <CollapsibleSection title="Hiding" open={hidingOpen} onOpenChange={setHidingOpen}>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={dontHideFirstN} onCheckedChange={setDontHideFirstN} id="dontHide" />
+                    <Label htmlFor="dontHide" className="text-sm">
+                      Don't hide first {firstN} words
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={randomizeHiding} onCheckedChange={setRandomizeHiding} id="randHide" />
+                    <Label htmlFor="randHide" className="text-sm">
+                      Randomize initial hiding
+                    </Label>
+                  </div>
 
-              <ThreeWayToggle label="Hide Chinese" value={hideChinese} onChange={setHideChinese} rowIndex={0} />
-              <ThreeWayToggle label="Hide English" value={hideEnglish} onChange={setHideEnglish} rowIndex={1} />
-              <ThreeWayToggle label="Hide Pinyin" value={hidePinyin} onChange={setHidePinyin} rowIndex={2} />
-              <ThreeWayToggle label="Hide Zhuyin" value={hideZhuyin} onChange={setHideZhuyin} rowIndex={3} />
+                  <ThreeWayToggle label="Hide Chinese" value={hideChinese} onChange={setHideChinese} rowIndex={0} />
+                  <ThreeWayToggle label="Hide English" value={hideEnglish} onChange={setHideEnglish} rowIndex={1} />
+                  <ThreeWayToggle label="Hide Pinyin" value={hidePinyin} onChange={setHidePinyin} rowIndex={2} />
+                  <ThreeWayToggle label="Hide Zhuyin" value={hideZhuyin} onChange={setHideZhuyin} rowIndex={3} />
 
-              <Button variant="outline" size="sm" onClick={regenerateHiding}>
-                <Shuffle className="h-3 w-3 mr-1" /> Randomize hiding now
-              </Button>
-            </CollapsibleSection>
-           </CardContent>
+                  <Button variant="outline" size="sm" onClick={regenerateHiding}>
+                    <Shuffle className="h-3 w-3 mr-1" /> Randomize hiding now
+                  </Button>
+                </CollapsibleSection>
+              </CardContent>
             </CollapsibleContent>
           </Card>
         </Collapsible>
@@ -414,7 +479,13 @@ const RandomWords = () => {
               userDifficulty={userDifficulties[i] ?? null}
               onReveal={(rowIndex) => handleReveal(i, rowIndex)}
               onSpeak={handleSpeak}
-              onSetDifficulty={(d) => setUserDifficulties((prev) => { const next = [...prev]; next[i] = d; return next; })}
+              onSetDifficulty={(d) =>
+                setUserDifficulties((prev) => {
+                  const next = [...prev];
+                  next[i] = d;
+                  return next;
+                })
+              }
             />
           ))}
         </div>
@@ -422,16 +493,33 @@ const RandomWords = () => {
         {/* Action buttons */}
         <div className="flex gap-2 flex-wrap justify-center mb-6">
           {words.length < 20 && (
-            <Button variant="outline" onClick={() => {
-              const target = 20;
-              const newWords = GenerateNwordsFromPinyin(words, target, DefaultPinyinList);
-              const newHidden = newWords.slice(words.length).map((_, i) =>
-                generateHiddenState(words.length + i, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding),
-              );
-              setWords(newWords);
-              setHiddenRows((prev) => [...prev, ...newHidden]);
-              setUserDifficulties((prev) => [...prev, ...newWords.slice(words.length).map(() => null as UserDifficulty)]);
-            }}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const target = 20;
+                const newWords = GenerateNwordsFromPinyin(words, target, DefaultPinyinList);
+                const newHidden = newWords
+                  .slice(words.length)
+                  .map((_, i) =>
+                    generateHiddenState(
+                      words.length + i,
+                      hideChinese,
+                      hideEnglish,
+                      hidePinyin,
+                      hideZhuyin,
+                      dontHideFirstN,
+                      firstN,
+                      randomizeHiding,
+                    ),
+                  );
+                setWords(newWords);
+                setHiddenRows((prev) => [...prev, ...newHidden]);
+                setUserDifficulties((prev) => [
+                  ...prev,
+                  ...newWords.slice(words.length).map(() => null as UserDifficulty),
+                ]);
+              }}
+            >
               <Plus className="h-4 w-4 mr-1" /> More Words (20)
             </Button>
           )}
