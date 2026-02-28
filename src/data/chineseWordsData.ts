@@ -8,7 +8,7 @@ export interface ChineseWordEntry {
 const chineseWords: Record<string, ChineseWordEntry[]> = {
   // --- A Group ---
   a: [
-    { w: "爸爸", m: "daddy", p: "bàba", short: "bà"},
+    { w: "爸爸", m: "daddy", p: "bàba", short: "bà" },
     { w: "馬,马", m: "horse", p: "mǎ" },
     { w: "大", m: "big", p: "dà" },
     { w: "怕", m: "scared", p: "pà" },
@@ -70,7 +70,7 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
   er: [
     { w: "二", m: "two", p: "èr" },
     { w: "兒子,儿子", m: "son", p: "érzi" },
-    { w: "耳朵", m: "ear", p: "ěrduo" , short: "ěr"},
+    { w: "耳朵", m: "ear", p: "ěrduo", short: "ěr" },
   ],
 
   // --- I Group ---
@@ -95,8 +95,8 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
     { w: "叫", m: "to call/shout", p: "jiào" },
   ],
   ie: [
-    { w: "謝謝,谢谢", m: "thanks", p: "xièxie", short: "xiè"},
-    { w: "姐姐", m: "older sister", p: "jiějie",short: "jiě" },
+    { w: "謝謝,谢谢", m: "thanks", p: "xièxie", short: "xiè" },
+    { w: "姐姐", m: "older sister", p: "jiějie", short: "jiě" },
     { w: "鞋", m: "shoe", p: "xié" },
     { w: "寫,写", m: "to write", p: "xiě" },
   ],
@@ -196,10 +196,10 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
     { w: "怪", m: "strange/monster", p: "guài" },
   ],
   uan: [
-    { w: "玩", m: "to play", p: "wán" },
-    { w: "晚", m: "late/night", p: "wǎn" },
     { w: "船", m: "boat", p: "chuán" },
+    { w: "玩", m: "to play", p: "wán" },
     { w: "換,换", m: "to change", p: "huàn" },
+    { w: "晚", m: "late/night", p: "wǎn" },
   ],
   un: [
     { w: "春", m: "spring (season)", p: "chūn" },
