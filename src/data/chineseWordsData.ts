@@ -2,12 +2,13 @@ export interface ChineseWordEntry {
   w: string; // Chinese word (may contain comma for trad,simp)
   m: string; // Meaning
   p: string; // Pinyin with tones
+  short: string; // pinyin for just the first syllable.
 }
 
 const chineseWords: Record<string, ChineseWordEntry[]> = {
   // --- A Group ---
   a: [
-    { w: "爸爸", m: "daddy", p: "bàba" },
+    { w: "爸爸", m: "daddy", p: "bàba", short: "bà"},
     { w: "馬,马", m: "horse", p: "mǎ" },
     { w: "大", m: "big", p: "dà" },
     { w: "怕", m: "scared", p: "pà" },
@@ -46,7 +47,7 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
     { w: "餓,饿", m: "hungry", p: "è" },
     { w: "喝", m: "to drink", p: "hē" },
     { w: "車,车", m: "car", p: "chē" },
-    { w: "哥哥", m: "older brother", p: "gēge" },
+    { w: "哥哥", m: "older brother", p: "gēge", short: "gē" },
   ],
   ei: [
     { w: "水", m: "water", p: "shuǐ" },
@@ -69,7 +70,7 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
   er: [
     { w: "二", m: "two", p: "èr" },
     { w: "兒子,儿子", m: "son", p: "érzi" },
-    { w: "耳朵", m: "ear", p: "ěrduo" },
+    { w: "耳朵", m: "ear", p: "ěrduo" , short: "ěr"},
   ],
 
   // --- I Group ---
@@ -94,8 +95,8 @@ const chineseWords: Record<string, ChineseWordEntry[]> = {
     { w: "叫", m: "to call/shout", p: "jiào" },
   ],
   ie: [
-    { w: "謝謝,谢谢", m: "thanks", p: "xièxie" },
-    { w: "姐姐", m: "older sister", p: "jiějie" },
+    { w: "謝謝,谢谢", m: "thanks", p: "xièxie", short: "xiè"},
+    { w: "姐姐", m: "older sister", p: "jiějie",short: "jiě" },
     { w: "鞋", m: "shoe", p: "xié" },
     { w: "寫,写", m: "to write", p: "xiě" },
   ],
