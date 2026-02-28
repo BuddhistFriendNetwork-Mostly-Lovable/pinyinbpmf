@@ -1,0 +1,390 @@
+import { useState, useCallback, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft, ChevronDown, ChevronRight, Shuffle, Plus, RefreshCw, Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { WordCard, type WordCardDisplaySettings } from "@/components/random/WordCard";
+import {
+  GenerateNwordsFromPinyin,
+  DefaultPinyinList,
+  generateHiddenState,
+  type RandomWordEntry,
+  type HideMode,
+} from "@/lib/randomWordsUtils";
+import { useTTS } from "@/hooks/useTTS";
+
+const RandomWords = () => {
+  // Display settings
+  const [showOnlyFirstChar, setShowOnlyFirstChar] = useState(false);
+  const [showPinyin, setShowPinyin] = useState(true);
+  const [showZhuyin, setShowZhuyin] = useState(true);
+  const [zhuyinFormat, setZhuyinFormat] = useState<"boxes" | "plain">("boxes");
+  const [speakFirstAutoReveal, setSpeakFirstAutoReveal] = useState(true);
+
+  const [showEnglishSpeaker, setShowEnglishSpeaker] = useState(true);
+  const [showChineseSpeaker, setShowChineseSpeaker] = useState(true);
+  const [showMDBGWord, setShowMDBGWord] = useState(false);
+  const [showMDBGPinyin, setShowMDBGPinyin] = useState(false);
+  const [mdbgIgnoreTone, setMdbgIgnoreTone] = useState(true);
+
+  // Hiding settings
+  const [dontHideFirstN, setDontHideFirstN] = useState(true);
+  const [firstN] = useState(5);
+  const [randomizeHiding, setRandomizeHiding] = useState(false);
+  const [hideChinese, setHideChinese] = useState<HideMode>("never");
+  const [hideEnglish, setHideEnglish] = useState<HideMode>("sometimes");
+  const [hidePinyin, setHidePinyin] = useState<HideMode>("never");
+  const [hideZhuyin, setHideZhuyin] = useState<HideMode>("sometimes");
+
+  // Collapsible states
+  const [formattingOpen, setFormattingOpen] = useState(false);
+  const [speechOpen, setSpeechOpen] = useState(false);
+  const [hidingOpen, setHidingOpen] = useState(false);
+
+  // Words and hidden state
+  const [words, setWords] = useState<RandomWordEntry[]>([]);
+  const [hiddenRows, setHiddenRows] = useState<boolean[][]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const { speak } = useTTS();
+
+  // Generate initial words
+  useEffect(() => {
+    // Dynamic import to lazy load the big data file
+    import("@/data/pinyinStubsToWordsData").then(() => {
+      const generated = GenerateNwordsFromPinyin([], 20, DefaultPinyinList);
+      setWords(generated);
+      setHiddenRows(
+        generated.map((_, i) =>
+          generateHiddenState(i, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding),
+        ),
+      );
+      setIsLoaded(true);
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleReveal = useCallback((wordIndex: number, rowIndex: number) => {
+    setHiddenRows((prev) => {
+      const next = [...prev];
+      next[wordIndex] = [...next[wordIndex]];
+      next[wordIndex][rowIndex] = false;
+      return next;
+    });
+  }, []);
+
+  const handleSpeak = useCallback(
+    (text: string, lang: "zh" | "en") => {
+      if (lang === "zh") {
+        speak(text);
+      } else {
+        // Use browser TTS for English
+        if ("speechSynthesis" in window) {
+          speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = "en-US";
+          utterance.rate = 0.9;
+          speechSynthesis.speak(utterance);
+        }
+      }
+    },
+    [speak],
+  );
+
+  const regenerateHiding = useCallback(() => {
+    setHiddenRows(
+      words.map((_, i) =>
+        generateHiddenState(i, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding),
+      ),
+    );
+  }, [words, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding]);
+
+  const addMore = useCallback(() => {
+    const newWords = GenerateNwordsFromPinyin(words, words.length + 20, DefaultPinyinList);
+    const newHidden = newWords.slice(words.length).map((_, i) =>
+      generateHiddenState(
+        words.length + i,
+        hideChinese,
+        hideEnglish,
+        hidePinyin,
+        hideZhuyin,
+        dontHideFirstN,
+        firstN,
+        randomizeHiding,
+      ),
+    );
+    setWords(newWords);
+    setHiddenRows((prev) => [...prev, ...newHidden]);
+  }, [words, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding]);
+
+  const randomizeAll = useCallback(() => {
+    const generated = GenerateNwordsFromPinyin([], 20, DefaultPinyinList);
+    setWords(generated);
+    setHiddenRows(
+      generated.map((_, i) =>
+        generateHiddenState(i, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding),
+      ),
+    );
+  }, [hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding]);
+
+  const showAllRows = useCallback(
+    (rowIndex: number) => {
+      setHiddenRows((prev) =>
+        prev.map((h, i) => {
+          if (dontHideFirstN && i < firstN) return h;
+          const next = [...h];
+          next[rowIndex] = false;
+          return next;
+        }),
+      );
+    },
+    [dontHideFirstN, firstN],
+  );
+
+  const hideAllRows = useCallback(
+    (rowIndex: number) => {
+      setHiddenRows((prev) =>
+        prev.map((h, i) => {
+          if (dontHideFirstN && i < firstN) return h;
+          const next = [...h];
+          next[rowIndex] = true;
+          return next;
+        }),
+      );
+    },
+    [dontHideFirstN, firstN],
+  );
+
+  const showEverything = useCallback(() => {
+    setHiddenRows((prev) => prev.map(() => [false, false, false, false]));
+  }, []);
+
+  const hideEverything = useCallback(() => {
+    setHiddenRows((prev) =>
+      prev.map((h, i) => {
+        if (dontHideFirstN && i < firstN) return h;
+        // Don't hide row 0 (Chinese)
+        return [h[0], true, true, true];
+      }),
+    );
+  }, [dontHideFirstN, firstN]);
+
+  const displaySettings: WordCardDisplaySettings = {
+    showOnlyFirstChar,
+    showPinyin,
+    showZhuyin,
+    zhuyinFormat,
+    showEnglishSpeaker,
+    showChineseSpeaker,
+    showMDBGWord,
+    showMDBGPinyin,
+    mdbgIgnoreTone,
+  };
+
+  const ThreeWayToggle = ({
+    label,
+    value,
+    onChange,
+    rowIndex,
+  }: {
+    label: string;
+    value: HideMode;
+    onChange: (v: HideMode) => void;
+    rowIndex: number;
+  }) => (
+    <div className="flex items-center gap-2 flex-wrap">
+      <Label className="text-sm min-w-[140px]">{label}</Label>
+      <ToggleGroup
+        type="single"
+        value={value}
+        onValueChange={(v) => v && onChange(v as HideMode)}
+        variant="outline"
+        size="sm"
+      >
+        <ToggleGroupItem value="always" className="text-xs px-2">Always</ToggleGroupItem>
+        <ToggleGroupItem value="never" className="text-xs px-2">Never</ToggleGroupItem>
+        <ToggleGroupItem value="sometimes" className="text-xs px-2">Sometimes</ToggleGroupItem>
+      </ToggleGroup>
+      <div className="flex gap-1">
+        <Button variant="outline" size="sm" className="text-xs h-7" onClick={() => showAllRows(rowIndex)}>
+          <Eye className="h-3 w-3 mr-1" /> Show all
+        </Button>
+        <Button variant="outline" size="sm" className="text-xs h-7" onClick={() => hideAllRows(rowIndex)}>
+          <EyeOff className="h-3 w-3 mr-1" /> Hide all
+        </Button>
+      </div>
+    </div>
+  );
+
+  const CollapsibleSection = ({
+    title,
+    open,
+    onOpenChange,
+    children,
+  }: {
+    title: string;
+    open: boolean;
+    onOpenChange: (v: boolean) => void;
+    children: React.ReactNode;
+  }) => (
+    <Collapsible open={open} onOpenChange={onOpenChange}>
+      <CollapsibleTrigger className="flex items-center gap-2 w-full py-2 px-3 hover:bg-accent rounded-md text-sm font-medium">
+        {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+        {title}
+      </CollapsibleTrigger>
+      <CollapsibleContent className="pl-6 pr-3 pb-3 space-y-3">
+        {children}
+      </CollapsibleContent>
+    </Collapsible>
+  );
+
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Loading word data...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-2 py-4 max-w-6xl">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-4">
+          <Link to="/">
+            <Button variant="ghost" size="sm">
+              <ArrowLeft className="h-4 w-4 mr-1" /> Back to Chart
+            </Button>
+          </Link>
+          <h1 className="text-2xl font-bold">Random Words Practice</h1>
+        </div>
+
+        {/* Settings */}
+        <Card className="mb-4">
+          <CardContent className="p-3 space-y-1">
+            <h2 className="text-sm font-semibold mb-2">Word Display Settings</h2>
+
+            <CollapsibleSection title="Word Control / Formatting" open={formattingOpen} onOpenChange={setFormattingOpen}>
+              <div className="flex items-center gap-2">
+                <Switch checked={showOnlyFirstChar} onCheckedChange={setShowOnlyFirstChar} id="firstChar" />
+                <Label htmlFor="firstChar" className="text-sm">Show only first character</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch checked={showPinyin} onCheckedChange={setShowPinyin} id="pinyin" />
+                <Label htmlFor="pinyin" className="text-sm">Show pinyin</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch checked={showZhuyin} onCheckedChange={setShowZhuyin} id="zhuyin" />
+                <Label htmlFor="zhuyin" className="text-sm">Show zhuyin</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Label className="text-sm">Zhuyin format</Label>
+                <ToggleGroup
+                  type="single"
+                  value={zhuyinFormat}
+                  onValueChange={(v) => v && setZhuyinFormat(v as "boxes" | "plain")}
+                  variant="outline"
+                  size="sm"
+                >
+                  <ToggleGroupItem value="boxes" className="text-xs px-2">3 Boxes</ToggleGroupItem>
+                  <ToggleGroupItem value="plain" className="text-xs px-2">No Boxes</ToggleGroupItem>
+                </ToggleGroup>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch checked={speakFirstAutoReveal} onCheckedChange={setSpeakFirstAutoReveal} id="autoReveal" />
+                <Label htmlFor="autoReveal" className="text-sm">Speak first, auto-reveal 1s later</Label>
+              </div>
+            </CollapsibleSection>
+
+            <CollapsibleSection title="Speech / Dictionary Links" open={speechOpen} onOpenChange={setSpeechOpen}>
+              <div className="flex items-center gap-2">
+                <Switch checked={showEnglishSpeaker} onCheckedChange={setShowEnglishSpeaker} id="enSpeak" />
+                <Label htmlFor="enSpeak" className="text-sm">English speaker icon</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch checked={showChineseSpeaker} onCheckedChange={setShowChineseSpeaker} id="zhSpeak" />
+                <Label htmlFor="zhSpeak" className="text-sm">Chinese speaker icon</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch checked={showMDBGWord} onCheckedChange={setShowMDBGWord} id="mdbgWord" />
+                <Label htmlFor="mdbgWord" className="text-sm">MDBG link for word</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch checked={showMDBGPinyin} onCheckedChange={setShowMDBGPinyin} id="mdbgPinyin" />
+                <Label htmlFor="mdbgPinyin" className="text-sm">MDBG link for pinyin</Label>
+              </div>
+              {showMDBGPinyin && (
+                <div className="flex items-center gap-2 pl-6">
+                  <Switch checked={mdbgIgnoreTone} onCheckedChange={setMdbgIgnoreTone} id="ignoreTone" />
+                  <Label htmlFor="ignoreTone" className="text-sm">Ignore tone</Label>
+                </div>
+              )}
+            </CollapsibleSection>
+
+            <CollapsibleSection title="Hiding" open={hidingOpen} onOpenChange={setHidingOpen}>
+              <div className="flex items-center gap-2">
+                <Switch checked={dontHideFirstN} onCheckedChange={setDontHideFirstN} id="dontHide" />
+                <Label htmlFor="dontHide" className="text-sm">Don't hide first {firstN} words</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch checked={randomizeHiding} onCheckedChange={setRandomizeHiding} id="randHide" />
+                <Label htmlFor="randHide" className="text-sm">Randomize initial hiding</Label>
+              </div>
+
+              <ThreeWayToggle label="Hide Chinese" value={hideChinese} onChange={setHideChinese} rowIndex={0} />
+              <ThreeWayToggle label="Hide English" value={hideEnglish} onChange={setHideEnglish} rowIndex={1} />
+              <ThreeWayToggle label="Hide Pinyin" value={hidePinyin} onChange={setHidePinyin} rowIndex={2} />
+              <ThreeWayToggle label="Hide Zhuyin" value={hideZhuyin} onChange={setHideZhuyin} rowIndex={3} />
+
+              <Button variant="outline" size="sm" onClick={regenerateHiding}>
+                <Shuffle className="h-3 w-3 mr-1" /> Randomize hiding now
+              </Button>
+            </CollapsibleSection>
+          </CardContent>
+        </Card>
+
+        {/* Word Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mb-4">
+          {words.map((word, i) => (
+            <WordCard
+              key={`${word.ct}-${word.pinyinStub}-${i}`}
+              word={word}
+              hidden={hiddenRows[i] || [false, false, false, false]}
+              settings={displaySettings}
+              onReveal={(rowIndex) => handleReveal(i, rowIndex)}
+              onSpeak={handleSpeak}
+            />
+          ))}
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex gap-2 flex-wrap justify-center mb-6">
+          <Button variant="outline" onClick={addMore}>
+            <Plus className="h-4 w-4 mr-1" /> Add 20 more
+          </Button>
+          <Button variant="outline" onClick={randomizeAll}>
+            <RefreshCw className="h-4 w-4 mr-1" /> Random New Words
+          </Button>
+          <Button variant="outline" onClick={showEverything}>
+            <Eye className="h-4 w-4 mr-1" /> Show All
+          </Button>
+          <Button variant="outline" onClick={hideEverything}>
+            <EyeOff className="h-4 w-4 mr-1" /> Hide All
+          </Button>
+        </div>
+
+        {/* Filters stub */}
+        <Card>
+          <CardContent className="p-6 text-center">
+            <p className="text-muted-foreground">🔧 Filters & Restrictions coming soon.</p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default RandomWords;

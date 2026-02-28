@@ -133,11 +133,16 @@ export const PhoneticChart = () => {
         tableBold={tableBold}
       />
 
-      <div className="mt-8 mb-4 text-center">
+      <div className="mt-8 mb-4 text-center space-y-3">
         <Button variant="outline" size="sm" onClick={() => setImageViewerOpen(true)}>
           <Download className="h-4 w-4 mr-2" />
           Download PNG Chart
         </Button>
+        <div>
+          <a href="/random-words" className="text-sm text-primary underline hover:text-primary/80">
+            🎲 Random Words Practice →
+          </a>
+        </div>
       </div>
 
       <GotchaInfoDialog open={gotchaInfoOpen} onOpenChange={setGotchaInfoOpen} />

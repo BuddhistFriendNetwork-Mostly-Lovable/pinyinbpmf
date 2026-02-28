@@ -1,0 +1,172 @@
+import { Volume2, Eye, ExternalLink } from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { RandomWordEntry } from "@/lib/randomWordsUtils";
+import { getDifficultyForStub, getDifficultyDotColor } from "@/lib/randomWordsUtils";
+import { cleanZhuyin } from "@/lib/zhuyinUtils";
+import { buildMDBGUrl } from "@/lib/zhuyinUtils";
+import { chartData, endings } from "@/data/phoneticData";
+
+export interface WordCardDisplaySettings {
+  showOnlyFirstChar: boolean;
+  showPinyin: boolean;
+  showZhuyin: boolean;
+  zhuyinFormat: "boxes" | "plain";
+  showEnglishSpeaker: boolean;
+  showChineseSpeaker: boolean;
+  showMDBGWord: boolean;
+  showMDBGPinyin: boolean;
+  mdbgIgnoreTone: boolean;
+}
+
+interface WordCardProps {
+  word: RandomWordEntry;
+  hidden: boolean[];
+  settings: WordCardDisplaySettings;
+  onReveal: (rowIndex: number) => void;
+  onSpeak: (text: string, lang: "zh" | "en") => void;
+}
+
+function getZhuyinForStub(stub: string): string {
+  // Try to find zhuyin from chartData by searching for a cell with matching stub
+  for (const key of Object.keys(chartData)) {
+    const cell = chartData[key];
+    if (!cell) continue;
+    const cellPinyin = cell.pinyin.replace(/[^a-zA-Zü]/g, "").toLowerCase();
+    if (cellPinyin === stub) {
+      return cell.zhuyin;
+    }
+  }
+  // Fallback: look in endings
+  const ending = endings.find((e) => e.pinyin === stub);
+  if (ending) return ending.zhuyin;
+  return "";
+}
+
+export const WordCard = ({ word, hidden, settings, onReveal, onSpeak }: WordCardProps) => {
+  const difficulty = getDifficultyForStub(word.pinyinStub);
+  const dotColor = getDifficultyDotColor(difficulty);
+
+  const chineseText = settings.showOnlyFirstChar ? word.cs[0] : word.cs;
+  const pinyinText = settings.showOnlyFirstChar ? word.fp.split(" ")[0] : word.fp;
+
+  const rawZhuyin = getZhuyinForStub(word.pinyinStub);
+  const zhuyinChars = cleanZhuyin(rawZhuyin);
+
+  const mdbgWordUrl = buildMDBGUrl(word.cs);
+  const mdbgPinyinUrl = settings.mdbgIgnoreTone
+    ? `https://www.mdbg.net/chinese/dictionary?page=worddict&wdqb=p%3A${encodeURIComponent(word.pinyinStub)}*`
+    : `https://www.mdbg.net/chinese/dictionary?page=worddict&wdqb=p%3A${encodeURIComponent(word.fp)}*`;
+
+  const renderRow = (
+    rowIndex: number,
+    content: React.ReactNode,
+    extraClass?: string,
+  ) => {
+    const isHidden = hidden[rowIndex];
+    return (
+      <div
+        className={cn(
+          "relative px-2 py-1 flex items-center gap-1 min-h-[1.8rem]",
+          extraClass,
+        )}
+      >
+        {isHidden ? (
+          <div
+            className="absolute inset-0 flex items-center justify-center cursor-pointer z-10"
+            onClick={() => onReveal(rowIndex)}
+          >
+            <Eye className="h-4 w-4 text-muted-foreground/50" />
+          </div>
+        ) : null}
+        <div className={cn("flex-1 flex items-center gap-1", isHidden && "filter blur-sm select-none")}>
+          {content}
+        </div>
+      </div>
+    );
+  };
+
+  const zhuyinBoxes = () => {
+    if (!zhuyinChars) return null;
+    const chars = zhuyinChars.split("");
+    if (settings.zhuyinFormat === "boxes") {
+      // 3 boxes
+      return (
+        <div className="flex gap-0.5">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="w-6 h-6 border border-muted-foreground/30 rounded flex items-center justify-center text-sm"
+            >
+              {chars[i] || ""}
+            </div>
+          ))}
+        </div>
+      );
+    }
+    return <span className="text-sm">{zhuyinChars}</span>;
+  };
+
+  return (
+    <div className="border rounded-lg overflow-hidden bg-card text-card-foreground shadow-sm relative">
+      {/* Row 1: Chinese */}
+      {renderRow(
+        0,
+        <>
+          <span className="text-lg font-bold">{chineseText}</span>
+          {settings.showChineseSpeaker && (
+            <button
+              onClick={() => onSpeak(chineseText, "zh")}
+              className="p-0.5 hover:bg-accent rounded"
+            >
+              <Volume2 className="h-3.5 w-3.5 text-muted-foreground" />
+            </button>
+          )}
+          {settings.showMDBGWord && (
+            <a href={mdbgWordUrl} target="_blank" rel="noopener noreferrer" className="p-0.5 hover:bg-accent rounded">
+              <ExternalLink className="h-3 w-3 text-muted-foreground" />
+            </a>
+          )}
+        </>,
+      )}
+
+      {/* Divider between row 1 and 2 */}
+      <div className="border-t border-dashed border-muted-foreground/30" />
+
+      {/* Row 2: English */}
+      {renderRow(
+        1,
+        <>
+          <span className="text-xs text-muted-foreground truncate">{word.e}</span>
+          {settings.showEnglishSpeaker && (
+            <button
+              onClick={() => onSpeak(word.e, "en")}
+              className="p-0.5 hover:bg-accent rounded shrink-0"
+            >
+              <Volume2 className="h-3 w-3 text-muted-foreground" />
+            </button>
+          )}
+        </>,
+      )}
+
+      {/* Row 3: Pinyin */}
+      {settings.showPinyin &&
+        renderRow(
+          2,
+          <>
+            <span className="text-sm">{pinyinText}</span>
+            {settings.showMDBGPinyin && (
+              <a href={mdbgPinyinUrl} target="_blank" rel="noopener noreferrer" className="p-0.5 hover:bg-accent rounded">
+                <ExternalLink className="h-3 w-3 text-muted-foreground" />
+              </a>
+            )}
+          </>,
+        )}
+
+      {/* Row 4: Zhuyin */}
+      {settings.showZhuyin && renderRow(3, zhuyinBoxes())}
+
+      {/* Difficulty dot */}
+      <div className={cn("absolute bottom-1 right-1 w-2.5 h-2.5 rounded-full", dotColor)} />
+    </div>
+  );
+};
