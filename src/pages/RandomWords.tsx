@@ -181,7 +181,7 @@ const RandomWords = () => {
   }, [words, hideChinese, hideEnglish, hidePinyin, hideZhuyin, dontHideFirstN, firstN, randomizeHiding]);
 
   const addMore = useCallback(() => {
-    const newWords = GenerateNwordsFromPinyin(words, words.length + 20, activePinyinList);
+    const newWords = GenerateNwordsFromPinyin(words, words.length + 5, activePinyinList);
     const newHidden = newWords
       .slice(words.length)
       .map((_, i) =>
@@ -595,11 +595,11 @@ const RandomWords = () => {
             </span>
           ) : (
             <>
-              {words.length < 20 && (
+              {words.length < 10 && (
                 <Button
                   variant="outline"
                   onClick={() => {
-                    const target = 20;
+                    const target = 10;
                     const newWords = GenerateNwordsFromPinyin(words, target, activePinyinList);
                     const newHidden = newWords
                       .slice(words.length)
@@ -623,12 +623,12 @@ const RandomWords = () => {
                     ]);
                   }}
                 >
-                  <Plus className="h-4 w-4 mr-1" /> More Words (20)
+                  <Plus className="h-4 w-4 mr-1" /> More Words (10)
                 </Button>
               )}
-              {words.length >= 20 && (
+              {words.length >= 10 && (
                 <Button variant="outline" onClick={addMore}>
-                  <Plus className="h-4 w-4 mr-1" /> +Add 20 more
+                  <Plus className="h-4 w-4 mr-1" /> Add 5 more
                 </Button>
               )}
               <Button variant="outline" onClick={randomizeAll}>
