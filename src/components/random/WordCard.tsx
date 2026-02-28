@@ -1,4 +1,4 @@
-import { Volume2, Eye, ExternalLink } from "lucide-react";
+import { Volume2, Eye, EyeOff, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { RandomWordEntry } from "@/lib/randomWordsUtils";
 import { cleanZhuyin } from "@/lib/zhuyinUtils";
@@ -166,27 +166,61 @@ export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onS
       {/* Row 4: Zhuyin */}
       {settings.showZhuyin && renderRow(3, zhuyinBoxes())}
 
-      {/* Difficulty dots */}
-      <div className="flex items-center justify-end gap-1 px-1.5 py-1">
-        {(["easy", "medium", "hard"] as const).map((level) => {
-          const color = level === "easy" ? "bg-green-500" : level === "hard" ? "bg-red-500" : "";
-          const isSelected = userDifficulty === level;
-          const isNull = userDifficulty === null;
-          return (
-            <button
-              key={level}
-              onClick={() => onSetDifficulty(isSelected ? null : level)}
-              className={cn(
-                "w-3 h-3 rounded-full transition-all",
-                color,
-                !isNull && !isSelected && "opacity-[0.35]",
-                isSelected && "ring-2 ring-blue-500 ring-offset-1",
-              )}
-              style={level === "medium" ? { backgroundColor: "#FBBF24" } : undefined}
-              title={`Mark as ${level}`}
-            />
-          );
-        })}
+      {/* Bottom bar: speaker, hide toggle, difficulty dots */}
+      <div className="flex items-center justify-between gap-1 px-1.5 py-1 border-t border-muted-foreground/20">
+        {/* Left: speaker */}
+        <button
+          onClick={() => onSpeak(chineseText, "zh")}
+          className="p-0.5 hover:bg-accent rounded"
+          title="Speak Chinese"
+        >
+          <Volume2 className="h-3.5 w-3.5 text-muted-foreground" />
+        </button>
+
+        {/* Middle: hide/show toggle */}
+        <button
+          onClick={() => {
+            const allVisible = hidden.every((h) => !h);
+            if (allVisible) {
+              // Hide all 4 rows
+              for (let r = 0; r < 4; r++) onReveal(-1 - r); // signal hide
+            } else {
+              // Show all 4 rows
+              for (let r = 0; r < 4; r++) onReveal(r);
+            }
+          }}
+          className="p-0.5 hover:bg-accent rounded"
+          title={hidden.every((h) => !h) ? "Hide all rows" : "Show all rows"}
+        >
+          {hidden.every((h) => !h) ? (
+            <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />
+          ) : (
+            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+          )}
+        </button>
+
+        {/* Right: difficulty dots */}
+        <div className="flex items-center gap-1">
+          {(["easy", "medium", "hard"] as const).map((level) => {
+            const color = level === "easy" ? "bg-green-500" : level === "hard" ? "bg-red-500" : "";
+            const isSelected = userDifficulty === level;
+            const isNull = userDifficulty === null;
+            return (
+              <button
+                key={level}
+                onClick={() => onSetDifficulty(isSelected ? null : level)}
+                className={cn(
+                  "w-3 h-3 rounded-full transition-all",
+                  color,
+                  !isNull && !isSelected && "opacity-[0.35]",
+                  isSelected && "ring-2 ring-blue-500 ring-offset-1",
+                )}
+                style={level === "medium" ? { backgroundColor: "#FBBF24" } : undefined}
+                title={`Mark as ${level}`}
+              />
+            );
+          })}
+        </div>
       </div>
     </div>
   );

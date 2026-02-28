@@ -98,7 +98,12 @@ const RandomWords = () => {
     setHiddenRows((prev) => {
       const next = [...prev];
       next[wordIndex] = [...next[wordIndex]];
-      next[wordIndex][rowIndex] = false;
+      if (rowIndex < 0) {
+        // Negative index means hide: -1 => row 0, -2 => row 1, etc.
+        next[wordIndex][-1 - rowIndex] = true;
+      } else {
+        next[wordIndex][rowIndex] = false;
+      }
       return next;
     });
   }, []);
