@@ -89,7 +89,7 @@ export const WordCard = ({ word, hidden, settings, userDifficulty, onReveal, onS
     );
   };
 
- const function  splitZhuyin(chars) {
+ function splitZhuyin(chars: string): string[] {
   const medials = ['ㄧ', 'ㄨ', 'ㄩ'];
   let boxes = ["", "", ""]; // [Initial, Medial, Final/Tone]
 
