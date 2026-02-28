@@ -147,7 +147,7 @@ export const PhoneticChart = () => {
         <br></br>
         <div>
           <a href="/vowel-trainer" className="text-sm text-primary underline hover:text-primary/80">
-            Vowel Trainer 🅰️ 🅾️ →
+            Vowel Trainer 🅰 🄴 🄸 🅾 🅄 →
           </a>
         </div>
       </div>
