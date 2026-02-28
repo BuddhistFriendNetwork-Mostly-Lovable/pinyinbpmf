@@ -27,7 +27,7 @@ const QUICK_SELECTS = {
   iMedial: { label: "i + Finals", keys: ["i", "ia", "ie", "iao", "iu", "ian", "in", "iang", "ing", "iong"] },
   uMedial: { label: "u + Finals", keys: ["ua", "uo", "uai", "ui", "uan", "un", "uang"] },
   üMedial: { label: "ü + Finals", keys: ["ü", "iong", "üe", "üan", "ün"] },
-  all: { label: "ü + Finals", keys: allKeys },
+  all: { label: "All", keys: [] as string[] },
 } as const;
 
 type QuickSelectId = keyof typeof QUICK_SELECTS;
@@ -160,7 +160,8 @@ const VowelTrainer = () => {
   const quickSelect = useCallback(
     (id: QuickSelectId) => {
       const keys = QUICK_SELECTS[id].keys;
-      const next = new Set(keys.filter((k) => allKeys.includes(k)));
+      const effectiveKeys = id === "all" ? allKeys : keys;
+      const next = new Set(effectiveKeys.filter((k: string) => allKeys.includes(k)));
       applySelection(next, id);
     },
     [allKeys, applySelection],
