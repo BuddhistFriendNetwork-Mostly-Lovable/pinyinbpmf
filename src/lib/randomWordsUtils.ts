@@ -201,7 +201,17 @@ export const UmlautPreset: QuickPreset = {
   notes: `All Umlaut endings: ü, üe, üan, ün — which also includes "iong". The Zhuyin for "-iong" uses ㄩ, which is the Umlaut sound.\n\nNotice that usually this is written in pinyin without the two dots (ü). So "u" actually is tricky: It can be the ü sound or the u sound like "bu".\n\nTIP: for "j, q, x, and y", the u is always ü. Everything else is the u like english "boo".`,
 };
 
-export const quickPresets: QuickPreset[] = [EasyPreset, UmlautPreset];
+const allEndingsList = endings.map((e) => e.pinyin);
+
+export const AllPreset: QuickPreset = {
+  name: "All",
+  autogenInit: allConsonantInitials,
+  autogenEndings: allEndingsList,
+  specialAdds: ["wo", "yi", "san", "si", "wu"],
+  notes: "All ~410 pinyin variants.",
+};
+
+export const quickPresets: QuickPreset[] = [EasyPreset, UmlautPreset, AllPreset];
 
 export const DefaultPinyinList = PinyinListFromQuickPreset(EasyPreset);
 
