@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ChevronDown, ChevronRight, Shuffle, Plus, RefreshCw, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
   type HideMode,
 } from "@/lib/randomWordsUtils";
 import { useTTS } from "@/hooks/useTTS";
+import { toast } from "@/hooks/use-toast";
 
 const RandomWords = () => {
   // Display settings
@@ -44,6 +45,30 @@ const RandomWords = () => {
   const [formattingOpen, setFormattingOpen] = useState(false);
   const [speechOpen, setSpeechOpen] = useState(false);
   const [hidingOpen, setHidingOpen] = useState(false);
+
+  // Settings panel auto-collapse
+  const [settingsOpen, setSettingsOpen] = useState(true);
+  const [autoCollapseCountdown, setAutoCollapseCountdown] = useState(5);
+  const hasAutoCollapsed = useRef(false);
+  const cancelledRef = useRef(false);
+
+  useEffect(() => {
+    if (hasAutoCollapsed.current || cancelledRef.current) return;
+    if (autoCollapseCountdown <= 0) {
+      setSettingsOpen(false);
+      hasAutoCollapsed.current = true;
+      setAutoCollapseCountdown(-1);
+      toast({ description: "Settings hidden. Click 'Word Display Settings' to show again.", duration: 3000 });
+      return;
+    }
+    const timer = setTimeout(() => setAutoCollapseCountdown((p) => p - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [autoCollapseCountdown]);
+
+  const handleCancelAutoCollapse = () => {
+    cancelledRef.current = true;
+    setAutoCollapseCountdown(-1);
+  };
 
   // Words and hidden state
   const [words, setWords] = useState<RandomWordEntry[]>([]);
@@ -267,9 +292,30 @@ const RandomWords = () => {
         </div>
 
         {/* Settings */}
-        <Card className="mb-4">
-          <CardContent className="p-3 space-y-1">
-            <h2 className="text-sm font-semibold mb-2">Word Display Settings</h2>
+        <Collapsible open={settingsOpen} onOpenChange={setSettingsOpen}>
+          <Card className="mb-4">
+            <CollapsibleTrigger className="w-full">
+              <CardContent className="p-3 flex items-center justify-between cursor-pointer">
+                <h2 className="text-sm font-semibold flex items-center gap-2">
+                  {settingsOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                  Word Display Settings
+                  {autoCollapseCountdown > 0 && (
+                    <span className="text-xs text-muted-foreground font-normal">
+                      (Auto-collapse in {autoCollapseCountdown}s.{" "}
+                      <button
+                        className="text-destructive hover:underline"
+                        onClick={(e) => { e.stopPropagation(); handleCancelAutoCollapse(); }}
+                      >
+                        ❌
+                      </button>
+                      )
+                    </span>
+                  )}
+                </h2>
+              </CardContent>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="p-3 pt-0 space-y-1">
 
             <CollapsibleSection title="Word Control / Formatting" open={formattingOpen} onOpenChange={setFormattingOpen}>
               <div className="flex items-center gap-2">
@@ -347,8 +393,10 @@ const RandomWords = () => {
                 <Shuffle className="h-3 w-3 mr-1" /> Randomize hiding now
               </Button>
             </CollapsibleSection>
-          </CardContent>
-        </Card>
+           </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
 
         {/* Word Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mb-4">
