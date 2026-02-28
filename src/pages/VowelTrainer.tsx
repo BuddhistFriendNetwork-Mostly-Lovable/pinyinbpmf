@@ -65,7 +65,7 @@ const QUICK_SELECTS = {
   iMedial: { label: "i + Finals", keys: ["i", "ia", "ie", "iao", "iu", "ian", "in", "iang", "ing", "iong"] },
   uMedial: { label: "u + Finals", keys: ["u", "ua", "uo", "uai", "ui", "uan", "un", "uang"] },
   üMedial: { label: "ü + Finals", keys: ["ü", "iong", "üe", "üan", "ün"] },
-  all: { label: "All", keys: allPinyinFinals }
+  all: { label: "All", keys: allPinyinFinals },
 } as const;
 
 type QuickSelectId = keyof typeof QUICK_SELECTS;
@@ -385,7 +385,7 @@ const VowelTrainer = () => {
           <Button variant="outline" size="sm" onClick={hideAll}>
             <EyeOff className="h-3.5 w-3.5 mr-1" /> Hide Card Rows
           </Button>
-          <Button variant="outline" size="sm" onClick={() => setShowCardColors(prev => !prev)}>
+          <Button variant="outline" size="sm" onClick={() => setShowCardColors((prev) => !prev)}>
             {showCardColors ? "Remove Colors" : "Show Colors"}
           </Button>
         </div>
@@ -416,21 +416,21 @@ const VowelTrainer = () => {
                     size="sm"
                     onClick={() => quickSelect("finalMono")}
                   >
-                    Final Monophthongs
+                    Final=Mono(ph)thongs
                   </Button>
                   <Button
                     variant={activeQuickSelect === "finalDip" ? "default" : "outline"}
                     size="sm"
                     onClick={() => quickSelect("finalDip")}
                   >
-                    Final Diphthongs
+                    Final=Di(ph)thongs
                   </Button>
                   <Button
                     variant={activeQuickSelect === "finalNasal" ? "default" : "outline"}
                     size="sm"
                     onClick={() => quickSelect("finalNasal")}
                   >
-                    Final Nasals (n, ng)
+                    Final=Nasals (n, ng)
                   </Button>
                 </div>
               </div>
