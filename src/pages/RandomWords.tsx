@@ -36,8 +36,15 @@ import { useTTS } from "@/hooks/useTTS";
 import { toast } from "@/hooks/use-toast";
 import { useSavedDifficulties, type SavedWordEntry } from "@/hooks/useSavedDifficulties";
 import { ReviewModal } from "@/components/random/ReviewModal";
+import { getTotalWordCount } from "@/data/lazyDataLoader";
 
 const RandomWords = () => {
+  // Total word count (lazy loaded)
+  const [totalWordCount, setTotalWordCount] = useState<number | null>(null);
+  useEffect(() => {
+    getTotalWordCount().then(setTotalWordCount);
+  }, []);
+
   // Display settings
   const [showOnlyFirstChar, setShowOnlyFirstChar] = useState(false);
   const [showPinyin, setShowPinyin] = useState(true);
@@ -721,6 +728,11 @@ const RandomWords = () => {
           getByDifficulty={getByDifficulty}
           onLoadTraining={handleLoadTraining}
         />
+        {totalWordCount !== null && (
+          <p className="text-xs text-muted-foreground text-center mt-4">
+            Total words in database: {totalWordCount.toLocaleString()}
+          </p>
+        )}
       </div>
     </div>
   );
