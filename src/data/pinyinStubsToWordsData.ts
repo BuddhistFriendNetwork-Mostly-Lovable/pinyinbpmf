@@ -15627,6 +15627,27 @@ export const pinyinStubsData: PinyinStubData[] = [
     ]
   },
   {
+  "pinyinStub": "guai",
+  "characters": [
+    {
+      "h": 4,
+      "ct": "怪",
+      "fp": "guài",
+      "e": "strange, odd, to blame",
+      "t": 4,
+      "cs": "怪"
+    },
+    {
+      "h": 5,
+      "ct": "乖",
+      "fp": "guāi",
+      "e": "obedient, well-behaved",
+      "t": 1,
+      "cs": "乖"
+    }
+  ]
+},
+  {
     "pinyinStub": "kuai",
     "characters": [
       {
