@@ -14,7 +14,7 @@ export const englishRhymeWords: Record<string, string[]> = {
   er: ["grrr 100%", "fur 100%"],
 
   // --- The I Group ---
-  i: ["bee 100%", "tea 100%", "pee 100%"],
+  i: ["be 100%", "tea 100%", "pee 100%"],
   i_buzz: ["zzz (bee sound) 90%", "❌see 0%"],
   ia: ["see-ya 90%", "gee-ah 80%"],
   iao: ["meow 100%"],
@@ -38,11 +38,23 @@ export const englishRhymeWords: Record<string, string[]> = {
   ui: ["way 100%", "sway 100%"],
   uai: ["why 90%", "why (stretch the w as a 'u') 100%", "*Kawhi* Leonard (NBA star, blended) 100%"],
   uan: ["Juan 100%", "swan 95%", "wand (-d) 90%"],
-  un: ["when 70%", "Gwen 70%", "one 50%", "dun dun dun (suspense) 40%", "❌sun (see /-en/) 0%", "See /en/, very close sound-alike"],
+  un: [
+    "when 70%",
+    "Gwen 70%",
+    "one 50%",
+    "dun dun dun (suspense) 40%",
+    "❌sun (see /-en/) 0%",
+    "See /en/, very close sound-alike",
+  ],
   uang: ["Juan + g 100%", "wrong (with w sound) 70%", "Swan + g 95%"],
 
   // --- The Ü (Umlaut) Group ---
-  ü: ["French 'brie' 50%", "French 'brie' with puckerd lips, 80%", "see (with super puckered lips) 80%", "❌boo (see /-u/) 0%"],
+  ü: [
+    "French 'brie' 50%",
+    "French 'brie' with puckerd lips, 80%",
+    "see (with super puckered lips) 80%",
+    "❌boo (see /-u/) 0%",
+  ],
   üe: ["duet (soft t) 85%", "sweat (puckered lips, soft t) 70%", "you+eh 80%"],
   üan: ["U.N. (United Nations) 80%", "yen (puckered lips) 85%", "Ian 50%", "❌Juan (see /-uan/) 0%"],
   ün: ["jean (puckered lips) 80%", "Queen (minus Q) 80%", "❌sun (see /-en/) 0%"],
@@ -142,9 +154,7 @@ export const getTopRhymeWord = (finalPinyin: string): string | null => {
  * Get the danger text (0% similarity entry) for a given final.
  * Returns the cleaned short label and full original text, or null if none.
  */
-export const getDangerWord = (
-  finalPinyin: string,
-): { shortLabel: string; fullText: string } | null => {
+export const getDangerWord = (finalPinyin: string): { shortLabel: string; fullText: string } | null => {
   const rhymes = getRhymeWords(finalPinyin);
   const dangerEntry = rhymes.find((r) => /(?<!\d)0%/.test(r));
   if (!dangerEntry) return null;
