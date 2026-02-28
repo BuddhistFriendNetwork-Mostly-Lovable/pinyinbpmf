@@ -9,10 +9,6 @@ import { cleanPinyin, stripToneMarks } from "@/lib/zhuyinUtils";
 import { useTTS } from "@/hooks/useTTS";
 import type { RandomWordEntry } from "@/lib/randomWordsUtils";
 
-interface VowelTrainerEntry extends RandomWordEntry {
-  ending: string;
-}
-
 const LS_KEY = "vowel-trainer-selected-endings";
 const LS_MODE_KEY = "vowel-trainer-select-mode";
 
@@ -60,33 +56,21 @@ function saveMode(m: SelectMode) {
 /** Check if a set exactly matches a quickselect's keys */
 function detectQuickSelect(selected: Set<string>, allKeys: string[]): QuickSelectId | null {
   for (const [id, qs] of Object.entries(QUICK_SELECTS)) {
-    const validKeys = qs.keys.filter(k => allKeys.includes(k));
-    if (validKeys.length === selected.size && validKeys.every(k => selected.has(k))) {
+    const validKeys = qs.keys.filter((k) => allKeys.includes(k));
+    if (validKeys.length === selected.size && validKeys.every((k) => selected.has(k))) {
       return id as QuickSelectId;
     }
   }
   return null;
 }
 
-function toVowelTrainerEntry(entry: ChineseWordEntry, ending: string): VowelTrainerEntry {
+function toRandomWordEntry(entry: ChineseWordEntry): RandomWordEntry {
   const parts = entry.w.split(",");
   const ct = parts[0];
   const cs = parts.length > 1 ? parts[1] : ct;
   const firstSyllable = entry.short || entry.p;
-  const stub = cleanPinyin(stripToneMarks(firstSyllable));
-  return { cs, ct, e: entry.m, fp: entry.p, pinyinStub: stub, h: -9, t: -9, ending };
-}
-
-/** Generate N distinct colors by varying hue and alternating lightness */
-function generateEndingColors(n: number): string[] {
-  const colors: string[] = [];
-  for (let i = 0; i < n; i++) {
-    const hue = Math.round((i * 360) / n) % 360;
-    const lightness = i % 2 === 0 ? 88 : 78;
-    const saturation = i % 3 === 0 ? 55 : 70;
-    colors.push(`hsl(${hue} ${saturation}% ${lightness}%)`);
-  }
-  return colors;
+  const stub = stripToneMarks(cleanPinyin(firstSyllable));
+  return { cs, ct, e: entry.m, fp: entry.p, pinyinStub: stub, h: -9, t: -9 };
 }
 
 const displaySettings: WordCardDisplaySettings = {
@@ -116,12 +100,6 @@ const VowelTrainer = () => {
   const [hiddenRows, setHiddenRows] = useState<Record<string, boolean[]>>({});
   const { speak } = useTTS();
   const allKeys = useMemo(() => getAllEndingKeys(), []);
-  const endingColors = useMemo(() => generateEndingColors(allKeys.length), [allKeys]);
-  const endingColorMap = useMemo(() => {
-    const map: Record<string, string> = {};
-    allKeys.forEach((key, i) => { map[key] = endingColors[i]; });
-    return map;
-  }, [allKeys, endingColors]);
   const lastHideAllTime = useRef<number>(0);
 
   const applySelection = useCallback((next: Set<string>, qsId: QuickSelectId | null = null) => {
@@ -131,72 +109,60 @@ const VowelTrainer = () => {
     setRemovedKeys(new Set());
   }, []);
 
-  const toggleEnding = useCallback((key: string) => {
-    setSelectedEndings((prev) => {
-      let next: Set<string>;
-      if (selectMode === "one") {
-        next = prev.has(key) && prev.size === 1 ? new Set<string>() : new Set([key]);
-      } else {
-        next = new Set(prev);
-        if (next.has(key)) next.delete(key);
-        else next.add(key);
-      }
-      saveSelected(next);
-      setActiveQuickSelect(null); // manual toggle breaks quickselect match
-      return next;
-    });
-  }, [selectMode]);
+  const toggleEnding = useCallback(
+    (key: string) => {
+      setSelectedEndings((prev) => {
+        let next: Set<string>;
+        if (selectMode === "one") {
+          next = prev.has(key) && prev.size === 1 ? new Set<string>() : new Set([key]);
+        } else {
+          next = new Set(prev);
+          if (next.has(key)) next.delete(key);
+          else next.add(key);
+        }
+        saveSelected(next);
+        setActiveQuickSelect(null); // manual toggle breaks quickselect match
+        return next;
+      });
+    },
+    [selectMode],
+  );
 
   const clearAll = useCallback(() => {
     applySelection(new Set(), null);
   }, [applySelection]);
 
-  const quickSelect = useCallback((id: QuickSelectId) => {
-    const keys = QUICK_SELECTS[id].keys;
-    const next = new Set(keys.filter(k => allKeys.includes(k)));
-    applySelection(next, id);
-  }, [allKeys, applySelection]);
+  const quickSelect = useCallback(
+    (id: QuickSelectId) => {
+      const keys = QUICK_SELECTS[id].keys;
+      const next = new Set(keys.filter((k) => allKeys.includes(k)));
+      applySelection(next, id);
+    },
+    [allKeys, applySelection],
+  );
 
   const toggleMode = useCallback(() => {
-    setSelectMode(prev => {
+    setSelectMode((prev) => {
       const next = prev === "many" ? "one" : "many";
       saveMode(next);
       return next;
     });
   }, []);
 
-  const [maxWordsPerEnding, setMaxWordsPerEnding] = useState(1);
-
   const words = useMemo(() => {
-    const result: { word: VowelTrainerEntry; key: string }[] = [];
+    const result: { word: RandomWordEntry; key: string }[] = [];
     for (const ending of allKeys) {
       if (!selectedEndings.has(ending)) continue;
       const entries = getChineseWords(ending);
       for (const entry of entries) {
         const k = `${ending}-${entry.w}-${entry.p}`;
         if (!removedKeys.has(k)) {
-          result.push({ word: toVowelTrainerEntry(entry, ending), key: k });
+          result.push({ word: toRandomWordEntry(entry), key: k });
         }
       }
     }
     return result;
   }, [selectedEndings, allKeys, removedKeys]);
-
-  const wordsToShow = useMemo(() => {
-    let currentEnding = "";
-    let count = 0;
-    return words.map(({ word }) => {
-      if (word.ending !== currentEnding) {
-        currentEnding = word.ending;
-        count = 0;
-      }
-      count++;
-      return count <= maxWordsPerEnding;
-    });
-  }, [words, maxWordsPerEnding]);
-
-  const visibleWords = useMemo(() => words.filter((_, i) => wordsToShow[i]), [words, wordsToShow]);
-  const visibleCount = visibleWords.length;
 
   const getHidden = (key: string) => hiddenRows[key] || [false, false, false, false];
 
@@ -210,24 +176,27 @@ const VowelTrainer = () => {
     });
   }, []);
 
-  const handleSpeak = useCallback((text: string, lang: "zh" | "en") => {
-    if (lang === "zh") speak(text);
-    else if ("speechSynthesis" in window) {
-      speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = "en-US";
-      u.rate = 0.9;
-      speechSynthesis.speak(u);
-    }
-  }, [speak]);
+  const handleSpeak = useCallback(
+    (text: string, lang: "zh" | "en") => {
+      if (lang === "zh") speak(text);
+      else if ("speechSynthesis" in window) {
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "en-US";
+        u.rate = 0.9;
+        speechSynthesis.speak(u);
+      }
+    },
+    [speak],
+  );
 
   const showAll = useCallback(() => {
     setHiddenRows((prev) => {
       const next = { ...prev };
-      for (const { key } of visibleWords) next[key] = [false, false, false, false];
+      for (const { key } of words) next[key] = [false, false, false, false];
       return next;
     });
-  }, [visibleWords]);
+  }, [words]);
 
   const hideAll = useCallback(() => {
     const now = Date.now();
@@ -235,20 +204,19 @@ const VowelTrainer = () => {
     lastHideAllTime.current = now;
     setHiddenRows((prev) => {
       const next = { ...prev };
-      for (const { key } of visibleWords) {
+      for (const { key } of words) {
         const cur = prev[key] || [false, false, false, false];
         next[key] = double ? [true, true, true, true] : [cur[0], true, true, true];
       }
       return next;
     });
-  }, [visibleWords]);
+  }, [words]);
 
   const displayKey = (key: string) => key.replace(/ü/g, "ü");
 
   // Title logic: show quickselect name if it's active and mode is "many"
-  const titleLabel = activeQuickSelect && selectMode === "many"
-    ? `QuickSelect: ${QUICK_SELECTS[activeQuickSelect].label}`
-    : null;
+  const titleLabel =
+    activeQuickSelect && selectMode === "many" ? `QuickSelect: ${QUICK_SELECTS[activeQuickSelect].label}` : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -273,20 +241,17 @@ const VowelTrainer = () => {
             <Button variant="outline" size="sm" onClick={clearAll}>
               Clear All
             </Button>
-            {titleLabel && (
-              <span className="text-sm font-medium text-primary">{titleLabel}</span>
-            )}
+            {titleLabel && <span className="text-sm font-medium text-primary">{titleLabel}</span>}
           </div>
           <div className="flex flex-wrap gap-1.5">
             {allKeys.map((key) => (
               <button
                 key={key}
                 onClick={() => toggleEnding(key)}
-                style={{ backgroundColor: endingColorMap[key] }}
-                className={`px-2 py-1 rounded text-sm transition-colors text-foreground ${
+                className={`px-2 py-1 rounded text-sm border transition-colors ${
                   selectedEndings.has(key)
-                    ? "border-2 border-foreground font-semibold"
-                    : "border border-transparent hover:opacity-80"
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-muted text-muted-foreground border-border hover:bg-accent"
                 }`}
               >
                 {displayKey(key)}
@@ -295,29 +260,14 @@ const VowelTrainer = () => {
           </div>
         </div>
 
-        {/* Show/Hide all + count */}
+        {/* Show count */}
         <div className="flex items-center gap-2 mb-3">
-          <Button variant="outline" size="sm" onClick={showAll}>
-            <Eye className="h-3.5 w-3.5 mr-1" /> Show All
-          </Button>
-          <Button variant="outline" size="sm" onClick={hideAll}>
-          <EyeOff className="h-3.5 w-3.5 mr-1" /> Hide All
-          </Button>
-          <span className="text-xs text-muted-foreground">{visibleCount} words out of {words.length} total</span>
-          <Button variant="outline" size="sm" onClick={() => setMaxWordsPerEnding(prev => prev + 1)}>
-            Show More
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => setMaxWordsPerEnding(9999)}>
-            Show All Words
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => setMaxWordsPerEnding(1)}>
-            1 per ending
-          </Button>
+          <span className="text-xs text-muted-foreground">{words.length} words</span>
         </div>
 
         {/* Word cards grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 mb-6">
-          {visibleWords.map(({ word, key }) => (
+          {words.map(({ word, key }) => (
             <WordCard
               key={key}
               word={word}
@@ -328,7 +278,6 @@ const VowelTrainer = () => {
               onSpeak={handleSpeak}
               onSetDifficulty={() => {}}
               onRemove={() => setRemovedKeys((prev) => new Set(prev).add(key))}
-              style={{ backgroundColor: endingColorMap[word.ending] }}
             />
           ))}
         </div>
@@ -342,7 +291,11 @@ const VowelTrainer = () => {
           <CollapsibleContent className="px-3 pb-4 space-y-3">
             <div className="space-y-2">
               <div className="flex flex-wrap gap-1.5">
-                <Button variant={activeQuickSelect === "medials" ? "default" : "outline"} size="sm" onClick={() => quickSelect("medials")}>
+                <Button
+                  variant={activeQuickSelect === "medials" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => quickSelect("medials")}
+                >
                   Medials
                 </Button>
               </div>
@@ -350,16 +303,38 @@ const VowelTrainer = () => {
               <div>
                 <p className="text-xs text-muted-foreground mb-1 font-medium">No Medials</p>
                 <div className="flex flex-wrap gap-1.5">
-                  <Button variant={activeQuickSelect === "finalMono" ? "default" : "outline"} size="sm" onClick={() => quickSelect("finalMono")}>
+                  <Button
+                    variant={activeQuickSelect === "finalMono" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => quickSelect("finalMono")}
+                  >
                     Final Monophthongs
                   </Button>
-                  <Button variant={activeQuickSelect === "finalDip" ? "default" : "outline"} size="sm" onClick={() => quickSelect("finalDip")}>
+                  <Button
+                    variant={activeQuickSelect === "finalDip" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => quickSelect("finalDip")}
+                  >
                     Final Diphthongs
                   </Button>
-                  <Button variant={activeQuickSelect === "finalNasal" ? "default" : "outline"} size="sm" onClick={() => quickSelect("finalNasal")}>
+                  <Button
+                    variant={activeQuickSelect === "finalNasal" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => quickSelect("finalNasal")}
+                  >
                     Final Nasals (n, ng)
                   </Button>
                 </div>
+              </div>
+
+              <div className="flex items-center gap-2 mb-3">
+                <Button variant="outline" size="sm" onClick={showAll}>
+                  <Eye className="h-3.5 w-3.5 mr-1" /> Show Rows
+                </Button>
+                <Button variant="outline" size="sm" onClick={hideAll}>
+                  <EyeOff className="h-3.5 w-3.5 mr-1" /> Hide Rows
+                </Button>
+                <span className="text-xs text-muted-foreground">{words.length} words</span>
               </div>
 
               <Collapsible open={combosOpen} onOpenChange={setCombosOpen}>
@@ -369,22 +344,46 @@ const VowelTrainer = () => {
                 </CollapsibleTrigger>
                 <CollapsibleContent className="mt-1">
                   <div className="flex flex-wrap gap-1.5">
-                    <Button variant={activeQuickSelect === "comboMono" ? "default" : "outline"} size="sm" onClick={() => quickSelect("comboMono")}>
+                    <Button
+                      variant={activeQuickSelect === "comboMono" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => quickSelect("comboMono")}
+                    >
                       Combo Mono
                     </Button>
-                    <Button variant={activeQuickSelect === "comboDip" ? "default" : "outline"} size="sm" onClick={() => quickSelect("comboDip")}>
+                    <Button
+                      variant={activeQuickSelect === "comboDip" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => quickSelect("comboDip")}
+                    >
                       Combo Dip
                     </Button>
-                    <Button variant={activeQuickSelect === "comboNasal" ? "default" : "outline"} size="sm" onClick={() => quickSelect("comboNasal")}>
+                    <Button
+                      variant={activeQuickSelect === "comboNasal" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => quickSelect("comboNasal")}
+                    >
                       Combo Nasal
                     </Button>
-                    <Button variant={activeQuickSelect === "iMedial" ? "default" : "outline"} size="sm" onClick={() => quickSelect("iMedial")}>
+                    <Button
+                      variant={activeQuickSelect === "iMedial" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => quickSelect("iMedial")}
+                    >
                       i + Finals
                     </Button>
-                    <Button variant={activeQuickSelect === "uMedial" ? "default" : "outline"} size="sm" onClick={() => quickSelect("uMedial")}>
+                    <Button
+                      variant={activeQuickSelect === "uMedial" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => quickSelect("uMedial")}
+                    >
                       u + Finals
                     </Button>
-                    <Button variant={activeQuickSelect === "üMedial" ? "default" : "outline"} size="sm" onClick={() => quickSelect("üMedial")}>
+                    <Button
+                      variant={activeQuickSelect === "üMedial" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => quickSelect("üMedial")}
+                    >
                       ü + Finals
                     </Button>
                   </div>
