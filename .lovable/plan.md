@@ -1,62 +1,63 @@
-## Vowel Trainer Page
+## Vowel Trainer: Per-Ending Word Limiting
 
 ### Overview
 
-Create a new `/vowel-trainer` page that lets users practice Chinese vocabulary organized by vowel endings (from `chineseWordsData`). The bottom section has a collapsible grid of ending toggles; the top section shows WordCards for all words matching selected endings.
+Add the ability to control how many words per ending are shown, with Show More / Show All / Reset buttons.
 
-### Changes
+### Changes (all in `src/pages/VowelTrainer.tsx`)
 
-#### 1. New file: `src/pages/VowelTrainer.tsx`
+#### 1. New type: `VowelTrainerEntry`
 
-**State:**
-
-- `selectedEndings: Set<string>` -- which endings are toggled on. Persisted to `localStorage` key `vowel-trainer-selected-endings`.
-- `hiddenRows: boolean[][]` -- per-card row visibility (same pattern as RandomWords).
-
-**Bottom section (collapsible):**
-
-- Title: "Endings" with a Collapsible wrapper (default open).
-- "Clear All" button above the grid.
-- Grid of toggle buttons for every key in `chineseWordsData` (the keys: `a`, `ai`, `ao`, `an`, `ang`, `e`, `ei`, `en`, `eng`, `er`, `i`, `ia`, `iao`, `ie`, `iu`, `ian`, `in`, `iang`, `ing`, `iong`, `o`, `ong`, `ou`, `u`, `ua`, `uo`, `ui`, `uai`, `uan`, `un`, `uang`, `u:`, `u:e`, `u:an`, `u:n`).
-- Each button is a simple toggle (highlighted when selected, muted when not). Clicking toggles inclusion in `selectedEndings`.
-- On any change, save to localStorage.
-
-**Top section (word cards):**
-
-- Collect all `ChineseWordEntry` items from selected endings.
-- Map each to a `RandomWordEntry`-compatible object:
-  - `cs` = first variant from `w` (before comma)
-  - `ct` = second variant or same as `cs`
-  - `e` = `m` (meaning)
-  - `fp` = `p` (pinyin with tones)
-  - `pinyinStub` = `stripToneMarks(cleanPinyin(p))` to enable zhuyin lookup
-  - `h` = -9 (not applicable)
-  - `t` = -9 (not applicable/needed)
-- Render using the existing `WordCard` component with simplified settings (show pinyin, zhuyin, no MDBG links).
-- Include hide/show all buttons and per-card X to remove.
-
-**Header:**
-
-- Back to Chart link, title "Vowel Trainer".
-
-#### 2. `src/App.tsx` -- Add route
-
-Add `<Route path="/vowel-trainer" element={<VowelTrainer />} />` above the catch-all.
-
-### Technical Details
-
-- Zhuyin lookup: The `WordCard` component's `getZhuyinForStub` already handles looking up zhuyin from `chartData` and `endings` by pinyin stub, so mapping `pinyinStub = stripToneMarks(cleanPinyin(entry.p))` will work for single-syllable words. Multi-syllable words (like "baba") will only show zhuyin for the first syllable, which is acceptable.
-- The `chineseWordsData` keys are extracted at render time via `Object.keys()` from the exported data.
-- Need to export the raw `chineseWords` record (or add a `getAllEndingKeys()` function) from `chineseWordsData.ts` since currently only `getChineseWords()` is exported.
-- localStorage key: `vowel-trainer-selected-endings`, stored as JSON array of strings. On mount, load from localStorage; default to all endings selected if nothing saved.
-- Modify the wordCard show there is a setting to not display the bottom-right difficulty colored dots.  In Vowel-trainer, don't display those colored dots. But in RandomWords, do display those colored dots.
-
-#### 3. `src/data/chineseWordsData.ts` -- Export keys accessor
-
-Add:
+Extend `RandomWordEntry` with an `ending` field:
 
 ```typescript
-export function getAllEndingKeys(): string[] {
-  return Object.keys(chineseWords);
+interface VowelTrainerEntry extends RandomWordEntry {
+  ending: string;
 }
 ```
+
+Update all references from `{ word: RandomWordEntry; key: string }` to `{ word: VowelTrainerEntry; key: string }` in VowelTrainer.
+
+#### 2. New state: `maxWordsPerEnding`
+
+```typescript
+const [maxWordsPerEnding, setMaxWordsPerEnding] = useState(1);
+```
+
+#### 3. Modify `words` useMemo (lines 146-159)
+
+- Store the `ending` in each entry via `toRandomWordEntry` returning a `VowelTrainerEntry` (or just attach it after).
+- The result items become `{ word: VowelTrainerEntry; key: string }`.
+
+#### 4. New derived value: `wordsToShow`
+
+A `useMemo` depending on `words` and `maxWordsPerEnding`:
+
+- Loop through `words`, track the current ending and a count of "true so far" for that ending.
+- Set `true` for the first `maxWordsPerEnding` entries of each distinct ending, `false` otherwise.
+- When the ending changes, reset the counter to 0.
+
+#### 5. Derived `visibleWords` and `visibleCount`
+
+```typescript
+const visibleWords = words.filter((_, i) => wordsToShow[i]);
+const visibleCount = visibleWords.length;
+```
+
+#### 6. Update count display (line 265)
+
+Change from `{words.length} words` to `{visibleCount} words out of {words.length} total`.
+
+#### 7. Add three buttons after the count
+
+- **Show More**: `setMaxWordsPerEnding(prev => prev + 1)`
+- **Show All**: `setMaxWordsPerEnding(9999)`
+- **Reset (1 per ending)**: `setMaxWordsPerEnding(1)`
+
+#### 8. Update WordCards grid (line 270)
+
+Change `words.map(...)` to `visibleWords.map(...)`.
+
+#### 9. Update `showAll`/`hideAll` callbacks
+
+These iterate over `words` to set hidden rows -- change them to iterate over `visibleWords` instead so they only affect shown cards.
