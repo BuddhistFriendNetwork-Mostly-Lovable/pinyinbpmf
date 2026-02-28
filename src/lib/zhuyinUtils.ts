@@ -74,6 +74,10 @@ export const buildMDBGUrl = (pinyin: string): string => {
   return `https://www.mdbg.net/chinese/dictionary?page=worddict&wdqb=p%3A${encodeURIComponent(clean)}*`;
 };
 
+export const buildMDBGUrlChinese = (chinesetext: string): string => {
+  return `https://www.mdbg.net/chinese/dictionary?page=worddict&wdqb=${encodeURIComponent(chinesetext)}`;
+};
+
 /**
  * Builds Yabla dictionary search URL for a pinyin string.
  */
