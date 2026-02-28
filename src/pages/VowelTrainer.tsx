@@ -27,6 +27,7 @@ const QUICK_SELECTS = {
   iMedial: { label: "i + Finals", keys: ["i", "ia", "ie", "iao", "iu", "ian", "in", "iang", "ing", "iong"] },
   uMedial: { label: "u + Finals", keys: ["ua", "uo", "uai", "ui", "uan", "un", "uang"] },
   üMedial: { label: "ü + Finals", keys: ["ü", "iong", "üe", "üan", "ün"] },
+  all: { label: "ü + Finals", keys: allKeys },
 } as const;
 
 type QuickSelectId = keyof typeof QUICK_SELECTS;
