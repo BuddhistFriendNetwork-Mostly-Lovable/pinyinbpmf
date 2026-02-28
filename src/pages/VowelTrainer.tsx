@@ -39,7 +39,7 @@ function saveSelected(s: Set<string>) {
 function toRandomWordEntry(entry: ChineseWordEntry): RandomWordEntry {
   const parts = entry.w.split(",");
   const ct = parts[0];
-  const cs = parts.length > 1 ? parts[1] : cs;
+  const cs = parts.length > 1 ? parts[1] : ct;
   const firstSyllable = entry.p.split(/[^a-zA-Züāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ]+/)[0] || entry.p;
   const stub = stripToneMarks(cleanPinyin(firstSyllable));
   return { cs, ct, e: entry.m, fp: entry.p, pinyinStub: stub, h: -9, t: -9 };
