@@ -16,6 +16,44 @@ interface VowelTrainerEntry extends RandomWordEntry {
 const LS_KEY = "vowel-trainer-selected-endings";
 const LS_MODE_KEY = "vowel-trainer-select-mode";
 
+const allPinyinFinals = [
+  "a",
+  "ai",
+  "ao",
+  "an",
+  "ang",
+  "e",
+  "ei",
+  "en",
+  "eng",
+  "er",
+  "i",
+  "ia",
+  "iao",
+  "ie",
+  "iu",
+  "ian",
+  "in",
+  "iang",
+  "ing",
+  "iong",
+  "o",
+  "ong",
+  "ou",
+  "u",
+  "ua",
+  "uo",
+  "uai",
+  "ui",
+  "uan",
+  "un",
+  "uang",
+  "ü",
+  "üe",
+  "üan",
+  "ün",
+];
+
 const QUICK_SELECTS = {
   medials: { label: "Medials", keys: ["i", "u", "ü"] },
   finalMono: { label: "Final Mono(ph)thongs", keys: ["a", "e", "o"] },
@@ -27,7 +65,7 @@ const QUICK_SELECTS = {
   iMedial: { label: "i + Finals", keys: ["i", "ia", "ie", "iao", "iu", "ian", "in", "iang", "ing", "iong"] },
   uMedial: { label: "u + Finals", keys: ["ua", "uo", "uai", "ui", "uan", "un", "uang"] },
   üMedial: { label: "ü + Finals", keys: ["ü", "iong", "üe", "üan", "ün"] },
-  all: { label: "All", keys: [] as string[] },
+  all: { label: "All", keys: allPinyinFinals },
 } as const;
 
 type QuickSelectId = keyof typeof QUICK_SELECTS;
@@ -441,6 +479,14 @@ const VowelTrainer = () => {
                       onClick={() => quickSelect("üMedial")}
                     >
                       ü + Finals
+                    </Button>
+                    <br></br>
+                    <Button
+                      variant={activeQuickSelect === "All" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => quickSelect("All")}
+                    >
+                      All
                     </Button>
                   </div>
                 </CollapsibleContent>
