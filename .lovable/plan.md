@@ -1,77 +1,62 @@
-## Filters and Restrictions: Quick Presets
+## Vowel Trainer Page
 
 ### Overview
 
-Replace the "Filters & Restrictions coming soon" stub with a collapsible section containing a "Quick Menu" of preset buttons. Each preset defines which initials, endings, and special pinyin to use when generating words. Selecting a preset changes the active pinyin list used by all word generation actions.
+Create a new `/vowel-trainer` page that lets users practice Chinese vocabulary organized by vowel endings (from `chineseWordsData`). The bottom section has a collapsible grid of ending toggles; the top section shows WordCards for all words matching selected endings.
 
 ### Changes
 
-#### 1. `src/lib/randomWordsUtils.ts` -- Add QuickPreset type and presets
-
-**New type:**
-
-```typescript
-interface QuickPreset {
-  name: string;
-  autogenInit: string[];
-  autogenEndings: string[];
-  specialAdds: string[];
-  notes: string; // shown when (?) is clicked
-}
-```
-
-**New function:**
-
-```typescript
-function PinyinListFromQuickPreset(preset: QuickPreset): string[]
-```
-
-- Resolves `autogenEndings` to their pinyin strings from the `endings` array
-- Calls `AllPinyinFromInitialAndEnding(preset.autogenInit, resolvedEndings)`
-- Appends `preset.specialAdds`
-- Returns the combined list
-
-**Refactor** the existing `DefaultPinyinList`:
-
-- Define an `EasyPreset` QuickPreset with:
-  - `autogenInit`: `["b","p","m","f","d","t","n","g","k","h","j","q","x"]`
-  - `autogenEndings`: `[...endingsWithDifficulty(0), ...endingsWithDifficulty(1)]`
-  - `specialAdds`: `["wo","yi","san","si","wu"]`
-  - `notes`: Lists the initials, endings (with counts), and special adds
-- `DefaultPinyinList = PinyinListFromQuickPreset(EasyPreset)`
-
-**Define `UmlautPreset`:**
-
-- `autogenInit`: All initials from the `initials` array (filtering out special rows like "y?", "w?", "empty set")
-- `autogenEndings`: `["ü", "üe", "üan", "ün", "iong"]`
-- `specialAdds`: `[]` (empty)
-- `notes`: The provided multi-paragraph explanation about umlauts, the ü/u distinction, and the j/q/x/y tip
-
-**Export** `EasyPreset`, `UmlautPreset`, and an array `quickPresets` containing both, plus the `PinyinListFromQuickPreset` function.
-
-#### 2. `src/pages/RandomWords.tsx` -- Wire up Filters section
+#### 1. New file: `src/pages/VowelTrainer.tsx`
 
 **State:**
 
-- `filtersOpen: boolean` (collapsible state, default false)
-- `activePreset: QuickPreset` (default `EasyPreset`)
-- `activePinyinList: string[]` (derived from active preset)
-- `presetInfoOpen: string | null` (which preset's info dialog is showing)
+- `selectedEndings: Set<string>` -- which endings are toggled on. Persisted to `localStorage` key `vowel-trainer-selected-endings`.
+- `hiddenRows: boolean[][]` -- per-card row visibility (same pattern as RandomWords).
 
-**Replace** the stub Card (lines 596-600) with:
+**Bottom section (collapsible):**
 
-- A `Collapsible` wrapping a Card titled "Filters & Restrictions"
-- Inside, a "Quick Menu" section with buttons for each preset
-- Each button shows the preset name and a `(?)` icon
-- Active preset is visually highlighted
-- Clicking a preset button sets it as active and regenerates the pinyin list
-- Clicking `(?)` opens a small dialog/popover showing the preset's `notes` text (formatted with initials list, endings list with count, and special adds)
+- Title: "Endings" with a Collapsible wrapper (default open).
+- "Clear All" button above the grid.
+- Grid of toggle buttons for every key in `chineseWordsData` (the keys: `a`, `ai`, `ao`, `an`, `ang`, `e`, `ei`, `en`, `eng`, `er`, `i`, `ia`, `iao`, `ie`, `iu`, `ian`, `in`, `iang`, `ing`, `iong`, `o`, `ong`, `ou`, `u`, `ua`, `uo`, `ui`, `uai`, `uan`, `un`, `uang`, `u:`, `u:e`, `u:an`, `u:n`).
+- Each button is a simple toggle (highlighted when selected, muted when not). Clicking toggles inclusion in `selectedEndings`.
+- On any change, save to localStorage.
 
-**Update all word generation calls** (`GenerateNwordsFromPinyin`) to use `activePinyinList` instead of the hardcoded `DefaultPinyinList`.
+**Top section (word cards):**
+
+- Collect all `ChineseWordEntry` items from selected endings.
+- Map each to a `RandomWordEntry`-compatible object:
+  - `cs` = first variant from `w` (before comma)
+  - `ct` = second variant or same as `cs`
+  - `e` = `m` (meaning)
+  - `fp` = `p` (pinyin with tones)
+  - `pinyinStub` = `stripToneMarks(cleanPinyin(p))` to enable zhuyin lookup
+  - `h` = -9 (not applicable)
+  - `t` = -9 (not applicable/needed)
+- Render using the existing `WordCard` component with simplified settings (show pinyin, zhuyin, no MDBG links).
+- Include hide/show all buttons and per-card X to remove.
+
+**Header:**
+
+- Back to Chart link, title "Vowel Trainer".
+
+#### 2. `src/App.tsx` -- Add route
+
+Add `<Route path="/vowel-trainer" element={<VowelTrainer />} />` above the catch-all.
 
 ### Technical Details
 
-- The `notes` for "Easy" will be auto-generated from the preset data: "Initials (13): b, p, m, f, d, t, n, g, k, h, j, q, x. Endings (N): a, ai, ... Special Adds (5): wo, yi, san, si, wu."
-- The `notes` for "Umlauts" is the provided multi-line explanation text.
-- All initials for the Umlaut preset: `["b","p","m","f","d","t","n","l","g","k","h","j","q","x","zh","ch","sh","r","z","c","s"]` (the standard consonant initials, excluding the special y?/w?/empty-set rows).
-- Fix the line         // Keep the full parenthesized text in AllPinyinFromInitialAndEnding.   do the regexpression to match the parentheses and the text inside. So "(ye) --> ie" would get converted to "(ye)"
+- Zhuyin lookup: The `WordCard` component's `getZhuyinForStub` already handles looking up zhuyin from `chartData` and `endings` by pinyin stub, so mapping `pinyinStub = stripToneMarks(cleanPinyin(entry.p))` will work for single-syllable words. Multi-syllable words (like "baba") will only show zhuyin for the first syllable, which is acceptable.
+- The `chineseWordsData` keys are extracted at render time via `Object.keys()` from the exported data.
+- Need to export the raw `chineseWords` record (or add a `getAllEndingKeys()` function) from `chineseWordsData.ts` since currently only `getChineseWords()` is exported.
+- localStorage key: `vowel-trainer-selected-endings`, stored as JSON array of strings. On mount, load from localStorage; default to all endings selected if nothing saved.
+- Modify the wordCard show there is a setting to not display the bottom-right difficulty colored dots.  In Vowel-trainer, don't display those colored dots. But in RandomWords, do display those colored dots.
+
+#### 3. `src/data/chineseWordsData.ts` -- Export keys accessor
+
+Add:
+
+```typescript
+export function getAllEndingKeys(): string[] {
+  return Object.keys(chineseWords);
+}
+```
